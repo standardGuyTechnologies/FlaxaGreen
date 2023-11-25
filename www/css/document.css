@@ -1,0 +1,40 @@
+/* global structural css */
+.hide{
+  display: none!important;
+}
+.stealth, .invisible{
+  visibility: hidden!important;
+}
+.align-l--{
+  text-align: left!important;
+}
+.align-r--{
+  text-align: right!important;
+}
+.align-c--{
+  text-align: center!important;
+}
+.flex-c-- {
+  display: flex!important;
+  justify-content: center!important;
+}
+.flex-v-- {
+  display: flex!important; 
+  align-items: center!important;
+}
+.flex-vend-- {
+  display: flex!important; 
+  align-items: flex-end!important;
+}
+.relative--, .rel--{/* use these kinds if you won't use the coordinate on the element */
+  position: relative!important;
+}
+.margin-r-sm--{
+  margin-right: 0.5em!important;
+}
+.p-sm--{
+  margin: 0.5em 0 0.5em 0!important;
+}
+.font-lg--{
+font-size: 1.4em!important;
+}

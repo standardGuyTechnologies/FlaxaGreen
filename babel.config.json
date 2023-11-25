@@ -1,0 +1,16 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "android":  "9"
+        },
+        "useBuiltIns": "usage",
+        "corejs": "3.19.1",
+        "bugfixes": true,
+        "modules": false
+      }
+    ]
+  ]
+}

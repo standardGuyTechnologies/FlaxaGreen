@@ -1,50 +1,59 @@
-// Import entire bundle, but it will affect cordova app load time
-// import Framework7, { Dom7, createStore } from "framework7/bundle";
+// Import entire bundle, but it will affect app load time
+import Framework7, { Dom7, createStore } from "framework7/bundle";
 
 // ===== OR use Lazy Modules =====
 
 // Import core framework
-import Framework7, { Dom7, createStore } from "framework7";
-// Import additional components
-import Panel from 'framework7/components/panel';
-import Progressbar from 'framework7/components/progressbar';
-import LoginScreen from 'framework7/components/login-screen';
-import Swiper from 'framework7/components/swiper';
-import Card from 'framework7/components/card';
-import Fab from 'framework7/components/fab';
-import Picker from 'framework7/components/picker';
-import Popover from 'framework7/components/popover';
-import Swipeout from 'framework7/components/swipeout';
-import Preloader from 'framework7/components/preloader';
-import Input from 'framework7/components/input';
+// import Framework7, { Dom7, createStore } from "framework7";
+// // Import additional components
+// import Panel from 'framework7/components/panel';
+// import Progressbar from 'framework7/components/progressbar';
+// import LoginScreen from 'framework7/components/login-screen';
+// import Swiper from 'framework7/components/swiper';
+// import Card from 'framework7/components/card';
+// import Fab from 'framework7/components/fab';
+// import Picker from 'framework7/components/picker';
+// import Actions from 'framework7/components/actions';
+// import Sheet from 'framework7/components/sheet';
+// import Popover from 'framework7/components/popover';
+// import Swipeout from 'framework7/components/swipeout';
+// import Preloader from 'framework7/components/preloader';
+// import Calendar from 'framework7/components/calendar';
+// import Input from 'framework7/components/input';
 // Error: I don't wish to import input yet, but if i dont i lose auto form validate
 
 // Import components css: imported with webpack css-style loaders
-import 'framework7/components/panel/css';
-import 'framework7/components/progressbar/css';
-import 'framework7/components/login-screen/css';
-import 'framework7/components/swiper/css';
-import 'framework7/components/card/css';
-import 'framework7/components/fab/css';
-import 'framework7/components/picker/css';
-import 'framework7/components/popover/css';
-import 'framework7/components/swipeout/css';
-import 'framework7/components/preloader/css';
-import 'framework7/components/input/css';
+// import 'framework7/components/panel/css';
+// import 'framework7/components/progressbar/css';
+// import 'framework7/components/login-screen/css';
+// import 'framework7/components/swiper/css';
+// import 'framework7/components/card/css';
+// import 'framework7/components/fab/css';
+// import 'framework7/components/picker/css';
+// import 'framework7/components/sheet/css';
+// import 'framework7/components/actions/css';
+// import 'framework7/components/popover/css';
+// import 'framework7/components/swipeout/css';
+// import 'framework7/components/preloader/css';
+// import 'framework7/components/calendar/css';
+// import 'framework7/components/input/css';
 
-Framework7.use([
-  Panel,
-  Progressbar,
-  LoginScreen,
-  Swiper,
-  Card,
-  Fab,
-  Picker,
-  Popover,
-  Swipeout,
-  Preloader,
-  Input,
-]);
+// Framework7.use([
+//   Panel,
+//   Progressbar,
+//   LoginScreen,
+//   Swiper,
+//   Card,
+//   Fab,
+//   Picker,
+//   Sheet,
+//   Actions,
+//   Popover,
+//   Swipeout,
+//   Preloader,
+//   Calendar,
+//   Input,
+// ]);
 
 import Mainapp from "../pages/index.f7.html"
 import routes from "./routes.js"
@@ -103,33 +112,6 @@ var app = new Framework7({
     },
   },
 });
-
-
-Promise.all([
-  import ('framework7/components/accordion'),
-  import ('framework7/components/grid'),
-  import ('framework7/components/dialog'),
-  import ('framework7/components/popup'),
-  import ('framework7/components/form'),
-  import ('framework7/components/radio'),
-  import ('framework7/components/toast'),
-  import ('framework7/components/timeline'),
-  import ('framework7/components/searchbar'),
-  // import ('framework7/components/stepper'), //not using the api for now, just css
-  import ('framework7/components/range'),
-  import ('framework7/components/chip'),
-  import ('framework7/components/typography'),
-  import ('framework7/components/calendar'),
-  import ('framework7/components/gauge'),
-  import ('framework7/components/sheet'),
-  import ('framework7/components/data-table'),
-  import ('framework7/components/toggle'),
-  import ('framework7/components/tabs'),
-]).then((modules) => {
-  return app.loadModules(modules.map(module => module.default));
-}).then(() => {
-  console.log('lazy modules loaded')
-})
 
 document.addEventListener('securitypolicyviolation', (e) => {
   console.log(e.blockedURI);

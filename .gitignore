@@ -36,6 +36,10 @@ Thumbs.db
 
 # Cordova
 cordova/
+#Production Artifact
+assets-src/
+build/
+www/distjs/cordova-app.js
 
 # Template artifact
 framework7.json

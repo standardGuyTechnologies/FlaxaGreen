@@ -21,64 +21,222 @@
     </div>
     <!-- Scrollable page content-->
     <div class="page-content">
-      <div class="block">
-        <p>This is an example of split view application layout, commonly used on tablets. The main approach of such kind of layout is that you can see different views at the same time.</p>
-
-        <p>Each view may have different layout, different navbar type (dynamic, fixed or static) or without navbar.</p>
-
-        <p>The fun thing is that you can easily control one view from another without any line of JavaScript just using "data-view" attribute on links.</p>
-      </div>
-      <div class="block-title">Navigation</div>
-      <div class="list list-strong inset list-dividers-ios">
+      <div class="list list-strong list-outline list-dividers-ios no-chevron">
         <ul>
+          <li class="list-group-title">Quick Actions</li>
           <li>
-            <a href="/about/" class="item-content item-link">
+            <a href="/general-info/" class="item-content item-link">
+              <div class="item-media"><i class="icon f7-icons">info_circle</i></div>
               <div class="item-inner">
-                <div class="item-title">About</div>
+                <div class="item-title">General Information</div>
               </div>
             </a>
           </li>
           <li>
-            <a href="/form/" class="item-content item-link">
+            <a href="#" class="item-content item-link" @click=${chooseAcc}>
+              <div class="item-media"><i class="icon f7-icons">doc_text_viewfinder</i></div>
               <div class="item-inner">
-                <div class="item-title">Form</div>
+                <div class="item-title">Active Account
+                </div>
+                <div class="item-after">${active}</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-content item-link" @click=${popAccDialog}>
+              <div class="item-media"><i class="icon f7-icons">wallet</i></div>
+              <div class="item-inner">
+                <div class="item-title">Add Account</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-content item-link" @click=${showCalendar}>
+              <div class="item-media"><i class="icon f7-icons">calendar_badge_plus</i></div>
+              <div class="item-inner">
+                <div class="item-title">Add Date Entry</div>
               </div>
             </a>
           </li>
         </ul>
       </div>
-
-      <div class="block-title">Modals</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill popup-open" data-popup="#my-popup">Popup</a>
-        <a href="#" class="button button-fill login-screen-open" data-login-screen="#my-login-screen">Login Screen</a>
-      </div>
-
-      <div class="block-title">Panels</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill panel-open" data-panel="left">Left Panel</a>
-        <a href="#" class="button button-fill panel-open" data-panel="right">Right Panel</a>
-      </div>
-
-      <div class="list list-strong inset list-dividers-ios links-list">
+      <div class="list list-outline-ios list-strong-ios list-dividers-ios">
         <ul>
-          <li>
-            <a href="/dynamic-route/blog/45/post/125/?foo=bar#about">Dynamic (Component) Route</a>
-          </li>
-          <li>
-            <a href="/load-something-that-doesnt-exist/">Default Route (404)</a>
-          </li>
-          <li>
-            <a href="/request-and-load/user/123456/">Request Data & Load</a>
-          </li>
+          <li class="list-group-title">Timeline</li>
+          ${tldata.map(entry => $h`
+            <li>
+              <a href="/transact/FirstBank/Date/" class="item-link item-content no-chevron">
+                <div class="item-inner">
+                  <div class="item-title">
+                    <div class="item-header">${entry.acc} - Sat 25/Nov/2023</div>
+                    <div class="inout">
+                      <div class="flex-vend--">
+                        <i class="icon f7-icons size-20 color-green">play</i> <i class="flow">CASH IN: ${entry.in}</i>
+                      </div>
+                      <div class="flex-vend--">
+                        <i class="icon f7-icons size-20 color-red">play</i> <i class="flow">CASH OUT: ${entry.out}</i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-after"><i class="f7-icons if-not-md">trash_fill</i></div>
+                </div>
+              </a>
+            </li>
+          `)}
         </ul>
       </div>
     </div>
   </div>
 </template>
 
+<style>
+  .item-media {
+    color: var(--f7-list-item-after-text-color)
+  }
+  .size-20 { font-size: 20px }
+  .size-25 { font-size: 25px }
+  .size-30 { font-size: 30px }
+  .size-50 { font-size: 50px }
+
+  .inout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    min-width: 320px;
+  }
+
+  .flow {
+    padding-left: 4px;
+    padding-right: 8px;
+  }
+</style>
+
 <script>
-  export default (props, { $f7ready, $f7, $on, $onMounted, $store, $update }) => {
+  export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
+    const TOPG = {}; 
+    const page = $('.page[data-name="home"]')[0];
+    // todo del mock data
+    const accounts = [
+      { text: "FirstBank", 
+      onClick: function(actions, e) {
+        active = e.target.textContent; $update();
+      }},
+      { text: "GTBank",
+      onClick: function(actions, e) {
+        active = e.target.textContent; $update();
+      }},
+      { text: "FidelityBank",
+      onClick: function(actions, e) {
+        active = e.target.textContent; $update();
+      }},
+    ]
+    const tldata = [
+      {date: Date.UTC(2023, 10, 25), acc: "FirstBank", out: 1000, in: 300 },
+      {date: Date.UTC(2023, 10, 23), acc: "FirstBank", out: 1000, in: 300 },
+      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
+      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
+      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
+      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
+      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
+    ];
+
+
+    let active = accounts[0].text;
+    $on('pageInit', () => {
+      const buttons2 = [
+        // First Group
+        accounts,
+        // Second Group
+        [
+          {
+            text: 'Cancel',
+            color: 'red'
+          }
+        ]
+      ]
+      TOPG.actionSheet = $f7.actions.create({ 
+        buttons: buttons2 ,
+        containerEl: ".page-master",
+      });
+      TOPG.calendarModal = $f7.calendar.create({
+        disabled: {
+          from: new Date()
+        },
+        dateFormat: { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' },
+        openIn: 'customModal',
+        header: true,
+        footer: true,
+        on: {
+          closed: function () {
+            $f7.dialog.alert('hello world');
+          }
+        }
+      });
+    })
+
+    $onBeforeUnmount(() => {
+      $f7.calendar.destroy('#demo-calendar-modal');
+    })
+    $on('pageBeforeRemove', () => {
+      TOPG.actionSheet.destroy();
+    })
+    $onUnmounted(() => {
+      Object.keys(TOPG).forEach(key => delete TOPG[key]);
+    })
+
+    /* 
+    todo timeline db schema
+    [id:pri-key(use utcdatenum), y, m, d, acc, out, in, at, search(combine: acc+out+in+at)]
+
+    todo
+    on calendar close check some vars, if they are null, report "select a date".
+    on calender change, set those vars, then attempt to insert into sql, if fail report "date already exist" else "Done: added date".
+    */
+
+    function showCalendar () {
+      TOPG.calendarModal.open();
+    }
+
+    function chooseAcc () {
+      console.log('choosing...')
+      TOPG.actionSheet.open();
+    }
+
+    const maxamt = 100000000000000; // todo use the real deal.
+    let dialoginputs = `
+<form id="create">
+  <div class="dialog-input-field dialog-input-double input">
+    <input type="text" name="dialog-accname" placeholder="Account name" class="dialog-input" pattern='[\-A-Za-z0-9]+' data-pattern="Account name accepts only alpha-numeric characters and hyhens!" maxlength=20 required />
+  </div>
+  <div class="dialog-input-field dialog-input-double input">
+    <input type="number" name="dialog-accbal" placeholder="Cash balance" class="dialog-input" data-range="The cash balance provided exceeds limits!" max=${maxamt} min=0 data-step="Invalid lower denominations" step=0.01 required />
+  </div>
+</form>`;
+
+    function popAccDialog(){
+      let dialog = $f7.dialog.create({
+        // containerEl: ".page-master",
+        // backdrop: false,
+        title: 'Add Account',
+        text: '',
+        content: dialoginputs,
+        buttons: [
+          { text: 'Cancel', close: true, },
+          {
+            text: 'Save', keyCodes: [13], 
+            close: true,
+            onClick: function(dialog, e){
+              
+            }
+          },
+        ],
+        destroyOnClose: true,
+      })
+      dialog.open();
+    }  
+
 
     return $render;
   }

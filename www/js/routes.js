@@ -1,5 +1,7 @@
 // import Setup from "../pages/app-setup.f7.html"
 import Home from "../pages/home.f7.html"
+import Ginfo from "../pages/general-info.f7.html"
+import Records from "../pages/records.f7.html"
 
 
 export default [
@@ -10,9 +12,13 @@ export default [
     detailRoutes: [
       {
         path: '/transact/:acc/:date/',
-        url: './pages/404.html'
+        component: Records,
       },
     ],
+  },
+  {
+    path: '/general-info/',
+    component: Ginfo,
   },
   {
     path: '/about/',

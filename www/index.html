@@ -33,8 +33,17 @@
   }
   @media screen and (max-width: 960px){
     :root {
-    --f7-page-master-width: 50vw;
+      --f7-page-master-width: 50vw;
+    }
   }
+  @media screen and (min-width: 800px){
+    .navbar-master-detail .left{/* master-detail */
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+  .list:first-of-type {
+    margin-top: 0px;
   }
 </style>
 <body>

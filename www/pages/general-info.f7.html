@@ -1,0 +1,92 @@
+<template>
+  <div class="page" data-name="qinfo">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title">General Information</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="list list-strong list-outline list-dividers-ios simple-list">
+        <ul>
+          <li class="list-group-title">Accounts</li>
+          ${acc.map(item => $h`
+            <li>
+              <span>${item.acc}</span><span>${item.bal}</span>
+            </li>
+          `)}
+          <li><span>Total Accounts</span><span>3</span></li>
+        </ul>
+      </div>
+      <div class="list list-strong list-outline list-dividers-ios simple-list">
+        <ul>
+          <li class="list-group-title">Active Trackers</li>
+          ${trackers.map(item => $h`
+            <li>
+              <span>Active ${item.type}</span><span>${item.num}</span>
+            </li>
+          `)}
+        </ul>
+      </div>
+      <div class="list list-strong list-outline list-dividers-ios simple-list">
+        <ul>
+          <li class="list-group-title">Loan Stats</li>
+          <li>
+            <span>Loan administered</span><span>3</span>
+          </li>
+          <li>
+            <span>Pardon percentage</span><span>10%</span>
+          </li>
+          <li>
+            <span>Loan received</span><span>1</span>
+          </li>
+          <li>
+            <span>Repay percentage</span><span>100%</span>
+          </li>
+        </ul>
+      </div>
+      <div class="list list-strong list-outline list-dividers-ios simple-list">
+        <ul>
+          <li class="list-group-title">Pledge Stats</li>
+          <li>
+            <span>Pledge made</span><span>3</span>
+          </li>
+          <li>
+            <span>Redeem percentage</span><span>10%</span>
+          </li>
+        </ul>
+      </div>
+      <div class="list list-strong list-outline list-dividers-ios simple-list">
+        <ul>
+          <li class="list-group-title">Deposit Stats</li>
+          <li>
+            <span>Security deposit made</span><span>3</span>
+          </li>
+          <li>
+            <span>Security deposit received</span><span>5</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>  
+</template>
+
+<style>
+
+</style>
+
+<script>
+  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+    const acc = [{acc: 'FirstBank', bal: 5050}, {acc: 'GTBank', bal: 2500}, {acc: 'FidelityBank', bal: 200}];
+    const trackers = [
+      {type: "Loans", num: 3}, {type: "Pledge", num: 0}, {type: "Deposit", num: 0}
+    ]
+    return $render;
+  }
+</script>

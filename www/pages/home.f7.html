@@ -71,10 +71,10 @@
                     <div class="item-header">${entry.acc} - Sat 25/Nov/2023</div>
                     <div class="inout">
                       <div class="flex-vend--">
-                        <i class="icon f7-icons size-20 color-green">play</i> <i class="flow">CASH IN: ${entry.in}</i>
+                        <i class="flow">CASH IN: ${entry.in}</i>
                       </div>
                       <div class="flex-vend--">
-                        <i class="icon f7-icons size-20 color-red">play</i> <i class="flow">CASH OUT: ${entry.out}</i>
+                        <i class="flow">CASH OUT: ${entry.out}</i>
                       </div>
                     </div>
                   </div>
@@ -158,7 +158,7 @@
       ]
       TOPG.actionSheet = $f7.actions.create({ 
         buttons: buttons2 ,
-        containerEl: ".page-master",
+        // containerEl: ".page-master",
       });
       TOPG.calendarModal = $f7.calendar.create({
         disabled: {

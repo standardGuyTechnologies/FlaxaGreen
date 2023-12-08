@@ -1,0 +1,114 @@
+<template>
+  <div class="page" data-name="tracking">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title">Tracking</div>
+      </div>
+    </div>
+    <div class="fab fab-right-bottom">
+      <a href="/new-tracking/">
+        <i class="icon f7-icons if-not-md">plus</i>
+      </a>
+    </div>
+    <div class="page-content">
+      <div></div>
+      ${data.map(item => $h`
+      <div class="list list-strong inset">
+        <ul>
+          <li class="swipeout">
+          <div class="item-content swipeout-content">
+            <div class="item-media">
+              <i class="icon f7-icons">person</i>
+            </div>
+            <div class="item-inner">
+              <div class="item-title">
+                ${item.subcateg}
+                <div class="item-footer">Loan Category</div>
+              </div>
+              <div class="item-after">
+                <div class="card no-shadow">
+                  <div class="card-header">
+                    <strong>+${item.net}</strong>
+                  </div>
+                  <div class="card-content">
+                    <small><small>pending</small></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swipeout-actions-right">
+            <a data-confirm="Are you sure you want to delete this item?" class="swipeout-delete">Delete</a>
+          </div>
+        </li>
+        </ul>
+        </div>
+      `)}
+    </div>
+  </div>  
+</template>
+
+<style>
+  .page[data-name="tracking"] {
+    --f7-list-margin-vertical: 12px;
+  }
+  .page[data-name="tracking"] .list-group-title{
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+  .page[data-name="tracking"] .item-after .card {
+    margin: 0;
+  }
+  .page[data-name="tracking"] .item-after .card-header {
+    min-height: 0px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0;
+  }
+  .page[data-name="tracking"] .item-after .card-content {
+    display: flex;
+    justify-content: flex-end;
+    line-height: 1.2px;
+  }
+</style>
+
+<script>
+  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+
+    const TOPG = {};
+    // mock data todo del
+    const data = [
+      {subcateg: "Johnson Food", instances: 5, net: 2000},
+      {subcateg: "Onuorah", instances: 3, net: 4000},
+      {subcateg: "Henry", instances: 1, net: 8000},
+      {subcateg: "Fayode", instances: 1, net: 8000},
+      {subcateg: "Mark Gray", instances: 1, net: 8000},
+      {subcateg: "Derrick", instances: 1, net: 8000},
+      {subcateg: "Johnson", instances: 1, net: 8000},
+      {subcateg: "Johnson", instances: 1, net: 8000},
+      {subcateg: "Johnson", instances: 1, net: 8000},
+    ]
+    const data2 = [1, 2, 3, 4, 5, 6, 7]
+
+    $on('pageInit', () => {
+      TOPG.sheetSwipeToClose = $f7.sheet.create({
+        containerEl: ".page-master-detail",
+        el: '.demo-sheet-swipe-to-close',
+        backdrop: true,
+        swipeToClose: true,
+        swipeHandler: ".swipe-handler",
+        backdrop: true,
+      });
+    })
+    return $render;
+  }
+</script>

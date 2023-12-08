@@ -2,6 +2,9 @@
 import Home from "../pages/home.f7.html"
 import Ginfo from "../pages/general-info.f7.html"
 import Records from "../pages/records.f7.html"
+import Fast from "../pages/fast.f7.html"
+import Tracking from "../pages/tracking.f7.html"
+import NewTracking from "../pages/new-tracking.f7.html"
 
 
 export default [
@@ -13,6 +16,18 @@ export default [
       {
         path: '/transact/:acc/:date/',
         component: Records,
+      },
+      {
+        path: '/fast-transactions/',
+        component: Fast,
+      },
+      {
+        path: '/tracking-transactions/',
+        component: Tracking,
+      },
+      {
+        path: '/new-tracking/',
+        component: NewTracking,
       },
     ],
   },

@@ -1,0 +1,190 @@
+<template>
+  <div class="page" data-name="tracking-tr">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title">New Tracking</div>
+      </div>
+    </div>
+    <div class="toolbar toolbar-bottom no-hairline">
+      <div class="toolbar-inner flex-c--">
+        <a href="#" class="link" @click=${save}>Add Transaction</a>
+      </div>
+    </div>
+    <div class="page-content">
+      <!-- <div></div> -->
+      <${TrackerType} categ=${categ} type="tracking" />
+      <${RedeemIntent} categ=${categ} type="tracking" />
+      <${Details} categ=${categ} type="tracking" />
+      
+    </div>
+    <div class="sheet-modal switch-categ" style="height:auto">
+      <div class="sheet-modal-inner">
+        <div class="swipe-handler"></div>
+        <div class="page-content">
+          <div class="list list-outline-ios list-dividers-ios">
+            <ul>
+              <li class="swipeout">
+                <div class="item-content swipeout-content">
+                  <div class="item-inner">
+                    <div class="item-title">
+                      Cheese Burger
+                      <div class="item-footer">
+                        <i class="icon f7-icons location">placemark</i>
+                        <span>McDonalds @ Alausa</span>
+                      </div>
+                    </div>
+                    <div class="item-after">
+                      <div class="card no-shadow">
+                        <div class="card-header">
+                          <strong>$200,000</strong>
+                        </div>
+                        <div class="card-content">
+                          <small><small>Qty: 2</small></small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a class="swipeout-delete"><i class="icon f7-icons">trash_fill</i></a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</template>
+
+<style>
+  .page[data-name="tracking-tr"] .list-group-title{
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+  .page[data-name="tracking-tr"] .item-after .card {
+    margin: 0;
+  }
+  .page[data-name="tracking-tr"] .item-after .card-header {
+    min-height: 0px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0;
+  }
+  .page[data-name="tracking-tr"] .item-after .card-content {
+    display: flex;
+    justify-content: flex-end;
+    line-height: 1.2px;
+  }
+  
+  .sheet-modal .sheet-modal-inner {
+    padding-top: 16px; /* pad 4 the swipe handler */
+  }
+  .sheet-modal .page-content {
+    padding-top: 0px;
+    padding-bottom: 16px;
+  }
+  .sheet-modal .location {
+    font-size: 145%;
+  }
+  /* copied from kitchen sink css */
+  .demo-sheet-swipe-to-close .swipe-handler, .demo-sheet-swipe-to-step .swipe-handler {
+    background: none;
+  }
+  .swipe-handler {
+    height: 16px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    background: #f3f4f6;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .swipe-handler:after {
+    content: '';
+    width: 36px;
+    height: 6px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -18px;
+    margin-top: -3px;
+    border-radius: 3px;
+    background: #666;
+  }
+</style>
+
+<script>
+  import Categories from '../pages/local-components/categ.js';
+  import {TrackerType, RedeemIntent, Details} from '../pages/local-components/categ.js';
+  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+
+    const TOPG = {};
+    // mock data todo del
+    const categ = "Loan";
+    const data = [
+      {subcateg: "Fast Food", instances: 5, net: 2000},
+      {subcateg: "Printing", instances: 3, net: 4000},
+      {subcateg: "Vehicle", instances: 1, net: 8000},
+      {subcateg: "Art", instances: 1, net: 8000},
+      {subcateg: "Drinks", instances: 1, net: 8000},
+      {subcateg: "Games", instances: 1, net: 8000},
+      {subcateg: "Provisions", instances: 1, net: 8000},
+      {subcateg: "Snacks", instances: 1, net: 8000},
+      {subcateg: "Toys", instances: 1, net: 8000},
+    ]
+
+    $on('pageInit', () => {
+      TOPG.sheetSwipeToClose = $f7.sheet.create({
+        containerEl: ".page-master-detail",
+        el: '.demo-sheet-swipe-to-close',
+        backdrop: true,
+        swipeToClose: true,
+        swipeHandler: ".swipe-handler",
+        backdrop: true,
+      });
+
+      const prevlocation = ["Yaba", "Ikeja", "Victoria Island", "Ikeja"];
+      TOPG.typeahead = $f7.autocomplete.create({
+        inputEl: '#typeahead',
+        openIn: 'dropdown',
+        typeahead: true,
+        source: function (query, render) {
+          var results = [];
+          if (query.length === 0) {
+            render(results);
+            return;
+          }
+          // Find matched items
+          for (var i = 0; i < prevlocation.length; i++) {
+            if (prevlocation[i].toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(prevlocation[i]);
+          }
+          // Render items by passing array with result items
+          render(results);
+        }
+      });
+
+    })
+
+    $onBeforeUnmount(() => {
+      TOPG.typeahead.destroy();
+    })
+    
+
+    function save () {
+      
+    }
+
+    return $render;
+  }
+</script>

@@ -1,4 +1,95 @@
-const Categories = (props, { $h }) => {
+const fullcateg = 'Awarded Dividends Generosity Expenses Investments Lost Payout Recovered Taxes Tributes Wages'.split(' ');
+
+
+const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
+  const TOPG = {};
+  $onMounted(() => {
+    $(document).on('click', ".popover .item-content", 
+    function (e) {
+      TOPG.popover.close();
+      props.categ = this.dataset.categ ? this.dataset.categ : props.categ;
+      props.subcateg = this.dataset.subcateg ? this.dataset.subcateg : props.subcateg;
+      $update();
+    })
+  })
+  function openCateg () {
+    TOPG.popover = $f7.popover.create({
+      targetEl: ".open-categ",
+      content: getPopover('categ'),
+      closeByBackdropClick: true,
+      closeByOutsideClick: true,
+      closeOnEscape: true,
+      verticalPosition: "bottom",
+      on: {
+        closed: function () {
+          TOPG.popover.destroy();
+        }
+      }
+    })
+    TOPG.popover.open();
+  }
+  function openSubCateg () {
+    TOPG.popover = $f7.popover.create({
+      targetEl: ".open-subcateg",
+      content: getPopover('hey'),
+      closeByBackdropClick: true,
+      closeByOutsideClick: true,
+      closeOnEscape: true,
+      verticalPosition: "bottom",
+      on: {
+        closed: function () {
+          TOPG.popover.destroy();
+        }
+      }
+    })
+    TOPG.popover.open();
+  }
+  function getPopover (el) {
+    if (el === 'categ') {
+      return `
+      <div class="popover subcateg">
+        <div class="popover-inner">
+          <div class="list simple-list">
+            <ul>
+            ${fullcateg.map((categ, i) => `
+            <li class="item-content" data-categ="${categ}">
+                <div class="item-media">
+                  <img src="assets/${categ}.png" width="28" />
+                </div>
+                <div class="item-inner">
+                  <div class="item-title">${categ}</div>
+                </div>
+            </li>
+            `).join('')}
+            </ul>
+          </div>
+        </div>
+      </div>
+      `
+    } else {
+      return `
+      <div class="popover subcateg">
+        <div class="popover-inner">
+          <div class="list simple-list">
+            <ul>
+            ${fullcateg.map((categ, i) => `
+            <li class="item-content" data-subcateg="${categ}">
+                <div class="item-media">
+                  <img src="assets/${categ}/Fast food.png" width="28" />
+                </div>
+                <div class="item-inner">
+                  <div class="item-title">${categ}</div>
+                </div>
+            </li>
+            `).join('')}
+            </ul>
+          </div>
+        </div>
+      </div>
+      `
+    }
+  }
+
     return () => $h`
   <div class="list list-strong list-outline-ios list-dividers-ios">
     <ul>
@@ -10,7 +101,7 @@ const Categories = (props, { $h }) => {
           </div>
           <div class="item-inner">
             <div class="item-title">${props.categ}</div>
-            <div class="item-after sheet-open" data-sheet=".switch-categ">
+            <div class="item-after open-categ" @click=${openCateg}>
               <i class="icon f7-icons">ellipsis_circle</i>
             </div>
           </div>
@@ -25,7 +116,7 @@ const Categories = (props, { $h }) => {
           </div>
           <div class="item-inner">
             <div class="item-title">${props.subcateg}</div>
-            <div class="item-after sheet-open" data-sheet=".switch-subcateg">
+            <div class="item-after open-subcateg" @click=${openSubCateg}>
               <i class="icon f7-icons">ellipsis_circle</i>
             </div>
           </div>

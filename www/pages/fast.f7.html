@@ -17,96 +17,11 @@
         <a href="#" class="link" @click=${save}>Add Transaction</a>
       </div>
     </div>
-    <!-- <div class="toolbar tabbar tabbar-icons toolbar-top">
-      <div class="toolbar-inner">
-        <a href="/add-image/" class="tab-link">
-          <i class="icon f7-icons color-blue">plus_app</i>
-          <span class="tabbar-label">add</span>
-        </a>
-        <a href="#" class="tab-link external">
-          <i class="icon f7-icons color-deeppurple">list_bullet_indent</i>
-          <span class="tabbar-label">details</span>
-        </a>
-        <a href="#" class="tab-link external">
-          <i class="icon f7-icons color-red">clear</i>
-          <span class="tabbar-label">discard</span>
-        </a>
-        <a href="#" class="tab-link external">
-          <i class="icon f7-icons color-green">floppy_disk</i>
-          <span class="tabbar-label">publish</span>
-        </a>
-      </div>
-    </div> -->
     <div class="page-content">
       <!-- <div></div> -->
       <${Categories} categ=${categ} subcateg=${subcateg} type="fast" />
       <${Details} categ=${categ} type="fast" />
       
-    </div>
-    <div class="sheet-modal sheet-modal-top demo-sheet-top switch-categ">
-      <div class="toolbar toolbar-bottom">
-        <div class="toolbar-inner">
-          <div class="left"></div>
-          <div class="right">
-            <a class="link sheet-close">Done</a>
-          </div>
-        </div>
-      </div>
-      <div class="sheet-modal-inner">
-        <div class="page-content">
-          <div class="block">
-            <div class="list list-strong list-outline-ios list-dividers-ios">
-              <ul>
-                ${fullcateg.map((item, i) => $h`
-                <li>
-                  <label class="item-radio item-content">
-                    <input type="radio" name="subtype" value="out" ${i==0 && "checked"} />
-                    <i class="icon icon-radio"></i>
-                    <div class="item-media">
-                      <img src="assets/${item}.png" width="40" />
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">${item}</div>
-                    </div>
-                  </label>
-                </li>
-                `)}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="sheet-modal sheet-modal-top demo-sheet-top switch-subcateg">
-      <div class="toolbar toolbar-bottom">
-        <div class="toolbar-inner">
-          <div class="left"></div>
-          <div class="right">
-            <a class="link sheet-close">Done</a>
-          </div>
-        </div>
-      </div>
-      <div class="sheet-modal-inner">
-        <div class="page-content">
-          <div class="block">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus
-              perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex
-              adipisci.</p>
-            <p>Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis
-              facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam.
-              Consequatur, nisi, enim.</p>
-            <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus
-              similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem
-              libero minus dignissimos repellat.</p>
-            <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut
-              cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt,
-              perferendis voluptates doloribus?</p>
-            <p>Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam
-              obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt
-              praesentium velit ipsa illo iusto.</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>  
 </template>
@@ -174,42 +89,13 @@
     justify-content: flex-end;
     line-height: 1.2px;
   }
-  
-  .sheet-modal .sheet-modal-inner {
-    padding-top: 16px; /* pad 4 the swipe handler */
+  form#main-categ {
+    margin: 0;
+    max-height: 70vh; overflow-y: auto;
   }
-  .sheet-modal .page-content {
-    padding-top: 0px;
-    padding-bottom: 16px;
-  }
-  .sheet-modal .location {
-    font-size: 145%;
-  }
-  /* copied from kitchen sink css */
-  .demo-sheet-swipe-to-close .swipe-handler, .demo-sheet-swipe-to-step .swipe-handler {
-    background: none;
-  }
-  .swipe-handler {
-    height: 16px;
-    position: absolute;
-    left: 0;
-    width: 100%;
-    top: 0;
-    background: #f3f4f6;
-    cursor: pointer;
-    z-index: 10;
-  }
-  .swipe-handler:after {
-    content: '';
-    width: 36px;
-    height: 6px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -18px;
-    margin-top: -3px;
-    border-radius: 3px;
-    background: #666;
+  .popover .list {
+    max-height: 180px; 
+    overflow-y: scroll;
   }
 </style>
 
@@ -233,17 +119,10 @@
       {subcateg: "Toys", instances: 1, net: 8000},
     ]
 
+    const fullcateg = 'Awarded Dividends Generosity Expenses Investments Lost Payout Recovered Taxes Tributes Wages'.split(' ');
+
+
     $on('pageInit', () => {
-      TOPG.sheetCateg = $f7.sheet.create({
-        containerEl: ".page-master-detail",
-        el: '.switch-categ',
-        backdrop: true,
-      });
-      TOPG.sheetSubCateg = $f7.sheet.create({
-        containerEl: ".page-master-detail",
-        el: '.switch-subcateg',
-        backdrop: true,
-      });
 
       const prevlocation = ["Yaba", "Ikeja", "Victoria Island", "Ikeja"];
       TOPG.typeahead = $f7.autocomplete.create({
@@ -275,70 +154,6 @@
     function save () {
       
     }
-    const fullcateg = 'Awarded Dividends Generosity Expenses Investments Lost Payout Recovered Taxes Tributes Wages'.split(' ');
-    
-    let sheets = new Map();
-    function opensheet (e) {
-      const target = $(this).data('categ'), sheetEl = sheets.get(target);
-      const input = $(`#dForm textarea[name="${target}"]`)
-      let sheet = $f7.sheet.get(sheetEl) || $f7.sheet.create({
-        containerEl: ".page-master-detail",
-        backdrop: true,
-        content: sheetInner(target),
-        on: {
-          close: function () {
-            let toinsert = ''; 
-            $('.sheet-modal.'+target+" input[name='subcateg']").each(function () {
-              if (this.checked) toinsert += this.value;
-            })
-            let val = input.val() + toinsert;
-            input.val(val).trigger('input');
-          },
-          closed: function () {
-            $('.sheet-modal.'+target+" input[name='subcateg']").prop('checked', false);
-          },
-        }
-      })
-      if (!sheetEl) sheets.set(target, sheet.el);
-      sheet.open();
-    }
-
-    function sheetInner(target) {
-      let pack = labelmap.get(target);
-      let label = pack.label;
-      let subcateglist = pack.subcateg;//an array of values ie ['travel', 'clothes']
-      let htmlarr = subcateglist.map(subcateg => {
-        return `
-        <li class="item-content">
-          <div class="item-media">
-            <img src="img/${label}/${subcateg}.png" width="30" />
-          </div>
-          <div class="item-inner">
-            <div class="item-title">${subcateg}</div>
-            <div class="item-after">
-              <label class="toggle toggle-init">
-                <input type="checkbox" name="subcateg" value="[${subcateg}: ${digitcomma(0)} ] "/>
-                <span class="toggle-icon"></span>
-              </label>
-            </div>
-          </div>
-        </li>`
-      })
-      let sheetModal = `
-      <div class="sheet-modal parser ${target}">
-        <div class="sheet-modal-inner">
-          <div class="swipe-handler"></div>
-          <div class="page-content">
-            <div class="list">
-              <ul>${htmlarr.join('')}</ul>
-            </div>
-          </div>
-        </div>
-      </div>`
-      return sheetModal;
-    }
-     
-
 
     return $render;
   }

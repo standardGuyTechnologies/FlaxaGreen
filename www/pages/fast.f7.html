@@ -17,82 +17,93 @@
         <a href="#" class="link" @click=${save}>Add Transaction</a>
       </div>
     </div>
+    <!-- <div class="toolbar tabbar tabbar-icons toolbar-top">
+      <div class="toolbar-inner">
+        <a href="/add-image/" class="tab-link">
+          <i class="icon f7-icons color-blue">plus_app</i>
+          <span class="tabbar-label">add</span>
+        </a>
+        <a href="#" class="tab-link external">
+          <i class="icon f7-icons color-deeppurple">list_bullet_indent</i>
+          <span class="tabbar-label">details</span>
+        </a>
+        <a href="#" class="tab-link external">
+          <i class="icon f7-icons color-red">clear</i>
+          <span class="tabbar-label">discard</span>
+        </a>
+        <a href="#" class="tab-link external">
+          <i class="icon f7-icons color-green">floppy_disk</i>
+          <span class="tabbar-label">publish</span>
+        </a>
+      </div>
+    </div> -->
     <div class="page-content">
       <!-- <div></div> -->
       <${Categories} categ=${categ} subcateg=${subcateg} type="fast" />
       <${Details} categ=${categ} type="fast" />
       
     </div>
-    <div class="sheet-modal switch-categ" style="height:auto">
+    <div class="sheet-modal sheet-modal-top demo-sheet-top switch-categ">
+      <div class="toolbar toolbar-bottom">
+        <div class="toolbar-inner">
+          <div class="left"></div>
+          <div class="right">
+            <a class="link sheet-close">Done</a>
+          </div>
+        </div>
+      </div>
       <div class="sheet-modal-inner">
-        <div class="swipe-handler"></div>
         <div class="page-content">
-          <div class="list list-outline-ios list-dividers-ios">
-            <ul>
-              <li class="swipeout">
-                <div class="item-content swipeout-content">
-                  <div class="item-inner">
-                    <div class="item-title">
-                      Cheese Burger
-                      <div class="item-footer">
-                        <i class="icon f7-icons location">placemark</i>
-                        <span>McDonalds @ Alausa</span>
-                      </div>
+          <div class="block">
+            <div class="list list-strong list-outline-ios list-dividers-ios">
+              <ul>
+                ${fullcateg.map((item, i) => $h`
+                <li>
+                  <label class="item-radio item-content">
+                    <input type="radio" name="subtype" value="out" ${i==0 && "checked"} />
+                    <i class="icon icon-radio"></i>
+                    <div class="item-media">
+                      <img src="assets/${item}.png" width="40" />
                     </div>
-                    <div class="item-after">
-                      <div class="card no-shadow">
-                        <div class="card-header">
-                          <strong>$200,000</strong>
-                        </div>
-                        <div class="card-content">
-                          <small><small>Qty: 2</small></small>
-                        </div>
-                      </div>
+                    <div class="item-inner">
+                      <div class="item-title">${item}</div>
                     </div>
-                  </div>
-                </div>
-                <div class="swipeout-actions-right">
-                  <a class="swipeout-delete"><i class="icon f7-icons">trash_fill</i></a>
-                </div>
-              </li>
-            </ul>
+                  </label>
+                </li>
+                `)}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="sheet-modal switch-subcateg" style="height:auto">
+    <div class="sheet-modal sheet-modal-top demo-sheet-top switch-subcateg">
+      <div class="toolbar toolbar-bottom">
+        <div class="toolbar-inner">
+          <div class="left"></div>
+          <div class="right">
+            <a class="link sheet-close">Done</a>
+          </div>
+        </div>
+      </div>
       <div class="sheet-modal-inner">
-        <div class="swipe-handler"></div>
         <div class="page-content">
-          <div class="list list-outline-ios list-dividers-ios">
-            <ul>
-              <li class="swipeout">
-                <div class="item-content swipeout-content">
-                  <div class="item-inner">
-                    <div class="item-title">
-                      Cheese Burger
-                      <div class="item-footer">
-                        <i class="icon f7-icons location">placemark</i>
-                        <span>McDonalds @ Alausa</span>
-                      </div>
-                    </div>
-                    <div class="item-after">
-                      <div class="card no-shadow">
-                        <div class="card-header">
-                          <strong>$200,000</strong>
-                        </div>
-                        <div class="card-content">
-                          <small><small>Qty: 2</small></small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="swipeout-actions-right">
-                  <a class="swipeout-delete"><i class="icon f7-icons">trash_fill</i></a>
-                </div>
-              </li>
-            </ul>
+          <div class="block">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus
+              perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex
+              adipisci.</p>
+            <p>Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis
+              facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam.
+              Consequatur, nisi, enim.</p>
+            <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus
+              similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem
+              libero minus dignissimos repellat.</p>
+            <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut
+              cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt,
+              perferendis voluptates doloribus?</p>
+            <p>Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam
+              obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt
+              praesentium velit ipsa illo iusto.</p>
           </div>
         </div>
       </div>
@@ -101,6 +112,48 @@
 </template>
 
 <style>
+  .page[data-name="fast-tr"] {
+  --f7-toolbar-height: 44px;
+  --f7-toolbar-font-size: 17px;
+  --f7-toolbar-inner-padding-left: 8px;
+  --f7-toolbar-inner-padding-right: 8px;
+  --f7-toolbar-link-font-weight: 400;
+  /*
+  --f7-toolbar-link-height: var(--f7-toolbar-height);
+  --f7-toolbar-link-line-height: var(--f7-toolbar-height);
+  --f7-tabbar-link-active-color: var(--f7-theme-color);
+  */
+  --f7-tabbar-icons-height: 50px;
+  --f7-tabbar-icons-tablet-height: 50px;
+  --f7-tabbar-icon-size: 28px;
+  --f7-tabbar-link-text-transform: none;
+  --f7-tabbar-link-font-weight: 400;
+  --f7-tabbar-link-letter-spacing: 0;
+  --f7-tabbar-label-font-size: 12px;
+  --f7-tabbar-label-tablet-font-size: 14px;
+  --f7-tabbar-label-font-weight: 500;
+  --f7-tabbar-label-letter-spacing: 0.01;
+  --f7-tabbar-link-inactive-color: rgba(0, 0, 0, 0.4);
+}
+/* 
+.page[data-name="fast-tr"] {
+    --f7-toolbar-height: 44px;
+    --f7-toolbar-font-size: 17px;
+    --f7-toolbar-inner-padding-left: 8px;
+    --f7-toolbar-inner-padding-right: 8px;
+    --f7-toolbar-link-font-weight: 400;
+    --f7-tabbar-icons-height: 100px;
+    --f7-tabbar-icons-tablet-height: 120px;
+    --f7-tabbar-icon-size: 60px;
+    --f7-tabbar-link-text-transform: none;
+    --f7-tabbar-link-font-weight: 400;
+    --f7-tabbar-link-letter-spacing: 0;
+    --f7-tabbar-label-font-size: 18px;
+    --f7-tabbar-label-tablet-font-size: 20px;
+    --f7-tabbar-label-font-weight: 500;
+    --f7-tabbar-label-letter-spacing: 0.01;
+    --f7-tabbar-link-inactive-color: rgba(0, 0, 0, 0.4);
+} */
   .page[data-name="fast-tr"] .list-group-title{
     display: flex;
     justify-content: space-between;
@@ -181,12 +234,14 @@
     ]
 
     $on('pageInit', () => {
-      TOPG.sheetSwipeToClose = $f7.sheet.create({
+      TOPG.sheetCateg = $f7.sheet.create({
         containerEl: ".page-master-detail",
-        el: '.demo-sheet-swipe-to-close',
+        el: '.switch-categ',
         backdrop: true,
-        swipeToClose: true,
-        swipeHandler: ".swipe-handler",
+      });
+      TOPG.sheetSubCateg = $f7.sheet.create({
+        containerEl: ".page-master-detail",
+        el: '.switch-subcateg',
         backdrop: true,
       });
 
@@ -220,6 +275,70 @@
     function save () {
       
     }
+    const fullcateg = 'Awarded Dividends Generosity Expenses Investments Lost Payout Recovered Taxes Tributes Wages'.split(' ');
+    
+    let sheets = new Map();
+    function opensheet (e) {
+      const target = $(this).data('categ'), sheetEl = sheets.get(target);
+      const input = $(`#dForm textarea[name="${target}"]`)
+      let sheet = $f7.sheet.get(sheetEl) || $f7.sheet.create({
+        containerEl: ".page-master-detail",
+        backdrop: true,
+        content: sheetInner(target),
+        on: {
+          close: function () {
+            let toinsert = ''; 
+            $('.sheet-modal.'+target+" input[name='subcateg']").each(function () {
+              if (this.checked) toinsert += this.value;
+            })
+            let val = input.val() + toinsert;
+            input.val(val).trigger('input');
+          },
+          closed: function () {
+            $('.sheet-modal.'+target+" input[name='subcateg']").prop('checked', false);
+          },
+        }
+      })
+      if (!sheetEl) sheets.set(target, sheet.el);
+      sheet.open();
+    }
+
+    function sheetInner(target) {
+      let pack = labelmap.get(target);
+      let label = pack.label;
+      let subcateglist = pack.subcateg;//an array of values ie ['travel', 'clothes']
+      let htmlarr = subcateglist.map(subcateg => {
+        return `
+        <li class="item-content">
+          <div class="item-media">
+            <img src="img/${label}/${subcateg}.png" width="30" />
+          </div>
+          <div class="item-inner">
+            <div class="item-title">${subcateg}</div>
+            <div class="item-after">
+              <label class="toggle toggle-init">
+                <input type="checkbox" name="subcateg" value="[${subcateg}: ${digitcomma(0)} ] "/>
+                <span class="toggle-icon"></span>
+              </label>
+            </div>
+          </div>
+        </li>`
+      })
+      let sheetModal = `
+      <div class="sheet-modal parser ${target}">
+        <div class="sheet-modal-inner">
+          <div class="swipe-handler"></div>
+          <div class="page-content">
+            <div class="list">
+              <ul>${htmlarr.join('')}</ul>
+            </div>
+          </div>
+        </div>
+      </div>`
+      return sheetModal;
+    }
+     
+
 
     return $render;
   }

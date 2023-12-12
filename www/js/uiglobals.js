@@ -52,23 +52,23 @@ const appmsgs = {
   donatelink, googleplaystore, appversion, deletewarn, consolidatemsg, supportmail, termslink, emaillink, liblink, about, credits,
 };
 
-let ipcRenderer;
-if (process.env.ENVIRON === 'electron') {
-  // ({ipcRenderer} = require('electron'));
-} else if (process.env.ENVIRON === 'cordova') {
-  ({ipcRenderer} = require('../bundlehook/cordova/npmmodules'));
-}
-let stalker, stalker_init;
-if(process.env.STAGE == 'development'){
-  ({stalker, stalker_init} = require('source-breakpoint'));
-}else if(process.env.STAGE == 'production'){
-  (stalker = stalker_init = () => {});
-}
+// let ipcRenderer;
+// if (process.env.ENVIRON === 'electron') {
+//   // ({ipcRenderer} = require('electron'));
+// } else if (process.env.ENVIRON === 'cordova') {
+//   ({ipcRenderer} = require('../bundlehook/cordova/npmmodules'));
+// }
+// let stalker, stalker_init;
+// if(process.env.STAGE == 'development'){
+//   ({stalker, stalker_init} = require('source-breakpoint'));
+// }else if(process.env.STAGE == 'production'){
+//   (stalker = stalker_init = () => {});
+// }
 const G = require('./globals.js');
 const F = Object.assign(
-  { preload_image, cloneElement, xDaysAgo, daysDiff, save4analyzer, aboveThreshold, errorclose, stalker, stalker_init }, G.func
+  { preload_image, cloneElement, xDaysAgo, daysDiff, save4analyzer, aboveThreshold, errorclose, }, G.func
 );/* I want to add more properties na why */
-const V = Object.assign({box, analyzerRexe, ipcRenderer, appmsgs, }, G.var);
+const V = Object.assign({box, analyzerRexe, appmsgs, }, G.var);
 
 document.addEventListener('adToken.update', function (evt) {
   evt.stopImmediatePropagation();

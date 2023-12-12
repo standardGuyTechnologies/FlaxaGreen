@@ -1,4 +1,6 @@
-const fullcateg = 'Awarded Dividends Generosity Expenses Investments Lost Payout Recovered Taxes Tributes Wages'.split(' ');
+import G from '../../js/uiglobals.js';
+const { maxamt, labelmap, trackermap, box, analyzerRexe, } = G.V;
+const { digitcomma, filtercomma, computeInput, save4analyzer, aboveThreshold, utcTimeDate, getFirstTime, } = G.F;
 
 
 const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
@@ -7,8 +9,14 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
     $(document).on('click', ".popover .item-content", 
     function (e) {
       TOPG.popover.close();
-      props.categ = this.dataset.categ ? this.dataset.categ : props.categ;
-      props.subcateg = this.dataset.subcateg ? this.dataset.subcateg : props.subcateg;
+      const form = $('form#fast-details')[0];
+      if (this.dataset.code) {
+        props.code = this.dataset.code
+        props.categ = form.categ.value = this.dataset.categ
+        props.subcateg = form.subcateg.value = labelmap.get(props.code).subcateg[0];
+      } else if (this.dataset.subcateg) {
+        props.subcateg = form.subcateg.value = this.dataset.subcateg
+      }
       $update();
     })
   })
@@ -51,16 +59,19 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
         <div class="popover-inner">
           <div class="list simple-list">
             <ul>
-            ${fullcateg.map((categ, i) => `
-            <li class="item-content" data-categ="${categ}">
+            ${[...labelmap.entries()].map(arr => {
+              const code = arr[0]; const {label, sign, placeholder} = arr[1];
+              return `
+              <li class="item-content" data-categ="${label}" data-code="${code}">
                 <div class="item-media">
-                  <img src="assets/${categ}.png" width="28" />
+                  <img src="assets/${label}.png" width="28" />
                 </div>
                 <div class="item-inner">
-                  <div class="item-title">${categ}</div>
+                  <div class="item-title">${label}</div>
                 </div>
-            </li>
-            `).join('')}
+              </li>
+              `
+            }).join('')}
             </ul>
           </div>
         </div>
@@ -72,16 +83,18 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
         <div class="popover-inner">
           <div class="list simple-list">
             <ul>
-            ${fullcateg.map((categ, i) => `
-            <li class="item-content" data-subcateg="${categ}">
+            ${labelmap.get(props.code).subcateg.map(label => {
+              return `
+              <li class="item-content" data-subcateg="${label}">
                 <div class="item-media">
-                  <img src="assets/${categ}/Fast food.png" width="28" />
+                  <img src="assets/${props.categ}/${label}.png" width="28" />
                 </div>
                 <div class="item-inner">
-                  <div class="item-title">${categ}</div>
+                  <div class="item-title">${label}</div>
                 </div>
-            </li>
-            `).join('')}
+              </li>
+              `
+            }).join('')}
             </ul>
           </div>
         </div>
@@ -209,7 +222,11 @@ const RedeemIntent = (props, { $h }) => {
 }
 const Details = (props, { $h }) => {
     return () => $h`
-  <form class="list list-strong list-outline-ios list-dividers-ios">
+  <form id="fast-details" class="list list-strong list-outline-ios list-dividers-ios">
+    <ul class="hide">
+      <li><input name="categ" type="text" value=${props.categ} /></li>
+      <li><input name="subcateg" type="text" value=${props.subcatg} /></li>
+    </ul>
     <ul>
       <li class="list-group-title">Details</li>
       ${props.type === "fast" && $h`
@@ -238,7 +255,7 @@ const Details = (props, { $h }) => {
         <div class="item-inner">
           <div class="item-title item-label">Amount</div>
           <div class="item-input-wrap">
-            <input type="number" placeholder="Enter an anount" />
+            <input type="number" placeholder="Enter an amount" />
             <span class="input-clear-button"></span>
           </div>
         </div>

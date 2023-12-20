@@ -114,20 +114,6 @@
     const TOPG = {}; 
     const page = $('.page[data-name="home"]')[0];
     // todo del mock data
-    const accounts = [
-      { text: "FirstBank", 
-      onClick: function(actions, e) {
-        active = e.target.textContent; $update();
-      }},
-      { text: "GTBank",
-      onClick: function(actions, e) {
-        active = e.target.textContent; $update();
-      }},
-      { text: "FidelityBank",
-      onClick: function(actions, e) {
-        active = e.target.textContent; $update();
-      }},
-    ]
     const tldata = [
       {date: Date.UTC(2023, 10, 25), acc: "FirstBank", out: 1000, in: 300 },
       {date: Date.UTC(2023, 10, 23), acc: "FirstBank", out: 1000, in: 300 },
@@ -139,23 +125,9 @@
     ];
 
 
-    let active = accounts[0].text;
+    let active = '';
     $on('pageInit', () => {
-      const buttons2 = [
-        // First Group
-        accounts,
-        // Second Group
-        [
-          {
-            text: 'Cancel',
-            color: 'red'
-          }
-        ]
-      ]
-      TOPG.actionSheet = $f7.actions.create({ 
-        buttons: buttons2 ,
-        // containerEl: ".page-master",
-      });
+      accListUpdate();
       TOPG.calendarModal = $f7.calendar.create({
         disabled: {
           from: new Date()
@@ -191,6 +163,33 @@
     on calender change, set those vars, then attempt to insert into sql, if fail report "date already exist" else "Done: added date".
     */
 
+    function accListUpdate() {
+      const db = getDB();//todo no getDB
+      db.transaction(function (tx) {
+        tx.executeSql('SELECT acc FROM ACCOUNTS', [], function (tx, result) {
+          const res = result.rows, accounts = [];
+          for (let i = 0; i < res.length; i++) {
+            accounts.push({ text: res.item(i).acc, onClick: setActive });
+          }
+          // todo add condition to destroy the current active actionSheet
+          TOPG.actionSheet = $f7.actions.create({
+            // containerEl: ".page-master",
+            buttons: [
+              // First Group
+              accounts,
+              // Second Group
+              [
+                { text: 'Cancel', color: 'red' }
+              ]
+            ],
+          });
+          active = accounts[0].text; $update();
+        })
+      }, function (e) { $f7.dialog.alert(e) }, function () { });
+    }
+    function setActive (actions, e) {
+      active = e.target.textContent; $update();
+    }
     function showCalendar () {
       TOPG.calendarModal.open();
     }
@@ -202,14 +201,28 @@
 
     const maxamt = 100000000000000; // todo use the real deal.
     let dialoginputs = `
-<form id="create">
-  <div class="dialog-input-field dialog-input-double input">
-    <input type="text" name="dialog-accname" placeholder="Account name" class="dialog-input" pattern='[\-A-Za-z0-9]+' data-pattern="Account name accepts only alpha-numeric characters and hyhens!" maxlength=20 required />
-  </div>
-  <div class="dialog-input-field dialog-input-double input">
-    <input type="number" name="dialog-accbal" placeholder="Cash balance" class="dialog-input" data-range="The cash balance provided exceeds limits!" max=${maxamt} min=0 data-step="Invalid lower denominations" step=0.01 required />
-  </div>
-</form>`;
+    <form id="create" class="list list-dividers-ios">
+      <ul>
+        <li class="item-content item-input">
+          <div class="item-inner">
+            <div class="item-title item-label">Title</div>
+            <div class="item-input-wrap">
+              <input name="dialog-accname" type="text" placeholder="Account name" pattern='[\-A-Za-z0-9]+' data-pattern="Account name accepts only alpha-numeric characters and hyhens!" maxlength=20 required />
+              <span class="input-clear-button"></span>
+            </div>
+          </div>
+        </li>
+        <li class="item-content item-input">
+          <div class="item-inner">
+            <div class="item-title item-label">Set Price</div>
+            <div class="item-input-wrap">
+              <input type="number" name="dialog-accbal" placeholder="Cash balance" data-range="The cash balance provided exceeds limits!" max=${maxamt} min=0 data-step="Invalid lower denominations" step=0.01 required />
+              <span class="input-clear-button"></span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </form>`;
 
     function popAccDialog(){
       let dialog = $f7.dialog.create({

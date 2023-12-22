@@ -9,7 +9,7 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
     $(document).on('click', ".popover .item-content", 
     function (e) {
       TOPG.popover.close();
-      const form = $('form#fast-details')[0];
+      const form = $('form#details')[0];
       if (this.dataset.code) {
         props.code = this.dataset.code
         props.categ = form.categ.value = this.dataset.categ
@@ -222,10 +222,10 @@ const RedeemIntent = (props, { $h }) => {
 }
 const Details = (props, { $h }) => {
     return () => $h`
-  <form id="fast-details" class="list list-strong list-outline-ios list-dividers-ios">
+  <form id="details" class="list list-strong list-outline-ios list-dividers-ios">
     <ul class="hide">
       <li><input name="categ" type="text" value=${props.categ} /></li>
-      <li><input name="subcateg" type="text" value=${props.subcatg} /></li>
+      <li><input name="subcateg" type="text" value=${props.subcateg} /></li>
     </ul>
     <ul>
       <li class="list-group-title">Details</li>
@@ -234,7 +234,7 @@ const Details = (props, { $h }) => {
         <div class="item-inner">
           <div class="item-title item-label">Specify Item</div>
           <div class="item-input-wrap">
-            <input name="name" type="text" placeholder="e.g. Cheese Burger" />
+            <input name="item" type="text" placeholder="e.g. Cheese Burger" />
             <span class="input-clear-button"></span>
           </div>
         </div>
@@ -245,7 +245,7 @@ const Details = (props, { $h }) => {
         <div class="item-inner">
           <div class="item-title item-label">Recepient</div>
           <div class="item-input-wrap">
-            <input name="name" type="text" placeholder="Enter name of Recepient" />
+            <input name="salkals" type="text" placeholder="Enter name of Recepient" />
             <span class="input-clear-button"></span>
           </div>
         </div>
@@ -255,7 +255,7 @@ const Details = (props, { $h }) => {
         <div class="item-inner">
           <div class="item-title item-label">Amount</div>
           <div class="item-input-wrap">
-            <input type="number" placeholder="Enter an amount" />
+            <input name="amt" type="number" placeholder="Enter an amount" />
             <span class="input-clear-button"></span>
           </div>
         </div>
@@ -265,7 +265,7 @@ const Details = (props, { $h }) => {
         <div class="item-inner">
           <div class="item-title item-label">Quantity</div>
           <div class="item-input-wrap">
-            <input type="number" placeholder="Enter quantity (optional)" />
+            <input name="qty" type="number" placeholder="Enter quantity (optional)" />
             <span class="input-clear-button"></span>
           </div>
         </div>
@@ -276,20 +276,18 @@ const Details = (props, { $h }) => {
           <div class="item-title item-label">Location</div>
           <div class="item-input-wrap">
             <span class="input-clear-button"></span>
-            <input type="text" placeholder="e.g. Lekki Phase 1" id="typeahead" />
+            <input name="location" type="text" placeholder="e.g. Lekki Phase 1" id="typeahead" />
           </div>
         </div>
       </li>
-      ${props.type === 'tracking' && $h`
       <li class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Additional Information</div>
           <div class="item-input-wrap">
-            <textarea placeholder="Enter details"></textarea>
+            <textarea name="info" placeholder="Enter details"></textarea>
           </div>
         </div>
       </li>
-      `}
     </ul>
   </form>`;
 }

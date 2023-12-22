@@ -22,20 +22,20 @@
       ${data.map(item => $h`
       <div class="list list-strong inset">
         <ul>
-          <li class="swipeout">
+          <li class="swipeout" @swipeout:deleted=${onDeleted}>
           <div class="item-content swipeout-content">
             <div class="item-media">
               <i class="icon f7-icons">person</i>
             </div>
             <div class="item-inner">
               <div class="item-title">
-                ${item.subcateg}
-                <div class="item-footer">Loan Category</div>
+                ${item.party}
+                <div class="item-footer">${item.categ}</div>
               </div>
               <div class="item-after">
                 <div class="card no-shadow">
                   <div class="card-header">
-                    <strong>+${item.net}</strong>
+                    <strong>+${item.pending}</strong>
                   </div>
                   <div class="card-content">
                     <small><small>pending</small></small>
@@ -85,19 +85,7 @@
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
 
     const TOPG = {};
-    // mock data todo del
-    const data = [
-      {subcateg: "Johnson Food", instances: 5, net: 2000},
-      {subcateg: "Onuorah", instances: 3, net: 4000},
-      {subcateg: "Henry", instances: 1, net: 8000},
-      {subcateg: "Fayode", instances: 1, net: 8000},
-      {subcateg: "Mark Gray", instances: 1, net: 8000},
-      {subcateg: "Derrick", instances: 1, net: 8000},
-      {subcateg: "Johnson", instances: 1, net: 8000},
-      {subcateg: "Johnson", instances: 1, net: 8000},
-      {subcateg: "Johnson", instances: 1, net: 8000},
-    ]
-    const data2 = [1, 2, 3, 4, 5, 6, 7]
+    const data = props.data;
 
     $on('pageInit', () => {
       TOPG.sheetSwipeToClose = $f7.sheet.create({
@@ -109,6 +97,17 @@
         backdrop: true,
       });
     })
+
+    function onDeleted() {
+      getDB().transaction(function (tx) {
+        tx.executeSql('DELETE FROM TRACKDIFF', []);
+        tx.executeSql('DELETE FROM TRACK WHERE id = ?', [props.id]);
+        // del the entiire history of this id, and reconstruct trackdiff
+        tx.executeSql('DELETE FROM TRACKPHASE WHERE id = ?', [props.id], function (tx, result) {
+          tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACKPHASE GROUP BY date, acc', [], function (tx, result) {});
+        })
+      }, function (e) { console.log(e) }, function () {  })
+    }
     return $render;
   }
 </script>

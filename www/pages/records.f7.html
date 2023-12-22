@@ -28,7 +28,7 @@
       <div class="list list-strong list-outline-ios list-dividers-ios">
         <ul>
           <li class="list-group-title"><span>FirstBank</span><span>Sat 25/Nov/2023</span></li>
-          ${data2.map(item => $h`
+          ${tdata.map(item => $h`
             <li>
               <a class="item-content sheet-open" data-sheet=".demo-sheet-swipe-to-close">
                 <div class="item-media">
@@ -53,7 +53,7 @@
               </a>
             </li>
           `)}
-          ${data.map(item => $h`
+          ${qdata.map(item => $h`
             <li>
               <a class="item-content sheet-open" data-sheet=".demo-sheet-swipe-to-close">
                 <div class="item-media">
@@ -81,43 +81,12 @@
         </ul>
       </div>
     </div>
-    <div class="sheet-modal demo-sheet-swipe-to-close" style="height:auto">
-      <div class="sheet-modal-inner">
-        <div class="swipe-handler"></div>
-        <div class="page-content">
-          <div class="list list-outline-ios list-dividers-ios">
-            <ul>
-              <li class="swipeout">
-                <div class="item-content swipeout-content">
-                  <div class="item-inner">
-                    <div class="item-title">
-                      Cheese Burger
-                      <div class="item-footer">
-                        <i class="icon f7-icons location">placemark</i>
-                        <span>McDonalds @ Alausa</span>
-                      </div>
-                    </div>
-                    <div class="item-after">
-                      <div class="card no-shadow">
-                        <div class="card-header">
-                          <strong>$200,000</strong>
-                        </div>
-                        <div class="card-content">
-                          <small><small>Qty: 2</small></small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="swipeout-actions-right">
-                  <a class="swipeout-delete"><i class="icon f7-icons">trash_fill</i></a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    ${qdata.map(item => $h`
+      <records-item-sheet key=${item.categ+item.subcateg} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-item-sheet>
+    `)}
+    ${tdata.map(item => $h`
+      <records-track-sheet key=${item.categ} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-track-sheet>
+    `)}
   </div>  
 </template>
 
@@ -183,25 +152,26 @@
 
 <script>
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+    const {date, acc, qdata, tdata} = props;
 
     const TOPG = {};
     // mock data todo del
-    const data = [
-      {subcateg: "Fast Food", instances: 5, net: 2000},
-      {subcateg: "Printing", instances: 3, net: 4000},
-      {subcateg: "Vehicle", instances: 1, net: 8000},
-      {subcateg: "Art", instances: 1, net: 8000},
-      {subcateg: "Drinks", instances: 1, net: 8000},
-      {subcateg: "Games", instances: 1, net: 8000},
-      {subcateg: "Provisions", instances: 1, net: 8000},
-      {subcateg: "Snacks", instances: 1, net: 8000},
-      {subcateg: "Toys", instances: 1, net: 8000},
-    ]
-    const data2 = [
-      {subcateg: "Loan", instances: 5, net: 2000},
-      {subcateg: "Pledge", instances: 3, net: 4000},
-      {subcateg: "Deposit", instances: 1, net: 8000},
-    ]
+    // const qdata = [
+    //   {subcateg: "Fast Food", instances: 5, net: 2000},
+    //   {subcateg: "Printing", instances: 3, net: 4000},
+    //   {subcateg: "Vehicle", instances: 1, net: 8000},
+    //   {subcateg: "Art", instances: 1, net: 8000},
+    //   {subcateg: "Drinks", instances: 1, net: 8000},
+    //   {subcateg: "Games", instances: 1, net: 8000},
+    //   {subcateg: "Provisions", instances: 1, net: 8000},
+    //   {subcateg: "Snacks", instances: 1, net: 8000},
+    //   {subcateg: "Toys", instances: 1, net: 8000},
+    // ]
+    // const tdata = [
+    //   {subcateg: "Loan", instances: 5, net: 2000},
+    //   {subcateg: "Pledge", instances: 3, net: 4000},
+    //   {subcateg: "Deposit", instances: 1, net: 8000},
+    // ]
 
     $on('pageInit', () => {
       TOPG.sheetSwipeToClose = $f7.sheet.create({
@@ -213,6 +183,7 @@
         backdrop: true,
       });
     })
+    
     return $render;
   }
 </script>

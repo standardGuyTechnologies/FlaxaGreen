@@ -58,6 +58,7 @@ import Framework7, { Dom7, createStore } from "framework7/bundle";
 import Mainapp from "../pages/index.f7.html"
 import routes from "./routes.js"
 import params from "./store.js"
+import {recordsItemSheet, recordsTrackSheet} from "./custom-components.js"
 // import getDB, {initDB} from './db.js';
 // import G from './uiglobals.js'; todo 
 
@@ -67,8 +68,10 @@ import params from "./store.js"
 
 // Register custom components
 Framework7.registerComponent(
-  'custom-component', (props, { $h, $f7, $update }) => {
-  }
+  'records-item-sheet', recordsItemSheet
+)
+Framework7.registerComponent(
+  'records-track-sheet', recordsTrackSheet
 )
 
 var $ = Dom7;

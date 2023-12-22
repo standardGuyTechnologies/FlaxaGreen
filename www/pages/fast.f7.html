@@ -105,25 +105,12 @@
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
 
     const TOPG = {};
-    // mock data todo del
     const categ = "Expenses", subcateg="Fast food";
-    const data = [
-      {subcateg: "Fast Food", instances: 5, net: 2000},
-      {subcateg: "Printing", instances: 3, net: 4000},
-      {subcateg: "Vehicle", instances: 1, net: 8000},
-      {subcateg: "Art", instances: 1, net: 8000},
-      {subcateg: "Drinks", instances: 1, net: 8000},
-      {subcateg: "Games", instances: 1, net: 8000},
-      {subcateg: "Provisions", instances: 1, net: 8000},
-      {subcateg: "Snacks", instances: 1, net: 8000},
-      {subcateg: "Toys", instances: 1, net: 8000},
-    ]
-
-    const fullcateg = 'Awarded Dividends Generosity Expenses Investments Lost Payout Recovered Taxes Tributes Wages'.split(' ');
 
 
     $on('pageInit', () => {
 
+      // todo create a factual prevlocation db/store
       const prevlocation = ["Yaba", "Ikeja", "Victoria Island", "Ikeja"];
       TOPG.typeahead = $f7.autocomplete.create({
         inputEl: '#typeahead',
@@ -152,7 +139,26 @@
     
 
     function save () {
-      
+      const dform = $('form#details')[0];
+      const categ = dform.categ.value; 
+      const subcateg = dform.subcateg.value;
+      const item = dform.item.value;
+      const amt = dform.amt.value;
+      const qty = dform.qty.value;
+      const location = dform.location.value;
+      const info = dform.info.value;
+
+      getDB().transaction(function (tx) { // todo no getDB
+        // make a version for transfer, replacing qty with target todo
+        // rule no1 anytime u update quick you must update quickdiff
+        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [props.date, props.acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {
+        tx.executeSql('SELECT SUM(amt) AS qdiff FROM QUICK WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {
+          tx.executeSql('UPDATE QUICKDIFF SET qdiff = ? WHERE date = ? AND acc = ?', [result.rows.item(0).qdiff, props.date, props.acc]);
+        });
+      })
+      }, function (e) {console.log(e)}, function () { 
+        $f7.dialog.alert('Transaction saved', 'Done!')
+      });
     }
 
     return $render;

@@ -110,8 +110,14 @@
 </style>
 
 <script>
+  import validate from '../js/oopform.js';
+  import getDB from '../js/db.js';
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs } = G.V;
+  const {getFirstTime, aboveThreshold, preload_image, } = G.F;
+
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
-    const TOPG = {}; 
+    const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
     // todo del mock data
     const tldata = [
@@ -125,9 +131,26 @@
     ];
 
 
-    let active = '';
+    let active = '', counts = 0;
     $on('pageInit', () => {
       accListUpdate();
+      TOPG.dialog = $f7.dialog.create({
+        // containerEl: ".page-master",
+        // backdrop: false,
+        title: 'Add Account',
+        text: '',
+        content: dialoginputs,
+        buttons: [
+          { text: 'Cancel', close: true, },
+          {
+            text: 'Save', keyCodes: [13], 
+            close: false,
+            onClick: function(dialog, e){
+              $('form#create')[0].submit();
+            }
+          },
+        ],
+      });
       TOPG.calendarModal = $f7.calendar.create({
         disabled: {
           from: new Date()
@@ -141,6 +164,17 @@
             $f7.dialog.alert('hello world');
           }
         }
+      });
+      validate($('form#create')[0], notify, notifyoff);
+      $('form#create').on('submit', function() {
+        if (counts === 3) return $f7.dialog.alert('Account Limit', 'Failed!');
+        const inputs = $("#create input");
+        const acc = inputs.eq(0).val().trim();
+        const bal = Math.round(Number(inputs.eq(1).val()) * 100)/100; /* round 2dp */
+        getDB().transaction(function (tx) {
+          tx.executeSql('INSERT INTO ACCOUNTS (acc, bal) VALUES (?, ?)', [acc, bal])
+          TOPG.dialog.close(); $f7.dialog.alert('Account created.', 'Success!');
+        })
       });
     })
 
@@ -164,14 +198,14 @@
     */
 
     function accListUpdate() {
-      const db = getDB();//todo no getDB
+      const db = getDB();
       db.transaction(function (tx) {
         tx.executeSql('SELECT acc FROM ACCOUNTS', [], function (tx, result) {
           const res = result.rows, accounts = [];
           for (let i = 0; i < res.length; i++) {
             accounts.push({ text: res.item(i).acc, onClick: setActive });
           }
-          // todo add condition to destroy the current active actionSheet
+          TOPG.actionSheet && TOPG.actionSheet.destroy();
           TOPG.actionSheet = $f7.actions.create({
             // containerEl: ".page-master",
             buttons: [
@@ -183,7 +217,7 @@
               ]
             ],
           });
-          active = accounts[0].text; $update();
+          active = accounts[0].text; $update(); counts = accounts.length;
         })
       }, function (e) { $f7.dialog.alert(e) }, function () { });
     }
@@ -199,7 +233,6 @@
       TOPG.actionSheet.open();
     }
 
-    const maxamt = 100000000000000; // todo use the real deal.
     let dialoginputs = `
     <form id="create" class="list list-dividers-ios">
       <ul>
@@ -207,7 +240,7 @@
           <div class="item-inner">
             <div class="item-title item-label">Title</div>
             <div class="item-input-wrap">
-              <input name="dialog-accname" type="text" placeholder="Account name" pattern='[\-A-Za-z0-9]+' data-pattern="Account name accepts only alpha-numeric characters and hyhens!" maxlength=20 required />
+              <input name="dialog-accname" type="text" placeholder="Account name" pattern='[\-A-Za-z0-9]+' data-pattern="Account name accepts only alpha-numeric characters and hyhens!" maxlength=20 required validate />
               <span class="input-clear-button"></span>
             </div>
           </div>
@@ -216,7 +249,7 @@
           <div class="item-inner">
             <div class="item-title item-label">Set Price</div>
             <div class="item-input-wrap">
-              <input type="number" name="dialog-accbal" placeholder="Cash balance" data-range="The cash balance provided exceeds limits!" max=${maxamt} min=0 data-step="Invalid lower denominations" step=0.01 required />
+              <input type="number" name="dialog-accbal" placeholder="Cash balance" data-range="The cash balance provided exceeds limits!" max=${maxamt} min=0 data-step="Invalid lower denominations" step=0.01 required validate />
               <span class="input-clear-button"></span>
             </div>
           </div>
@@ -225,26 +258,15 @@
     </form>`;
 
     function popAccDialog(){
-      let dialog = $f7.dialog.create({
-        // containerEl: ".page-master",
-        // backdrop: false,
-        title: 'Add Account',
-        text: '',
-        content: dialoginputs,
-        buttons: [
-          { text: 'Cancel', close: true, },
-          {
-            text: 'Save', keyCodes: [13], 
-            close: true,
-            onClick: function(dialog, e){
-              
-            }
-          },
-        ],
-        destroyOnClose: true,
-      })
-      dialog.open();
+      TOPG.dialog.open();
     }  
+    function notify(inp, msg = '') {
+      $(inp).data("error-message", msg);
+      $f7.input.validate(inp);
+    }
+    function notifyoff(inp, msg=''){
+      $f7.input.validate(inp);
+    }
 
 
     return $render;

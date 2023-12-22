@@ -43,7 +43,7 @@ export default [
                 arr1.push(res.item(i));
               }
             })
-            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(amt) AS sumamt FROM TRACK INNER JOIN TRACKDIFF td USING(id) GROUP BY categ HAVING td.date = ? AND td.acc = ?', [date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(val) AS amt FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ HAVING date = ? AND acc = ?', [date, acc], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr2.push(res.item(i));
@@ -53,7 +53,7 @@ export default [
             resolve(
               { component: Records }, 
               { 
-                props: { qdata: arr1, tdata: arr2  } 
+                props: { date, acc, qdata: arr1, tdata: arr2  } 
               }
             )
           });
@@ -61,11 +61,27 @@ export default [
       },
       {
         path: '/fast-transactions/',
-        component: Fast,
+        component: Fast, // todo add before enter to fetch current date and acc
       },
       {
         path: '/tracking-transactions/',
-        component: Tracking,
+        async: function ({ app, resolve, reject }) {
+          const db = getDB();
+          db.transaction(function (tx) {
+            tx.executeSql('SELECT id, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? ORDER BY date DESC', ['active'], function (tx, result) {
+              const arr = [], res = result.rows;
+              for(let i=0; i<res.length; i++){
+                arr.push(res.item(i));
+              }
+              resolve(
+                { component: Tracking }, 
+                { 
+                  props: { data: arr } 
+                }
+              )
+            })
+          }, function (e) {reject(); console.log(e)}, function () {});
+        },
       },
       {
         path: '/new-tracking/',
@@ -81,7 +97,7 @@ export default [
         tx.executeSql('SELECT acc, SUM(qdiff) AS qnet, SUM(tdiff) AS tnet FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) GROUP BY acc ORDER BY acc', [], function (tx, result) {
           query2 = result.rows;
         })
-        tx.executeSql('SELECT * FROM ACC ORDER BY acc', [], function (tx, result) {
+        tx.executeSql('SELECT * FROM ACCOUNTS ORDER BY acc', [], function (tx, result) {
           query1 = result.rows;
         })
         tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK GROUP BY categ HAVING state = ?', ['active'], function (tx, result) {
@@ -91,13 +107,19 @@ export default [
           }
         })
         // test query for errors! todo
-        tx.executeSql('SELECT categ, subcateg, phase, SUM(amt) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING phase = ?', [1], function (tx, result) {
+        tx.executeSql('SELECT categ, subcateg, phase, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['amt'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             trackstat1.push(res.item(i)); // todo no trackstat1
           }
         })
-        tx.executeSql('SELECT categ, subcateg, SUM(repaid) AS rnet, SUM(forfeit) AS fnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg', [], function (tx, result) {
+        tx.executeSql('SELECT categ, subcateg, SUM(val) AS rnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['repaid'], function (tx, result) {
+          const res = result.rows;
+          for(let i=0; i<res.length; i++){
+            trackstat2.push(res.item(i)); // todo no trackstat2
+          }
+        })
+        tx.executeSql('SELECT categ, subcateg, SUM(val) AS fnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['forfeit'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             trackstat2.push(res.item(i)); // todo no trackstat2

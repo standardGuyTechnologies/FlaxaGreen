@@ -200,15 +200,15 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const dregex = new RegExp(`[\\d\\D]{3}$`, 'ig');/* only digitcomma uses it */
 
 
-function partyLabel (type, subtype) {
-  let fused = type+subtype, value = '';
-  switch (fused) {
-    case "loout": value = "Recepient"; break;
-    case "loin": value = "Administrator"; break;
-    case "guout": value = "Beneficiary"; break;
-    case "guin": value = "Benefactor"; break;
-    case "sdout": value = "Trustee"; break;
-    case "sdin": value = "Depositor"; break;
+function partyLabel (categ) {
+  let value = '';
+  switch (categ) {
+    case "Loan out": value = "Recepient"; break;
+    case "Loan in": value = "Administrator"; break;
+    case "Pledge out": value = "Beneficiary"; break;
+    case "Pledge in": value = "Benefactor"; break;
+    case "Deposit out": value = "Trustee"; break;
+    case "Deposit in": value = "Depositor"; break;
   }
   return value;
 }

@@ -19,8 +19,8 @@
     </div>
     <div class="page-content">
       <!-- <div></div> -->
-      <${TrackerType} categ=${categ} type="tracking" />
-      <${RedeemIntent} categ=${categ} type="tracking" />
+      <${TrackerType} />
+      <${RedeemIntent} pledge=${pledge} />
       <${Details} categ=${categ} type="tracking" />
       
     </div>
@@ -86,104 +86,71 @@
     line-height: 1.2px;
   }
   
-  .sheet-modal .sheet-modal-inner {
-    padding-top: 16px; /* pad 4 the swipe handler */
-  }
-  .sheet-modal .page-content {
-    padding-top: 0px;
-    padding-bottom: 16px;
-  }
-  .sheet-modal .location {
-    font-size: 145%;
-  }
-  /* copied from kitchen sink css */
-  .demo-sheet-swipe-to-close .swipe-handler, .demo-sheet-swipe-to-step .swipe-handler {
-    background: none;
-  }
-  .swipe-handler {
-    height: 16px;
-    position: absolute;
-    left: 0;
-    width: 100%;
-    top: 0;
-    background: #f3f4f6;
-    cursor: pointer;
-    z-index: 10;
-  }
-  .swipe-handler:after {
-    content: '';
-    width: 36px;
-    height: 6px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -18px;
-    margin-top: -3px;
-    border-radius: 3px;
-    background: #666;
-  }
 </style>
 
 <script>
+  import validate from '../js/oopform.js';
+  import getDB from '../js/db.js';
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, trackermap } = G.V;
+  const {getFirstTime, aboveThreshold, preload_image, } = G.F;
+
   import Categories from '../pages/local-components/categ.js';
   import {TrackerType, RedeemIntent, Details} from '../pages/local-components/categ.js';
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+    let categ = "Loan out", pledge = null;
 
     const TOPG = {};
-    // mock data todo del
-    const categ = "Loan";
-    const data = [
-      {subcateg: "Fast Food", instances: 5, net: 2000},
-      {subcateg: "Printing", instances: 3, net: 4000},
-      {subcateg: "Vehicle", instances: 1, net: 8000},
-      {subcateg: "Art", instances: 1, net: 8000},
-      {subcateg: "Drinks", instances: 1, net: 8000},
-      {subcateg: "Games", instances: 1, net: 8000},
-      {subcateg: "Provisions", instances: 1, net: 8000},
-      {subcateg: "Snacks", instances: 1, net: 8000},
-      {subcateg: "Toys", instances: 1, net: 8000},
-    ]
 
+    $onMounted(() => {
+      $('input[name="track"]').on("change", function () {
+        categ = this.value; let arr = categ.split();
+        if (arr[0] === 'Pledge') {
+          pledge = arr[1];
+        } else {
+          pledge = null;
+        }; $update();
+      })
+    })
     $on('pageInit', () => {
-      TOPG.sheetSwipeToClose = $f7.sheet.create({
-        containerEl: ".page-master-detail",
-        el: '.demo-sheet-swipe-to-close',
-        backdrop: true,
-        swipeToClose: true,
-        swipeHandler: ".swipe-handler",
-        backdrop: true,
-      });
-
-      const prevlocation = ["Yaba", "Ikeja", "Victoria Island", "Ikeja"];
-      TOPG.typeahead = $f7.autocomplete.create({
-        inputEl: '#typeahead',
-        openIn: 'dropdown',
-        typeahead: true,
-        source: function (query, render) {
-          var results = [];
-          if (query.length === 0) {
-            render(results);
-            return;
-          }
-          // Find matched items
-          for (var i = 0; i < prevlocation.length; i++) {
-            if (prevlocation[i].toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(prevlocation[i]);
-          }
-          // Render items by passing array with result items
-          render(results);
-        }
-      });
 
     })
 
     $onBeforeUnmount(() => {
-      TOPG.typeahead.destroy();
     })
     
 
+
     function save () {
-      
+      const dform = $('form#details')[0];
+      const id = Math.round(Date.now() * Math.random());
+      const track = dform.track.value.split(' ');  // eg "loan out"
+      const categ = track[0];
+      const subcateg = track[1];
+      const party = dform.party.value;
+      const intent = $('form#redeem')[0].intent.value;
+      const val = Number(dform.amt.value) * trackermap.get(categ+subcateg+'nP').sign
+      const info = dform.info.value;
+
+      getDB().transaction(function (tx) { // todo no getDB
+        tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
+        tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, props.date, props.acc, info, val, 'amt'], function (tx, result) {
+        tx.executeSql('SELECT SUM(val) AS tdiff FROM TRACKPHASE WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {
+          const tdiff = result.rows.item(0).tdiff;
+          tx.executeSql('SELECT tdiff FROM TRACKDIFF WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
+            if (!result.rows.length) {
+              tx.executeSql('INSERT INTO TRACKDIFF (date, acc, tdiff) VALUES (?, ?, ?)', [props.date, props.acc, tdiff])
+            } else {
+              tx.executeSql('UPDATE TRACKDIFF SET tdiff = ? WHERE date = ? AND acc = ?', [tdiff, props.date, props.acc]);
+            }
+          })
+        });
+      })
+      }, function (e) {console.log(e)}, function () { 
+        $f7.dialog.alert('Trackr created', 'Done!')
+      });
     }
+
 
     return $render;
   }

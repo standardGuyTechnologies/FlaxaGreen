@@ -100,6 +100,12 @@
 </style>
 
 <script>
+  import validate from '../js/oopform.js';
+  import getDB from '../js/db.js';
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, labelmap } = G.V;
+  const {getFirstTime, aboveThreshold, preload_image, } = G.F;
+
   import Categories from '../pages/local-components/categ.js';
   import {Details} from '../pages/local-components/categ.js';
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
@@ -143,7 +149,7 @@
       const categ = dform.categ.value; 
       const subcateg = dform.subcateg.value;
       const item = dform.item.value;
-      const amt = dform.amt.value;
+      const amt = Number(dform.amt.value) * labelmap.get(categ).sign
       const qty = dform.qty.value;
       const location = dform.location.value;
       const info = dform.info.value;
@@ -153,7 +159,14 @@
         // rule no1 anytime u update quick you must update quickdiff
         tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [props.date, props.acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {
         tx.executeSql('SELECT SUM(amt) AS qdiff FROM QUICK WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {
-          tx.executeSql('UPDATE QUICKDIFF SET qdiff = ? WHERE date = ? AND acc = ?', [result.rows.item(0).qdiff, props.date, props.acc]);
+          const qdiff = result.rows.item(0).qdiff;
+          tx.executeSql('SELECT qdiff FROM QUICKDIFF WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
+            if (!result.rows.length) {
+              tx.executeSql('INSERT INTO QUICKDIFF (date, acc, qdiff) VALUES (?, ?, ?)', [props.date, props.acc, qdiff])
+            } else {
+              tx.executeSql('UPDATE QUICKDIFF SET qdiff = ? WHERE date = ? AND acc = ?', [qdiff, props.date, props.acc]);
+            }
+          })
         });
       })
       }, function (e) {console.log(e)}, function () { 

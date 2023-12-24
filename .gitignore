@@ -39,7 +39,7 @@ cordova/
 #Production Artifact
 assets-src/
 build/
-www/distjs/cordova-app.js
+www/distjs/
 
 # Template artifact
 framework7.json

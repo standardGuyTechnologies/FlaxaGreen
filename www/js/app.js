@@ -62,10 +62,45 @@ var app = new Framework7({
     },
   },
 });
+function mockdata (db) {
+  return new Promise((resolve, reject) => {
+    db.transaction(function (tx) {
+      tx.executeSql("INSERT INTO CONFIG (currency, index, delimeter) VALUES ('$', 0, ',')");
+      tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
+      tx.executeSql('\
+      INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location) VALUES \
+      (1703456767, "FirstBank", "Expenses", "Fast Food", "Cheese Burger", -600, 2, "Alausa market"),\
+      (1703456767, "GTBank", "Expenses", "Connectivity", "MTN airtime", -4000, 1, null),\
+      (1702166400, "GTBank", "Wages", "Freelance", "Web Design", 2500, null, "Ikorodu"),\
+      (1702252800, "FirstBank", "Expenses", "News", "The Sun", -180, 1, "Mangoro"),\
+      (1702425600, "GTBank", "Expenses", "Games", "Fifa23", -1400, 1, "Alausa market"),\
+      (1702598400, "FirstBank", "Expenses", "Clothes", "Casuals", -3000, 4, "Alausa market")', [], function (tx, result) {
+        tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc;', [], function (tx, result) {});
+      });
+      tx.executeSql('\
+      INSERT INTO TRACK (id, categ, subcateg, state, party) VALUES\
+      (193671473, "Loan", "out", "active", "Chukwulozie"),\
+      (435744213, "Pledge", "out", "active", "Church"),\
+      (198097934, "Deposit", "in", "active", "Chukwulozie"),\
+      (1667998085, "Loan", "in", "active", "FirstBank"),\
+      (1478170465, "Loan", "in", "active", "Microventures")');
+      tx.executeSql('\
+      INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES \
+      (193671473, 1703456767, "FirstBank", "Lolos business", -2200, "amt"),\
+      (435744213, 1703456767, "GTBank", "Harvest", 3000, "amt"),\
+      (198097934, 1703456767, "FirstBank", "Lolos safe withdrawal", -500, "repaid"),\
+      (198097934, 1702166400, "FirstBank", "Lolos safe", 1200, "amt"),\
+      (1667998085, 1702252800, "FirstBank", "Bank loan", 2000, "amt"),\
+      (1478170465, 1702425600, "GTBank", "Corporate loan", 5000, "amt")', [], function (tx, result) {
+        tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> "Pledge" AND type <> "forfeit" GROUP BY date, acc', [], function (tx, result) {});
+      });
+    }, function (e) {reject(e)}, function () {resolve(db)});
+  })
+}
 
 document.addEventListener('deviceready', () => {
   // adsSDKconfig(); paymentsSDKconfig(); todo uncomment
-  initDB().then(db => {
+  initDB().then(mockdata).then(db => {
     db.transaction(function (tx) {
       tx.executeSql('SELECT * FROM CONFIG', [], function (tx, result) {
         if (!result.rows.length) {
@@ -76,7 +111,7 @@ document.addEventListener('deviceready', () => {
         }
       })
     }, function (e) {console.log(e)}, function () {app.init()});
-  })
+  }).catch(e => console.log(e))
 }, false);
 
 function adsSDKconfig () {

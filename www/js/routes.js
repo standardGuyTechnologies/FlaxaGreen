@@ -6,6 +6,7 @@ import Fast from "../pages/fast.f7.html"
 import Tracking from "../pages/tracking.f7.html"
 import NewTracking from "../pages/new-tracking.f7.html"
 
+const props1 = {};
 
 export default [
   {
@@ -13,14 +14,13 @@ export default [
     async: function ({ app, resolve, reject }) {
       const db = getDB();
       db.transaction(function (tx) {
-        tx.executeSql('SELECT date, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) ORDER BY date DESC, rowid DESC', [], function (tx, result) {
+        tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) ORDER BY date DESC, rowid DESC', [], function (tx, result) {
           const arr = [], res = result.rows;
           for(let i=0; i<res.length; i++){
             let x = res.item(i); x.net = x.qdiff + x.tdiff;
             arr.push(x);
           }
           resolve(
-            // todo need a list of accounts on the homepage. do this on component mount
             { component: Home }, 
             { 
               props: { data: arr } 
@@ -61,7 +61,14 @@ export default [
       },
       {
         path: '/fast-transactions/',
-        component: Fast, // todo add before enter to fetch current date and acc
+        component: Fast,
+        options: {
+          animate: true,
+          props: props1
+        },
+        beforeEnter: function ({from, to}) {
+          props1.date = from.params.date; props1.acc = from.params.acc;
+        },
       },
       {
         path: '/tracking-transactions/',
@@ -93,12 +100,13 @@ export default [
     path: '/general-info/',
     async: function ({ app, resolve, reject }) {
       const db = getDB(); let query1, query2; const activeT = [];
+      let trackstat1, trackstat2, trackstat3;
       db.transaction(function (tx) {
-        tx.executeSql('SELECT acc, SUM(qdiff) AS qnet, SUM(tdiff) AS tnet FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) GROUP BY acc ORDER BY acc', [], function (tx, result) {
-          query2 = result.rows;
-        })
         tx.executeSql('SELECT * FROM ACCOUNTS ORDER BY acc', [], function (tx, result) {
           query1 = result.rows;
+        })
+        tx.executeSql('SELECT acc, SUM(qdiff) AS qnet, SUM(tdiff) AS tnet FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) GROUP BY acc ORDER BY acc', [], function (tx, result) {
+          query2 = result.rows;
         })
         tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK GROUP BY categ HAVING state = ?', ['active'], function (tx, result) {
           const res = result.rows;
@@ -110,19 +118,19 @@ export default [
         tx.executeSql('SELECT categ, subcateg, phase, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['amt'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            trackstat1.push(res.item(i)); // todo no trackstat1
+            trackstat1.push(res.item(i));
           }
         })
         tx.executeSql('SELECT categ, subcateg, SUM(val) AS rnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['repaid'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            trackstat2.push(res.item(i)); // todo no trackstat2
+            trackstat2.push(res.item(i));
           }
         })
         tx.executeSql('SELECT categ, subcateg, SUM(val) AS fnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['forfeit'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            trackstat2.push(res.item(i)); // todo no trackstat2
+            trackstat3.push(res.item(i));
           }
         })
       }, function (e) {reject(); console.log(e)}, function () {
@@ -134,7 +142,7 @@ export default [
         resolve(
           { component: Ginfo }, 
           { 
-            props: { data: arr, totalcount: i, totalbal: j, activeT  } 
+            props: { data: arr, totalcount: i, totalbal: j, activeT, trackstat1, trackstat2, trackstat3 } 
           }
         )
       });

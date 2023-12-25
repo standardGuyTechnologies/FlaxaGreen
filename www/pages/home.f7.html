@@ -65,12 +65,12 @@
           <li class="list-group-title">Timeline</li>
           ${tldata.map(entry => $h`
             <li>
-              <a href="/transact/Date/FirstBank/" class="item-link item-content no-chevron">
+              <a href="/transact/${entry.date}/${entry.acc}/" class="item-link item-content no-chevron">
                 <div class="item-inner">
                   <div class="item-title">
-                    <div class="item-header">${entry.acc} - Sat 25/Nov/2023</div>
+                    <div class="item-header">${entry.acc} - ${datestr(entry.datestr)}</div>
                     <div class="inout">
-                      NET CASH FLOW: ${entry.out}
+                      NET CASH FLOW: ${entry.net}
                     </div>
                   </div>
                   <div class="item-after"><i class="f7-icons if-not-md">trash_fill</i></div>
@@ -119,17 +119,11 @@
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
-    // todo del mock data
-    const tldata = [
-      {date: Date.UTC(2023, 10, 25), acc: "FirstBank", out: 1000, in: 300 },
-      {date: Date.UTC(2023, 10, 23), acc: "FirstBank", out: 1000, in: 300 },
-      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
-      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
-      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
-      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
-      {date: Date.UTC(2023, 10, 22), acc: "FirstBank", out: 1000, in: 300 },
-    ];
+    let tldata = props.arr;
 
+    function datestr(str) {
+      return new Date(str).toDateString();
+    }
 
     let active = '', counts = 0;
     $on('pageInit', () => {
@@ -146,7 +140,7 @@
             text: 'Save', keyCodes: [13], 
             close: false,
             onClick: function(dialog, e){
-              $('form#create')[0].submit();
+              $('form#create').submit();
             }
           },
         ],
@@ -159,21 +153,33 @@
         openIn: 'customModal',
         header: true,
         footer: true,
+        backdrop: true,
+        closeByBackDropClick: false,
         on: {
-          closed: function () {
-            $f7.dialog.alert('hello world');
+          closed: function (calendar) {
+            let acc = active; let calArr = calendar.getValue();
+            if (!calArr) return $f7.dialog.alert('Please pick a date', 'Alert!')
+            let date = calArr[0];
+            let test1 = tldata.filter(o => o.date === date)
+            let test2 = test1.filter(o => o.acc === acc);
+            if (test2.length) return $f7.dialog.alert('Date entry on this account already exist', "Oops!")
+            let datestr = date.toISOString();
+            let net = 0, qdiff = 0, tdiff = 0;
+            tldata.push({date, datestr, acc, net, qdiff, tdiff}); 
+            $update(() => $f7.dialog.alert('Date entry added', 'Done!'));
           }
         }
       });
       validate($('form#create')[0], notify, notifyoff);
       $('form#create').on('submit', function() {
-        if (counts === 3) return $f7.dialog.alert('Account Limit', 'Failed!');
+        if (counts === 2) return $f7.dialog.alert('Account Limit', 'Failed!');
         const inputs = $("#create input");
         const acc = inputs.eq(0).val().trim();
         const bal = Math.round(Number(inputs.eq(1).val()) * 100)/100; /* round 2dp */
         getDB().transaction(function (tx) {
           tx.executeSql('INSERT INTO ACCOUNTS (acc, bal) VALUES (?, ?)', [acc, bal])
           TOPG.dialog.close(); $f7.dialog.alert('Account created.', 'Success!');
+          accListUpdate();
         })
       });
     })
@@ -192,9 +198,6 @@
     todo timeline db schema
     [id:pri-key(use utcdatenum), y, m, d, acc, out, in, at, search(combine: acc+out+in+at)]
 
-    todo
-    on calendar close check some vars, if they are null, report "select a date".
-    on calender change, set those vars, then attempt to insert into sql, if fail report "date already exist" else "Done: added date".
     */
 
     function accListUpdate() {
@@ -217,7 +220,7 @@
               ]
             ],
           });
-          active = accounts[0].text; $update(); counts = accounts.length;
+          active = accounts[0].text; counts = accounts.length; $update();
         })
       }, function (e) { $f7.dialog.alert(e) }, function () { });
     }

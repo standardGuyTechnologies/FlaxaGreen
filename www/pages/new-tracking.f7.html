@@ -135,20 +135,13 @@
       getDB().transaction(function (tx) { 
         tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
         tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, props.date, props.acc, info, val, 'amt'], function (tx, result) {
-        tx.executeSql('SELECT SUM(val) AS tdiff FROM TRACKPHASE WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {
-          const tdiff = result.rows.item(0).tdiff;
-          tx.executeSql('SELECT tdiff FROM TRACKDIFF WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
-            if (!result.rows.length) {
-              tx.executeSql('INSERT INTO TRACKDIFF (date, acc, tdiff) VALUES (?, ?, ?)', [props.date, props.acc, tdiff])
-            } else {
-              tx.executeSql('UPDATE TRACKDIFF SET tdiff = ? WHERE date = ? AND acc = ?', [tdiff, props.date, props.acc]);
-            }
-          })
-        });
-      })
-      }, function (e) {console.log(e)}, function () { 
-        $f7.dialog.alert('Trackr created', 'Done!')
-      });
+          tx.executeSql('DELETE FROM TRACKDIFF', [], function (tx, result) {
+            tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {
+              $f7.dialog.alert('Tracker created', 'Done!')
+            });
+          });
+        })
+      }, function (e) {console.log(e)}, function () {  });
     }
 
 

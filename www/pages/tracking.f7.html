@@ -104,7 +104,7 @@
         tx.executeSql('DELETE FROM TRACK WHERE id = ?', [props.id]);
         // del the entiire history of this id, and reconstruct trackdiff
         tx.executeSql('DELETE FROM TRACKPHASE WHERE id = ?', [props.id], function (tx, result) {
-          tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACKPHASE GROUP BY date, acc', [], function (tx, result) {});
+          tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {});
         })
       }, function (e) { console.log(e) }, function () {  })
     }

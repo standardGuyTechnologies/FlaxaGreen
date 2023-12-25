@@ -43,7 +43,7 @@ export default [
                 arr1.push(res.item(i));
               }
             })
-            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(val) AS amt FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ HAVING date = ? AND acc = ?', [date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(val) AS amt FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY categ HAVING date = ? AND acc = ?', ["Pledge", "forfeit", date, acc], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr2.push(res.item(i));
@@ -119,8 +119,8 @@ export default [
             activeT.push(res.item(i));
           }
         })
-        // test query for errors! todo
-        tx.executeSql('SELECT categ, subcateg, phase, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['amt'], function (tx, result) {
+        // Loan stats
+        tx.executeSql('SELECT categ, subcateg, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['amt'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             trackstat1.push(res.item(i));

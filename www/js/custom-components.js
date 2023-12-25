@@ -14,7 +14,7 @@ function onDeleted (rowid, props, type) {
   } else if (type === 't') {
     getDB().transaction(function (tx) {
       tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [rowid], function (tx, result) {
-        tx.executeSql('SELECT SUM(val) AS tdiff FROM TRACKPHASE WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {
+        tx.executeSql('SELECT SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc HAVING date = ? AND acc = ?', ["Pledge", "forfeit", props.date, props.acc], function (tx, result) {
           tx.executeSql('UPDATE TRACKDIFF SET tdiff = ? WHERE date = ? AND acc = ?', [result.rows.item(0).tdiff, props.date, props.acc]);
         });
       })
@@ -36,7 +36,7 @@ function makeinstances (props) {
 function makeinstances2 (props) {
   return new Promise ((resolve, reject) => {
     getDB().transaction(function (tx) {
-      tx.executeSql('SELECT tp.rwoid, party, categ, subcateg, type, val, info FROM TRACK INNER JOIN TRACKPHASE tp WHERE tp.date = ? AND tp.acc = ? AND categ = ? AND subcateg = ?', [props.date, props.acc, props.categ, props.subcateg], function (tx, result) {
+      tx.executeSql('SELECT tp.rowid, party, categ, subcateg, type, val, info FROM TRACK INNER JOIN TRACKPHASE tp USING(id) HAVING tp.date = ? AND tp.acc = ? AND categ = ?', [props.date, props.acc, props.categ], function (tx, result) {
         const res = result.rows, instances = [];
         for(let i=0; i<res.length; i++){
           instances.push(res.item(i));

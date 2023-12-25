@@ -11,7 +11,6 @@ function validate(form, notify = alerton, notifyoff = alertoff) {
       validCheck([input], notify);
     })
   })
-  // todo unmount thhese handlers at some appropriate place
 }
 function alerton(input, msg) {
   alert(msg);

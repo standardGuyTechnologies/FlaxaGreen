@@ -1,6 +1,6 @@
 //@ts-check
 const maxamt = Math.pow(10, 15);/* 1000 trillion */
-let mycurrency, rexecurrency, DELIM, REXEINDEX, FILTERREXE, REXEARR, REXE;
+let currency, rexeindex, delimeter, sanitize = /\D/g;
 
 const labelmap = new Map([
   ['l', {
@@ -213,9 +213,6 @@ function partyLabel (categ) {
   return value;
 }
 
-function getrexe(){
-  return REXE;
-}
 function toUTCms(num=Date.now()){
   return num - new Date(num).getTimezoneOffset() * 60000;
 }
@@ -262,7 +259,7 @@ function digitcomma(num) {
   let dot = '.', intnum = Math.trunc(num);/* parseInt is not suitable due to possibility of num presented in standard form */
   let kobo = num - intnum;
   kobo = Math.round(kobo * 100) / 100;/* incased  js IEE7 fl0ting point bullshit happens */
-  if (DELIM == '.') dot = ',';
+  if (delimeter == '.') dot = ',';
   if (kobo) {
     kobo = kobo.toString().replace(/-?0\./g, '');/* Todo: make it a onetime regex */
     kobo.length - 1 || (kobo += '0'); kobo = dot += kobo;
@@ -276,58 +273,30 @@ function digitcomma(num) {
   while (val.length > 3) {
     last3 = val.slice(-3);
     val = val.replace(dregex, '');
-    chunk = DELIM + last3 + chunk;
+    chunk = delimeter + last3 + chunk;
   }
   chunk = val + chunk;
-  switch (REXEINDEX) {
+  switch (rexeindex) {
     case 0: case 1:
-      chunk = ve + mycurrency + chunk + kobo; break;
+      chunk = ve + currency + chunk + kobo; break;
     case 2: case 3:
-      chunk = ve + chunk + kobo + mycurrency; break;
+      chunk = ve + chunk + kobo + currency; break;
   }
   return chunk;
 }
 function filtercomma(str) {
   if(typeof str !== 'string') throw new Error('Argument to filtercomma must be of type string')
   str = str.trim(); if(!str) str = '0';
-  if (FILTERREXE instanceof Error) throw FILTERREXE;
   let sign = (str.includes('-')) ? -1 : 1;
-  let x = str.replace(FILTERREXE, ''); x = x.replace(',', '.');/* for type $1.000,00 */
+  let x = str.replace(sanitize, ''); x = x.replace(',', '.');/* for type $1.000,00 */
   x = parseFloat(x) * sign;
   if (x > maxamt) x = maxamt + 1;
   if (x < -maxamt) x = -maxamt - 1;
   return x;
 }
-function computeInput(input) {
-  /* Algorithm iterates the input string matching #num, pushing it into an array. Next we use array.reduce to sum the numbers */
-  if(!input) input = 0;
-  if(typeof input == 'number') return input;
-  let i, j; let arr = []; REXE.lastIndex = 0;
-  while (i !== null) {
-    i = REXE.exec(input);
-    j = i || [digitcomma(0)];
-    arr.push(filtercomma(j[0]));
-  };
-  const SUM = arr.reduce((a, x) => { return a += x }, 0);
-  return SUM;
-}
-function reset_currtokens({currency, rexeindex, delimeter}) {
-  mycurrency = currency; rexecurrency = (currency === '$') ? '\\$' : currency;
-  DELIM = delimeter; REXEINDEX = Number(rexeindex);
-  FILTERREXE = (DELIM === ',') ? new RegExp(`,|-|` + rexecurrency, 'ig') : (DELIM === '.') ? new RegExp(`\\.|-|` + rexecurrency, 'ig') : new Error('DELIM = ' + DELIM);
-  REXEARR = [
-    new RegExp(rexecurrency + `\\d{1,3}(?:,\\d{3}|\\d)*(?:\\.\\d{2})?(?:[\\].,]? |[\\].,]?$)`, 'ig'),
-    new RegExp(rexecurrency + `\\d{1,3}(?:\\.\\d{3}|\\d)*(?:,\\d{2})?(?:[\\].,]? |[\\].,]?$)`, 'ig'),
-    new RegExp(`(?:^| )\\d{1,3}(?:,\\d{3}|\\d)*(?:\\.\\d{2})?` + rexecurrency, 'ig'),
-    new RegExp(`(?:^| )\\d{1,3}(?:\\.\\d{3}|\\d)*(?:,\\d{2})?` + rexecurrency, 'ig')
-  ]
-  REXE = REXEARR[REXEINDEX];
-/* const REXE = /#\d{1,3}(?:,\d{3}|\d)*(?:\.\d{2}\.|\.\d{2} |[ .]{1})/ig; */ /* literal expression: match amt with or without comma delimeter(old REXE) */
-/* new REXE is succint & modified 2 accept end values of closesqbracketspace(] ), dotspace(. ) or space( ) or match amt without the end values if amt is at the end of the string */
-}
-function uiaccname(name=''){
-  return name.slice(-name.length, -1);
+function reset_currtokens(tokens) {
+  ({currency, rexeindex, delimeter} = tokens);
 }
 
 module.exports.var = { maxamt, labelmap, trackermap, PENDING_TR_KEYS, DAYS, MONTHS };
-module.exports.func = { getrexe, toUTCms, uiaccname, partyLabel, utcTimeDate, getFirstTime, inputdefault, formdefault, digitcomma, filtercomma, computeInput, reset_currtokens };
+module.exports.func = { toUTCms, partyLabel, utcTimeDate, getFirstTime, inputdefault, formdefault, digitcomma, filtercomma, reset_currtokens };

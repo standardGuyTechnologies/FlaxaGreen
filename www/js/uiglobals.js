@@ -91,7 +91,6 @@ function cloneElement(template) {
   return shell.children[0];
 }
 function aboveThreshold(app, feature, val) {
-  if(process.env.STAGE === 'development') adToken = 1000;
   if (!proStatus.prodId && adToken < val) {
     app.toast.show({
       text: `Insufficient adTokens to access the ${feature} feature.`,

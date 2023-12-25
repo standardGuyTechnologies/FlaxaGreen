@@ -6,6 +6,8 @@ import Fast from "../pages/fast.f7.html"
 import Tracking from "../pages/tracking.f7.html"
 import NewTracking from "../pages/new-tracking.f7.html"
 
+import getDB from './db.js';
+
 const props1 = {};
 
 export default [

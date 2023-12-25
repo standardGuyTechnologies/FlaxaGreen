@@ -104,8 +104,8 @@ export default [
   {
     path: '/general-info/',
     async: function ({ app, resolve, reject }) {
-      const db = getDB(); let query1, query2; const activeT = [];
-      let trackstat1, trackstat2, trackstat3;
+      const db = getDB(); let query1, query2; const activetrack = [];
+      let trackamt = {}, trackr = {}, trackf = {};
       db.transaction(function (tx) {
         tx.executeSql('SELECT * FROM ACCOUNTS ORDER BY acc', [], function (tx, result) {
           query1 = result.rows;
@@ -116,26 +116,29 @@ export default [
         tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK GROUP BY categ HAVING state = ?', ['active'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            activeT.push(res.item(i));
+            activetrack.push(res.item(i));
           }
         })
         // Loan stats
         tx.executeSql('SELECT categ, subcateg, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['amt'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            trackstat1.push(res.item(i));
+            let x = res.item(i);
+            trackamt[x.categ+x.subcateg] = x.net;
           }
         })
         tx.executeSql('SELECT categ, subcateg, SUM(val) AS rnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['repaid'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            trackstat2.push(res.item(i));
+            let x = res.item(i);
+            trackr[x.categ+x.subcateg] = x.rnet;
           }
         })
         tx.executeSql('SELECT categ, subcateg, SUM(val) AS fnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['forfeit'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            trackstat3.push(res.item(i));
+            let x = res.item(i);
+            trackf[x.categ+x.subcateg] = x.fnet;
           }
         })
       }, function (e) {reject(); console.log(e)}, function () {
@@ -147,7 +150,7 @@ export default [
         resolve(
           { component: Ginfo }, 
           { 
-            props: { data: arr, totalcount: i, totalbal: j, activeT, trackstat1, trackstat2, trackstat3 } 
+            props: { data: arr, totalcount: i, totalbal: j, activetrack, trackamt, trackr, trackf } 
           }
         )
       });

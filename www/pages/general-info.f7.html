@@ -16,21 +16,21 @@
       <div class="list list-strong list-outline list-dividers-ios simple-list">
         <ul>
           <li class="list-group-title">Accounts</li>
-          ${acc.map(item => $h`
+          ${props.arr.map(item => $h`
             <li>
               <span>${item.acc}</span><span>${item.bal}</span>
             </li>
           `)}
-          <li><span>Total Accounts</span><span>3</span></li>
-          <li><span>Total Amount</span><span>$800000</span></li>
+          <li><span>Total Accounts</span><span>${props.totalcount}</span></li>
+          <li><span>Total Amount</span><span>${props.totalbal}</span></li>
         </ul>
       </div>
       <div class="list list-strong list-outline list-dividers-ios simple-list">
         <ul>
           <li class="list-group-title">Active Trackers</li>
-          ${trackers.map(item => $h`
+          ${props.activetrack.map(item => $h`
             <li>
-              <span>Active ${item.type}</span><span>${item.num}</span>
+              <span>Active ${item.categ}</span><span>${item.num}</span>
             </li>
           `)}
         </ul>
@@ -39,16 +39,16 @@
         <ul>
           <li class="list-group-title">Loan Stats</li>
           <li>
-            <span>Loan administered</span><span>3</span>
+            <span>Loan administered</span><span>${outloan}</span>
           </li>
           <li>
-            <span>Pardon percentage</span><span>10%</span>
+            <span>Pardon percentage</span><span>${pardonloan}%</span>
           </li>
           <li>
-            <span>Loan received</span><span>1</span>
+            <span>Loan received</span><span>${inloan}</span>
           </li>
           <li>
-            <span>Repay percentage</span><span>100%</span>
+            <span>Repay percentage</span><span>${repayloan}%</span>
           </li>
         </ul>
       </div>
@@ -56,10 +56,10 @@
         <ul>
           <li class="list-group-title">Pledge Stats</li>
           <li>
-            <span>Pledge made</span><span>3</span>
+            <span>Pledge made</span><span>${outpledge}</span>
           </li>
           <li>
-            <span>Redeem percentage</span><span>10%</span>
+            <span>Redeem percentage</span><span>${redeem}%</span>
           </li>
         </ul>
       </div>
@@ -67,10 +67,10 @@
         <ul>
           <li class="list-group-title">Deposit Stats</li>
           <li>
-            <span>Security deposit made</span><span>3</span>
+            <span>Security deposit made</span><span>${outdeposit}</span>
           </li>
           <li>
-            <span>Security deposit received</span><span>5</span>
+            <span>Security deposit received</span><span>${indeposit}</span>
           </li>
         </ul>
       </div>
@@ -84,10 +84,21 @@
 
 <script>
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
-    const acc = [{acc: 'FirstBank', bal: 5050}, {acc: 'GTBank', bal: 2500}, {acc: 'FidelityBank', bal: 200}];
-    const trackers = [
-      {type: "Loans", num: 3}, {type: "Pledge", num: 0}, {type: "Deposit", num: 0}
-    ]
+    const outloan = props.trackamt["Loanout"];
+    const loanf = props.trackf["Loanout"];
+    const pardonloan = Math.round(loanf*100/outloan)
+
+    const inloan = props.trackamt["Loanin"];
+    const loanr = props.trackr["Loanin"];
+    const repayloan = Math.round(loanr*100/inloan);
+
+    const outpledge = props.trackamt["Pledgeout"];
+    const pledger = props.trackr["Pledgeout"];
+    const redeem = Math.round(pledger*100/outpledge);
+
+    const outdeposit = props.trackamt["Depositout"];
+    const indeposit = props.trackamt["Depositin"];
+
     return $render;
   }
 </script>

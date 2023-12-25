@@ -1,70 +1,15 @@
 // Import entire bundle, but it will affect app load time
 import Framework7, { Dom7, createStore } from "framework7/bundle";
 
-// ===== OR use Lazy Modules =====
-
-// Import core framework
-// import Framework7, { Dom7, createStore } from "framework7";
-// // Import additional components
-// import Panel from 'framework7/components/panel';
-// import Progressbar from 'framework7/components/progressbar';
-// import LoginScreen from 'framework7/components/login-screen';
-// import Swiper from 'framework7/components/swiper';
-// import Card from 'framework7/components/card';
-// import Fab from 'framework7/components/fab';
-// import Picker from 'framework7/components/picker';
-// import Actions from 'framework7/components/actions';
-// import Sheet from 'framework7/components/sheet';
-// import Popover from 'framework7/components/popover';
-// import Swipeout from 'framework7/components/swipeout';
-// import Preloader from 'framework7/components/preloader';
-// import Calendar from 'framework7/components/calendar';
-// import Input from 'framework7/components/input';
-// Error: I don't wish to import input yet, but if i dont i lose auto form validate
-
-// Import components css: imported with webpack css-style loaders
-// import 'framework7/components/panel/css';
-// import 'framework7/components/progressbar/css';
-// import 'framework7/components/login-screen/css';
-// import 'framework7/components/swiper/css';
-// import 'framework7/components/card/css';
-// import 'framework7/components/fab/css';
-// import 'framework7/components/picker/css';
-// import 'framework7/components/sheet/css';
-// import 'framework7/components/actions/css';
-// import 'framework7/components/popover/css';
-// import 'framework7/components/swipeout/css';
-// import 'framework7/components/preloader/css';
-// import 'framework7/components/calendar/css';
-// import 'framework7/components/input/css';
-
-// Framework7.use([
-//   Panel,
-//   Progressbar,
-//   LoginScreen,
-//   Swiper,
-//   Card,
-//   Fab,
-//   Picker,
-//   Sheet,
-//   Actions,
-//   Popover,
-//   Swipeout,
-//   Preloader,
-//   Calendar,
-//   Input,
-// ]);
-
 import Mainapp from "../pages/index.f7.html"
 import routes from "./routes.js"
 import params from "./store.js"
 import {recordsItemSheet, recordsTrackSheet} from "./custom-components.js"
-// import getDB, {initDB} from './db.js';
-// import G from './uiglobals.js'; todo 
+import {initDB} from './db.js';
+import G from './uiglobals.js'; 
 
-/* error: no G */
-// const { utcTimeDate, xDaysAgo, digitcomma, computeInput, save4analyzer, reset_currtokens, errorclose } = G.F;
-// const { ipcRenderer, labelmap, trackermap, box, analyzerRexe, appmsgs, } = G.V;
+const { utcTimeDate, xDaysAgo, digitcomma, computeInput, save4analyzer, reset_currtokens, errorclose } = G.F;
+const { ipcRenderer, labelmap, trackermap, box, analyzerRexe, appmsgs, } = G.V;
 
 // Register custom components
 Framework7.registerComponent(
@@ -87,6 +32,8 @@ var app = new Framework7({
 
   el: '#app', // App root element
   component: Mainapp,
+  init: false,
+  initOnDeviceReady: false,
 
   store: store,
   routes: routes,
@@ -115,6 +62,67 @@ var app = new Framework7({
     },
   },
 });
+
+document.addEventListener('deviceready', () => {
+  // adsSDKconfig(); paymentsSDKconfig(); todo uncomment
+  initDB().then(db => {
+    db.transaction(function (tx) {
+      tx.executeSql('SELECT * FROM CONFIG', [], function (tx, result) {
+        if (!result.rows.length) {
+          store.dispatch("accExists", false);
+        } else {
+          reset_currtokens(result.rows.item(0));
+          store.dispatch("accExists", true); 
+        }
+      })
+    }, function (e) {console.log(e)}, function () {app.init()});
+  })
+}, false);
+
+function adsSDKconfig () {
+  // Before loading ads, have your app initialize the Google Mobile Ads SDK by calling
+  // This needs to be done only once, ideally at app launch.
+  cordova.plugins.emiAdmobPlugin.initialize(
+    // Optional
+    (info) => { console.log(info) },
+    (error) => { console.log(error) }
+  );
+  document.addEventListener('on.sdkInitialization', () => {
+    console.log("\n On Sdk Initialization");
+  });
+}
+function paymentsSDKconfig() {
+  // Configure RevenueCat SDK
+  if (process.env.ENVIRON === 'development') {
+    Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE); // should make a version 4 production
+  }
+  if (window.cordova.platformId === 'ios') {
+    // Purchases.configureWith({ apiKey: <public_ios_sdk_key> });
+  } else if (window.cordova.platformId === 'android') {
+    Purchases.configureWith({ apiKey: "goog_bJcMgQgiGSTGUiKqNcWKGhhlIzi" });
+    // OR: if building for Amazon, be sure to follow the installation instructions then:
+    // Purchases.configureWith({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
+  }
+  Purchases.getCustomerInfo(
+    customerInfo => {
+      Object.keys(customerInfo.entitlements.all).forEach(e_id => {
+        let status = customerInfo.entitlements.all[e_id];
+        let isActive = status.isActive, prodId = status.productIdentifier;
+        let arr = status.expirationDate ?
+          status.expirationDate.split('T').shift().split('-').map(x => Number(x)) :
+          [1970, 1, 1];
+        let expD = Date.UTC(arr[0], arr[1] - 1, arr[2]);
+        let premium = { isActive, prodId, expD };
+        let proEvt = new Event('proUser.config'); proEvt.premium = premium;
+        document.dispatchEvent(proEvt);
+      });
+    },
+    error => {
+      console.log('Error fetching customerInfo', error);
+      console.log(error.message, error.readableErrorCode)
+    }
+  )
+}
 
 document.addEventListener('securitypolicyviolation', (e) => {
   console.log(e.blockedURI);

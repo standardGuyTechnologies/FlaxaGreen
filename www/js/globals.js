@@ -214,7 +214,9 @@ function partyLabel (categ) {
 }
 
 function toUTCms(num=Date.now()){
-  return num - new Date(num).getTimezoneOffset() * 60000;
+  let jsdate =  num - new Date(num).getTimezoneOffset() * 60000;
+  let sqldate = Math.trunc(jsdate/1000);
+  return sqldate;
 }
 //returns a date reflecting the time&date UTC timezone will have given the millisecs param
 //ie used when on a differnt timiezone, but receiving timestamps generated on UTC time

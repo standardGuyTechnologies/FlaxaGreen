@@ -132,7 +132,7 @@
       const val = Number(dform.amt.value) * trackermap.get(categ+subcateg+'nP').sign
       const info = dform.info.value;
 
-      getDB().transaction(function (tx) { // todo no getDB
+      getDB().transaction(function (tx) { 
         tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
         tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, props.date, props.acc, info, val, 'amt'], function (tx, result) {
         tx.executeSql('SELECT SUM(val) AS tdiff FROM TRACKPHASE WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {

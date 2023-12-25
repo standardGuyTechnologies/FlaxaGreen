@@ -154,7 +154,7 @@
       const location = dform.location.value;
       const info = dform.info.value;
 
-      getDB().transaction(function (tx) { // todo no getDB
+      getDB().transaction(function (tx) {
         // make a version for transfer, replacing qty with target todo
         // rule no1 anytime u update quick you must update quickdiff
         tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [props.date, props.acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {

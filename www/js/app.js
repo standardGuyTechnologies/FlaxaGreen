@@ -63,9 +63,10 @@ var app = new Framework7({
   },
 });
 function mockdata (db) {
+  window.db = db; // todo del;
   return new Promise((resolve, reject) => {
     db.transaction(function (tx) {
-      tx.executeSql("INSERT INTO CONFIG (currency, index, delimeter) VALUES ('$', 0, ',')");
+      tx.executeSql("INSERT INTO CONFIG (currency, currindex, delimeter) VALUES ('$', 0, ',')");
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\
       INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location) VALUES \
@@ -113,6 +114,10 @@ document.addEventListener('deviceready', () => {
     }, function (e) {console.log(e)}, function () {app.init()});
   }).catch(e => console.log(e))
 }, false);
+
+if (typeof cordova === 'undefined') {
+  document.dispatchEvent(new Event('deviceready'));
+}
 
 function adsSDKconfig () {
   // Before loading ads, have your app initialize the Google Mobile Ads SDK by calling

@@ -1,6 +1,6 @@
 //@ts-check
 const maxamt = Math.pow(10, 15);/* 1000 trillion */
-let currency, rexeindex, delimeter, sanitize = /\D/g;
+let currency, currindex, delimeter, sanitize = /\D/g;
 
 const labelmap = new Map([
   ['l', {
@@ -278,7 +278,7 @@ function digitcomma(num) {
     chunk = delimeter + last3 + chunk;
   }
   chunk = val + chunk;
-  switch (rexeindex) {
+  switch (currindex) {
     case 0: case 1:
       chunk = ve + currency + chunk + kobo; break;
     case 2: case 3:
@@ -297,7 +297,7 @@ function filtercomma(str) {
   return x;
 }
 function reset_currtokens(tokens) {
-  ({currency, rexeindex, delimeter} = tokens);
+  ({currency, currindex, delimeter} = tokens);
 }
 
 module.exports.var = { maxamt, labelmap, trackermap, PENDING_TR_KEYS, DAYS, MONTHS };

@@ -51,7 +51,7 @@ function recordsItemSheet(props, { $h, $f7, $onMounted, $update }) {
   $onMounted(() => {
     makeinstances(props).then(i => {instances = i; $update()} )
   })
-  $f7.on(props.key, () => { // todo this event don't exist yet.
+  $f7.on(props.key, () => {
     makeinstances(props).then(i => {instances = i; $update()} )
   })
   return () => $h`
@@ -101,7 +101,7 @@ function recordsTrackSheet(props, { $h, $f7, $onMounted, $update }) {
   $onMounted(() => {
     makeinstances2(props).then(i => {instances = i; $update()} )
   })
-  $f7.on(props.key, () => { // todo this event don't exist yet.
+  $f7.on(props.key, () => {
     makeinstances2(props).then(i => {instances = i; $update()} )
   })
   return () => $h`

@@ -13,7 +13,7 @@ function initDB(){
     };
     db.transaction(function (tx) {
       /* date is converted to Utcms before storage */
-      tx.executeSql('CREATE TABLE IF NOT EXISTS  CONFIG (currency, rexeindex, delimeter)');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS  CONFIG (currency, currindex, delimeter)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS  ACCOUNTS (acc, bal)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS  QUICK (date INT NOT NULL, acc NOT NULL, categ NOT NULL, subcateg NOT NULL, item NOT NULL, amt DEFAULT 0, qty, target, location, info)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS  QUICKDIFF (date INT NOT NULL, acc NOT NULL, qdiff DEFAULT 0)');

@@ -72,7 +72,8 @@ export default [
       },
       {
         path: '/tracking-transactions/',
-        async: function ({ app, resolve, reject }) {
+        async: function ({ app, from, to, resolve, reject }) {
+          props1.date = from.params.date; props1.acc = from.params.acc;
           const db = getDB();
           db.transaction(function (tx) {
             tx.executeSql('SELECT id, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? ORDER BY date DESC', ['active'], function (tx, result) {
@@ -93,6 +94,10 @@ export default [
       {
         path: '/new-tracking/',
         component: NewTracking,
+        options: {
+          animate: true,
+          props: props1
+        },
       },
     ],
   },

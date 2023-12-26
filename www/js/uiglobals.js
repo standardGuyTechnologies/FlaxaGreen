@@ -66,7 +66,7 @@ const appmsgs = {
 // }
 const G = require('./globals.js');
 const F = Object.assign(
-  { preload_image, cloneElement, xDaysAgo, daysDiff, save4analyzer, aboveThreshold, errorclose, }, G.func
+  { preload_image, cloneElement, xDaysAgo, daysDiff, strDate, save4analyzer, aboveThreshold, errorclose, }, G.func
 );/* I want to add more properties na why */
 const V = Object.assign({box, analyzerRexe, appmsgs, }, G.var);
 
@@ -150,6 +150,16 @@ function daysDiff(stamp1, stamp2){
   }
   return deltaD;
 }
+function strDate(sqldate) {
+  if (typeof sqldate === 'string') {
+    return new Date(sqldate).toDateString();
+  } else if (typeof sqldate === 'number') {
+    return G.func.utcTimeDate(sqldate*1000).toDateString();
+  } else {
+    throw new Error ("Bad arguent "+typeof sqldate);
+  }
+}
+
 const list = [];
 function preload_image (imgarr) {
   imgarr.forEach(link => {

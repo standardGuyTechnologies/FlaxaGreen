@@ -7,6 +7,8 @@ import Tracking from "../pages/tracking.f7.html"
 import NewTracking from "../pages/new-tracking.f7.html"
 
 import getDB from './db.js';
+import G from './uiglobals.js';
+const {toUTCms, strDate } = G.F;
 
 const props1 = {};
 
@@ -46,16 +48,17 @@ export default [
       {
         path: '/transact/:date/:acc/',
         async: function ({ app, from, to, resolve, reject }) {
-          const db = getDB(); const date = to.params.date, acc = to.params.acc;
-          const arr1 = [], arr2 = [];
+          const db = getDB(), arr1 = [], arr2 = [];
+          const date = Number(to.params.date), acc = to.params.acc;
+          const datestr = strDate(date);
           db.transaction(function (tx) {
-            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK GROUP BY categ, subcateg HAVING date = ? AND acc = ?', [date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [date, acc], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr1.push(res.item(i));
               }
             })
-            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(val) AS sumamt FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY categ HAVING date = ? AND acc = ?', ["Pledge", "forfeit", date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(val) AS sumamt FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? AND date = ? AND acc = ? GROUP BY categ', ["Pledge", "forfeit", date, acc], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr2.push(res.item(i));
@@ -65,7 +68,7 @@ export default [
             resolve(
               { component: Records }, 
               { 
-                props: { date, acc, qdata: arr1, tdata: arr2  } 
+                props: { date, datestr, acc, qdata: arr1, tdata: arr2  } 
               }
             )
           });
@@ -79,13 +82,13 @@ export default [
           props: props1
         },
         beforeEnter: function ({from, to}) {
-          props1.date = from.params.date; props1.acc = from.params.acc;
+          props1.date = Number(from.params.date); props1.acc = from.params.acc;
         },
       },
       {
         path: '/tracking-transactions/',
         async: function ({ app, from, to, resolve, reject }) {
-          props1.date = from.params.date; props1.acc = from.params.acc;
+          props1.date = Number(from.params.date); props1.acc = from.params.acc;
           const db = getDB();
           db.transaction(function (tx) {
             tx.executeSql('SELECT id, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? ORDER BY date DESC', ['active'], function (tx, result) {
@@ -125,28 +128,28 @@ export default [
         tx.executeSql('SELECT acc, SUM(qdiff) AS qnet, SUM(tdiff) AS tnet FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) GROUP BY acc ORDER BY acc', [], function (tx, result) {
           query2 = result.rows;
         })
-        tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK GROUP BY categ HAVING state = ?', ['active'], function (tx, result) {
+        tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK WHERE state = ? GROUP BY categ', ['active'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             activetrack.push(res.item(i));
           }
         })
-        // Loan stats
-        tx.executeSql('SELECT categ, subcateg, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['amt'], function (tx, result) {
+        // stats
+        tx.executeSql('SELECT categ, subcateg, SUM(val) AS net FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE type = ? GROUP BY categ, subcateg', ['amt'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             let x = res.item(i);
             trackamt[x.categ+x.subcateg] = x.net;
           }
         })
-        tx.executeSql('SELECT categ, subcateg, SUM(val) AS rnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['repaid'], function (tx, result) {
+        tx.executeSql('SELECT categ, subcateg, SUM(val) AS rnet FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE type = ? GROUP BY categ, subcateg', ['repaid'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             let x = res.item(i);
             trackr[x.categ+x.subcateg] = x.rnet;
           }
         })
-        tx.executeSql('SELECT categ, subcateg, SUM(val) AS fnet FROM TRACK INNER JOIN TRACKPHASE USING(id) GROUP BY categ, subcateg HAVING type = ?', ['forfeit'], function (tx, result) {
+        tx.executeSql('SELECT categ, subcateg, SUM(val) AS fnet FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE type = ? GROUP BY categ, subcateg', ['forfeit'], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             let x = res.item(i);

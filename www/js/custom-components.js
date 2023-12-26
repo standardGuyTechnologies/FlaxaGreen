@@ -6,7 +6,7 @@ function onDeleted (rowid, props, type) {
   if (type === 'q') {
     getDB().transaction(function (tx) {
       tx.executeSql('DELETE FROM QUICK WHERE rowid = ?', [rowid], function (tx, result) {
-        tx.executeSql('SELECT SUM(amt) AS qdiff FROM QUICK WHERE date = ? AND acc = ? GROUP BY date, acc', [props.date, props.acc], function (tx, result) {
+        tx.executeSql('SELECT SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc HAVING date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
           tx.executeSql('UPDATE QUICKDIFF SET qdiff = ? WHERE date = ? AND acc = ?', [result.rows.item(0).qdiff, props.date, props.acc]);
         });
       })
@@ -46,16 +46,19 @@ function makeinstances2 (props) {
   })
 }
 
-function recordsItemSheet(props, { $h, $f7, $onMounted, $update }) {
-  let instances = [];
+function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }) {
+  let instances = []; let sheet
   $onMounted(() => {
     makeinstances(props).then(i => {instances = i; $update()} )
   })
-  $f7.on('props.key', () => { // todo fix
+  $onUnmounted(() => {
+    // sheet.destroy();
+  })
+  $f7.on('props.unique', () => { // todo fix
     makeinstances(props).then(i => {instances = i; $update()} )
   })
   return () => $h`
-  <div class="sheet-modal demo-sheet-swipe-to-close" key="${props.key}">
+  <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
     <div class="sheet-modal-inner">
       <div class="swipe-handler"></div>
       <div class="page-content">
@@ -69,7 +72,7 @@ function recordsItemSheet(props, { $h, $f7, $onMounted, $update }) {
                     ${obj.item}
                     <div class="item-footer">
                       <i class="icon f7-icons location">placemark</i>
-                      <span>${obj.location}</span>
+                      <span>${obj.location || "No location specified"}</span>
                     </div>
                   </div>
                   <div class="item-after">
@@ -78,7 +81,7 @@ function recordsItemSheet(props, { $h, $f7, $onMounted, $update }) {
                         <strong>${digitcomma(obj.amt)}</strong>
                       </div>
                       <div class="card-content">
-                        <small><small>Qty: ${obj.qty}</small></small>
+                        <small><small>Qty: ${obj.qty || 'N/A'}</small></small>
                       </div>
                     </div>
                   </div>
@@ -96,16 +99,19 @@ function recordsItemSheet(props, { $h, $f7, $onMounted, $update }) {
   </div>`
 };
 
-function recordsTrackSheet(props, { $h, $f7, $onMounted, $update }) {
-  let instances = [];
+function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }) {
+  let instances = []; let sheet;
   $onMounted(() => {
     makeinstances2(props).then(i => {instances = i; $update()} )
   })
-  $f7.on('props.key', () => { // todo fix 
+  $onUnmounted(() => {
+    // sheet.destroy();
+  })
+  $f7.on('props.unique', () => { // todo fix 
     makeinstances2(props).then(i => {instances = i; $update()} )
   })
   return () => $h`
-  <div class="sheet-modal demo-sheet-swipe-to-close" key="${props.key}">
+  <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
     <div class="sheet-modal-inner">
       <div class="swipe-handler"></div>
       <div class="page-content">

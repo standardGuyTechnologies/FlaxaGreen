@@ -27,16 +27,18 @@
     <div class="page-content">
       <div class="list list-strong list-outline-ios list-dividers-ios">
         <ul>
-          <li class="list-group-title"><span>FirstBank</span><span>Sat 25/Nov/2023</span></li>
-          ${tdata.map(item => $h`
+          <li class="list-group-title"><span>${acc}</span><span>${datestr}</span></li>
+          ${tdata.map(item => {
+            let unique = (item.categ).replace(/ /g, '');
+            return $h`
             <li>
-              <a class="item-content sheet-open" data-sheet=".demo-sheet-swipe-to-close">
+              <a class="item-content sheet-open" data-sheet=".${unique}">
                 <div class="item-media">
-                  <img src="assets/${item.subcateg}.png" width="40" />
+                  <img src="assets/${item.categ}.png" width="40" />
                 </div>
                 <div class="item-inner">
                   <div class="item-title">
-                    ${item.subcateg} Management
+                    ${item.categ} Shtick
                     <div class="item-footer">${item.instances} transactions</div>
                   </div>
                   <div class="item-after">
@@ -52,10 +54,12 @@
                 </div>
               </a>
             </li>
-          `)}
-          ${qdata.map(item => $h`
+          `})}
+          ${qdata.map(item => {
+            let unique = (item.categ+item.subcateg).replace(/ /g, '');
+            return $h`
             <li>
-              <a class="item-content sheet-open" data-sheet=".demo-sheet-swipe-to-close">
+              <a class="item-content sheet-open" data-sheet=".${unique}">
                 <div class="item-media">
                   <img src="assets/${item.categ}/${item.subcateg}.png" width="40" />
                 </div>
@@ -77,16 +81,20 @@
                 </div>
               </a>
             </li>
-          `)}
+          `})}
         </ul>
       </div>
     </div>
-    ${qdata.map(item => $h`
-      <records-item-sheet key=${item.categ+item.subcateg} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-item-sheet>
-    `)}
-    ${tdata.map(item => $h`
-      <records-track-sheet key=${item.categ} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-track-sheet>
-    `)}
+    ${tdata.map(item => {
+      let unique = (item.categ).replace(/ /g, '');
+      return $h`
+      <records-track-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-track-sheet>
+    `})}
+    ${qdata.map(item => {
+      let unique = (item.categ+item.subcateg).replace(/ /g, '');
+      return $h`
+      <records-item-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-item-sheet>
+    `})}
   </div>  
 </template>
 
@@ -111,60 +119,26 @@
     justify-content: flex-end;
     line-height: 1.2px;
   }
-  
-  .sheet-modal .sheet-modal-inner {
-    padding-top: 16px; /* pad 4 the swipe handler */
-  }
-  .sheet-modal .page-content {
-    padding-top: 0px;
-    padding-bottom: 16px;
-  }
-  .sheet-modal .location {
-    font-size: 145%;
-  }
-  /* copied from kitchen sink css */
-  .demo-sheet-swipe-to-close .swipe-handler, .demo-sheet-swipe-to-step .swipe-handler {
-    background: none;
-  }
-  .swipe-handler {
-    height: 16px;
-    position: absolute;
-    left: 0;
-    width: 100%;
-    top: 0;
-    background: #f3f4f6;
-    cursor: pointer;
-    z-index: 10;
-  }
-  .swipe-handler:after {
-    content: '';
-    width: 36px;
-    height: 6px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -18px;
-    margin-top: -3px;
-    border-radius: 3px;
-    background: #666;
-  }
 </style>
 
 <script>
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, labelmap } = G.V;
+  const {getFirstTime, strDate, preload_image, } = G.F;
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
-    const {date, acc, qdata, tdata} = props;
+    const {date, datestr, acc, qdata, tdata} = props;
 
     const TOPG = {};
 
     $on('pageInit', () => {
-      TOPG.sheetSwipeToClose = $f7.sheet.create({
-        containerEl: ".page-master-detail",
-        el: '.demo-sheet-swipe-to-close',
-        backdrop: true,
-        swipeToClose: true,
-        swipeHandler: ".swipe-handler",
-        backdrop: true,
-      });
+      // TOPG.sheetSwipeToClose = $f7.sheet.create({
+      //   containerEl: ".page-master-detail",
+      //   el: '.demo-sheet-swipe-to-close',
+      //   backdrop: true,
+      //   swipeToClose: true,
+      //   swipeHandler: ".swipe-handler",
+      //   backdrop: true,
+      // });
     })
     
     return $render;

@@ -16,7 +16,7 @@
       <div class="list list-strong list-outline list-dividers-ios simple-list">
         <ul>
           <li class="list-group-title">Accounts</li>
-          ${props.arr.map(item => $h`
+          ${props.data.map(item => $h`
             <li>
               <span>${item.acc}</span><span>${item.bal}</span>
             </li>
@@ -84,20 +84,20 @@
 
 <script>
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
-    const outloan = props.trackamt["Loanout"];
-    const loanf = props.trackf["Loanout"];
+    const outloan = Math.abs(props.trackamt["Loanout"] || 0);
+    const loanf = Math.abs(props.trackf["Loanout"] || 0);
     const pardonloan = Math.round(loanf*100/outloan)
 
-    const inloan = props.trackamt["Loanin"];
-    const loanr = props.trackr["Loanin"];
+    const inloan = Math.abs(props.trackamt["Loanin"] || 0);
+    const loanr = Math.abs(props.trackr["Loanin"] || 0);
     const repayloan = Math.round(loanr*100/inloan);
 
-    const outpledge = props.trackamt["Pledgeout"];
-    const pledger = props.trackr["Pledgeout"];
+    const outpledge = Math.abs(props.trackamt["Pledgeout"] || 0);
+    const pledger = Math.abs(props.trackr["Pledgeout"] || 0);
     const redeem = Math.round(pledger*100/outpledge);
 
-    const outdeposit = props.trackamt["Depositout"];
-    const indeposit = props.trackamt["Depositin"];
+    const outdeposit = Math.abs(props.trackamt["Depositout"] || 0);
+    const indeposit = Math.abs(props.trackamt["Depositin"] || 0);
 
     return $render;
   }

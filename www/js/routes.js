@@ -14,22 +14,32 @@ export default [
   {
     path: '/',
     async: function ({ app, resolve, reject }) {
-      const db = getDB();
+      const db = getDB(), arr1 = [], arr2 = []; let arr;
       db.transaction(function (tx) {
-        tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) ORDER BY date DESC, rowid DESC', [], function (tx, result) {
-          const arr = [], res = result.rows;
+        tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE qdiff IS NULL', [], function (tx, result) {
+          const res = result.rows;
           for(let i=0; i<res.length; i++){
-            let x = res.item(i); x.net = x.qdiff + x.tdiff;
-            arr.push(x);
+            let x = res.item(i); x.net = x.tdiff;
+            arr2.push(x);
           }
-          resolve(
-            { component: Home }, 
-            { 
-              props: { data: arr } 
-            }
-          )
         })
-      }, function (e) {reject(); console.log(e)}, function () {});
+        tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc)', [], function (tx, result) {
+          const res = result.rows;
+          for(let i=0; i<res.length; i++){
+            let x = res.item(i); 
+            if (!x.tdiff) x.tdiff = 0; x.net = x.qdiff + x.tdiff;
+            arr1.push(x);
+          }
+        })
+      }, function (e) {reject(); console.log(e)}, function () {
+        arr = [...arr1, ...arr2].sort((x, y) => y.date - x.date);
+        resolve(
+          { component: Home }, 
+          { 
+            props: { data: arr } 
+          }
+        )
+      });
     },
     master: true,
     detailRoutes: [

@@ -36,7 +36,7 @@ function makeinstances (props) {
 function makeinstances2 (props) {
   return new Promise ((resolve, reject) => {
     getDB().transaction(function (tx) {
-      tx.executeSql('SELECT tp.rowid, party, categ, subcateg, type, val, info FROM TRACK INNER JOIN TRACKPHASE tp USING(id) HAVING tp.date = ? AND tp.acc = ? AND categ = ?', [props.date, props.acc, props.categ], function (tx, result) {
+      tx.executeSql('SELECT tp.rowid, party, categ, subcateg, type, val, info FROM TRACK INNER JOIN TRACKPHASE tp USING(id) WHERE date = ? AND acc = ? AND categ = ?', [props.date, props.acc, props.categ], function (tx, result) {
         const res = result.rows, instances = [];
         for(let i=0; i<res.length; i++){
           instances.push(res.item(i));

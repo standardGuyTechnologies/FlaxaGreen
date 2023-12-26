@@ -119,7 +119,7 @@
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
-    let tldata = props.arr;
+    let tldata = props.data;
 
     function datestr(str) {
       return new Date(str).toDateString();

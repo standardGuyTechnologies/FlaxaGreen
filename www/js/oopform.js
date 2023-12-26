@@ -1,12 +1,14 @@
+//@ts-check
 // todo test
 function validate(form, notify = alerton, notifyoff = alertoff) {
   const arr = form.querySelectorAll('[data-required], [data-pattern], [data-step], [data-max], [data-min], [data-type]');
   form.addEventListener('submit', function (e) {
+    e.preventDefault();
     validCheck(arr, notify);
     if (!form.checkValidity()) e.stopImmediatePropagation();
   }, true)
-  arr.forEach(inp => {
-    inp.addEventListener('input', function (e) {
+  arr.forEach(input => {
+    input.addEventListener('input', function (e) {
       clearvalidationmsg(input, notifyoff);
       validCheck([input], notify);
     })
@@ -23,7 +25,7 @@ function clearvalidationmsg(input, notifyoff) {
 function validCheck(arr, notify) {
   let msg = '';
   arr.forEach((input, i) => {
-    const { required, pattern, step, max, min, type } = input.dataset;
+    const { required, maxlength, pattern, step, max, min, type } = input.dataset;
     if (typeof input.customValidity == 'function') {
       msg = input.customValidity();
       input.setCustomValidity(msg);
@@ -40,7 +42,7 @@ function validCheck(arr, notify) {
       } else if (input.validity.rangeUnderflow) {
         msg = min || 'The value provided is below minimum!';
       } else if (input.validity.tooLong) { //tooShort
-        msg = length || 'Character limit!';
+        msg = maxlength || 'Character limit!';
       } else if (input.validity.typeMismatch) {/* for emails vs urls vs text */
         msg = type || "Invalid input type!";
       } else if (input.validity.stepMismatch) {/* for the number input */

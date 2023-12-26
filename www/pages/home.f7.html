@@ -140,7 +140,7 @@
             text: 'Save', keyCodes: [13], 
             close: false,
             onClick: function(dialog, e){
-              $('form#create').submit();
+              $('form#create')[0].dispatchEvent(new Event('submit'));
             }
           },
         ],
@@ -174,7 +174,7 @@
       const form = dialog.el.querySelector('form#create');
       validate(form, notify, notifyoff);
       $(form).on('submit', function(e) {
-        e.preventDefault();
+        e.preventDefault(); dialog.close();
         if (counts === 2) return $f7.dialog.alert('Account Limit', 'Failed!');
         const inputs = $("#create input");
         const acc = inputs.eq(0).val().trim();
@@ -240,7 +240,7 @@
     }
 
     let dialoginputs = `
-    <form id="create" class="list list-dividers-ios">
+    <form id="create" class="list list-dividers-ios" novalidate>
       <ul>
         <li class="item-content item-input">
           <div class="item-inner">

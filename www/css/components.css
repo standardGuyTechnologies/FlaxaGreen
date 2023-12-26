@@ -1,0 +1,57 @@
+/* List */
+.list-group-title{
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.item-after .card {
+  margin: 0;
+}
+.item-after .card-header {
+  min-height: 0px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0;
+}
+.item-after .card-content {
+  display: flex;
+  justify-content: flex-end;
+  line-height: 1.2px;
+}
+
+/* sheet modal */
+.sheet-modal .sheet-modal-inner {
+  padding-top: 16px; /* pad 4 the swipe handler */
+}
+.sheet-modal .page-content {
+  padding-top: 0px;
+  padding-bottom: 16px;
+}
+.sheet-modal .location {
+  font-size: 145%;
+}
+/* copied from kitchen sink css */
+.swipe-handler {
+  background: none;
+  height: 16px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  background: #f3f4f6;
+  cursor: pointer;
+  z-index: 10;
+}
+.swipe-handler:after {
+  content: '';
+  width: 36px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -18px;
+  margin-top: -3px;
+  border-radius: 3px;
+  background: #666;
+}

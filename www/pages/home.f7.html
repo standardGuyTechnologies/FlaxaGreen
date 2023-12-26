@@ -128,7 +128,7 @@
     let active = '', counts = 0;
     $on('pageInit', () => {
       accListUpdate();
-      TOPG.dialog = $f7.dialog.create({
+      let dialog = TOPG.dialog = $f7.dialog.create({
         // containerEl: ".page-master",
         // backdrop: false,
         title: 'Add Account',
@@ -170,8 +170,11 @@
           }
         }
       });
-      validate($('form#create')[0], notify, notifyoff);
-      $('form#create').on('submit', function() {
+      
+      const form = dialog.el.querySelector('form#create');
+      validate(form, notify, notifyoff);
+      $(form).on('submit', function(e) {
+        e.preventDefault();
         if (counts === 2) return $f7.dialog.alert('Account Limit', 'Failed!');
         const inputs = $("#create input");
         const acc = inputs.eq(0).val().trim();
@@ -243,7 +246,7 @@
           <div class="item-inner">
             <div class="item-title item-label">Title</div>
             <div class="item-input-wrap">
-              <input name="dialog-accname" type="text" placeholder="Account name" pattern='[\-A-Za-z0-9]+' data-pattern="Account name accepts only alpha-numeric characters and hyhens!" maxlength=20 required validate />
+              <input name="inputname" type="text" placeholder="Account name" pattern='[\-A-Za-z0-9]+' maxlength=20 data-error-message="error!" data-pattern="Account name accepts only alpha-numeric characters and hyhens!" data-maxlength="Character limit!" required />
               <span class="input-clear-button"></span>
             </div>
           </div>
@@ -252,7 +255,7 @@
           <div class="item-inner">
             <div class="item-title item-label">Set Price</div>
             <div class="item-input-wrap">
-              <input type="number" name="dialog-accbal" placeholder="Cash balance" data-range="The cash balance provided exceeds limits!" max=${maxamt} min=0 data-step="Invalid lower denominations" step=0.01 required validate />
+              <input type="number" name="inputbal" placeholder="Cash balance" max=${maxamt} min=0 data-error-message="error!" data-max="The cash balance provided exceeds limits!" data-min="Minimum cash balance is 0!" data-step="Invalid lower denominations!" step=0.01 required />
               <span class="input-clear-button"></span>
             </div>
           </div>
@@ -264,7 +267,7 @@
       TOPG.dialog.open();
     }  
     function notify(inp, msg = '') {
-      $(inp).data("error-message", msg);
+      inp.dataset.errorMessage = msg;
       $f7.input.validate(inp);
     }
     function notifyoff(inp, msg=''){

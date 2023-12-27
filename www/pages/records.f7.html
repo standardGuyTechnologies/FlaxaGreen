@@ -88,12 +88,12 @@
     ${tdata.map(item => {
       let unique = (item.categ).replace(/ /g, '');
       return $h`
-      <records-track-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-track-sheet>
+      <records-track-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg} info=${item.info}></records-track-sheet>
     `})}
     ${qdata.map(item => {
       let unique = (item.categ+item.subcateg).replace(/ /g, '');
       return $h`
-      <records-item-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-item-sheet>
+      <records-item-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg} info=${item.info}></records-item-sheet>
     `})}
   </div>  
 </template>

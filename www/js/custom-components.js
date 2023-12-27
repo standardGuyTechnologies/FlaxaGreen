@@ -88,6 +88,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
                 </div>
               </div>
               <div class="swipeout-actions-right">
+                <a class="color-green" @click=${()=> info($f7, props)}><i class="icon f7-icons">info_circle_fill</i></a>
                 <a class="swipeout-delete"><i class="icon f7-icons">trash_fill</i></a>
               </div>
             </li>
@@ -138,6 +139,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
                 </div>
               </div>
               <div class="swipeout-actions-right">
+                <a class="color-green" @click=${()=> info($f7, props)}><i class="icon f7-icons">info_circle_fill</i></a>
                 <a class="swipeout-delete"><i class="icon f7-icons">trash_fill</i></a>
               </div>
             </li>
@@ -148,5 +150,9 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
     </div>
   </div>`
 };
+function info ($f7, props) {
+  let info = props.info || 'No information available!';
+  $f7.dialog.alert(info, "Info");
+}
 
 export { recordsItemSheet, recordsTrackSheet };

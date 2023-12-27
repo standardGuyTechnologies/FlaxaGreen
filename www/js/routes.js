@@ -52,13 +52,13 @@ export default [
           const date = Number(to.params.date), acc = to.params.acc;
           const datestr = strDate(date);
           db.transaction(function (tx) {
-            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, subcateg, info, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [date, acc], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr1.push(res.item(i));
               }
             })
-            tx.executeSql('SELECT categ, COUNT(*) AS instances, SUM(val) AS sumamt FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? AND date = ? AND acc = ? GROUP BY categ', ["Pledge", "forfeit", date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, info, COUNT(*) AS instances, SUM(val) AS sumamt FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? AND date = ? AND acc = ? GROUP BY categ', ["Pledge", "forfeit", date, acc], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr2.push(res.item(i));

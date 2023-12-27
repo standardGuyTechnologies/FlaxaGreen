@@ -92,7 +92,7 @@ export default [
           props1.date = Number(from.params.date); props1.acc = from.params.acc;
           const db = getDB();
           db.transaction(function (tx) {
-            tx.executeSql('SELECT id, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party ORDER BY date DESC', ['active'], function (tx, result) {
+            tx.executeSql('SELECT id, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party HAVING date <= ? ORDER BY date DESC', ['active', props1.date], function (tx, result) {
               const arr = [], res = result.rows;
               for(let i=0; i<res.length; i++){
                 arr.push(res.item(i));

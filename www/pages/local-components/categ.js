@@ -8,7 +8,8 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
   $onMounted(() => {
     $(document).on('click', ".popover .item-content", 
     function (e) {
-      TOPG.popover.close();
+      TOPG.popcateg && TOPG.popcateg.close();
+      TOPG.popsubcateg && TOPG.popsubcateg.close();
       const form = $('form#details')[0];
       if (this.dataset.code) {
         props.code = this.dataset.code
@@ -21,7 +22,7 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
     })
   })
   function openCateg () {
-    TOPG.popover = $f7.popover.create({
+    TOPG.popcateg = $f7.popover.create({
       targetEl: ".open-categ",
       content: getPopover('categ'),
       closeByBackdropClick: true,
@@ -30,14 +31,15 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
       verticalPosition: "bottom",
       on: {
         closed: function () {
-          TOPG.popover.destroy();
+          TOPG.popcateg.destroy();
+          delete TOPG.popcateg;
         }
       }
     })
-    TOPG.popover.open();
+    TOPG.popcateg.open();
   }
   function openSubCateg () {
-    TOPG.popover = $f7.popover.create({
+    TOPG.popsubcateg = $f7.popover.create({
       targetEl: ".open-subcateg",
       content: getPopover('hey'),
       closeByBackdropClick: true,
@@ -46,11 +48,12 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
       verticalPosition: "bottom",
       on: {
         closed: function () {
-          TOPG.popover.destroy();
+          TOPG.popsubcateg.destroy();
+          delete TOPG.popsubcateg;
         }
       }
     })
-    TOPG.popover.open();
+    TOPG.popsubcateg.open();
   }
   function getPopover (el) {
     if (el === 'categ') {
@@ -203,7 +206,7 @@ const TrackerType = (props, { $h }) => {
   </form>`;
 }
 
-const RedeemIntent = (props, { $h, $f7, $onMounted }) => {
+const RedeemIntent = (props, { $h, $f7, $onMounted, $update }) => {
   function getCateg(subtype) {
     if (subtype == "out") {
       return [
@@ -246,16 +249,15 @@ const RedeemIntent = (props, { $h, $f7, $onMounted }) => {
       ];
     }
   }
-  function createPicker(props) {
-    if(!props.pledge) return;
-    let categ = getCateg(props.pledge);
+  function createPicker(subtype) {
+    let categ = getCateg(subtype);
     let colVal = [], dispVal = [];
     categ.forEach(obj => {
       colVal = [...colVal, ...obj.val.map(y => obj.code+","+y[1])]
       dispVal = [...dispVal, ...obj.val.map(y => y[0])];
     });
     return $f7.picker.create({
-      inputEl: '#assign'+props.pledge,
+      inputEl: '#assign'+subtype,
       // cssClass: "gu-assign", //todo it dont work as in u cant select picker with this class
       toolbarCloseText: "Select",
       formatValue: function (values, displayValues) {
@@ -272,35 +274,43 @@ const RedeemIntent = (props, { $h, $f7, $onMounted }) => {
     })
   }
   $onMounted(() => {
-    let picker = createPicker();
-    picker.on('change', (picker, value, displayValue) => {
+    $f7.on('checkredeem', () => {
+      if (props.pledge) p = ''; else p = 'hide';
+      if (props.pledge === 'in') pin = '', pout = 'hide';
+      else if (props.pledge === 'out') pin = 'hide', pout = '';
+      else pin = pout = 'hide';
+      $update()
+    });
+    let pickerin = createPicker('in');
+    let pickerout = createPicker('out');
+    pickerin.on('change', (picker, value, displayValue) => {
+      console.log(value);
+      $('input[name="intent"]').val(value);
+    })
+    pickerout.on('change', (picker, value, displayValue) => {
+      console.log(value);
       $('input[name="intent"]').val(value);
     })
   });
+  let p = 'hide', pin = 'hide', pout = 'hide';
   return () => $h`
   <form id="redeem" class="list list-strong list-outline-ios list-dividers-ios">
   <ul>
-    ${props.pledge && $h`
-    <li class="list-group-title">Redeem Intent</li>
-    `}
-    ${props.pldege === 'in' && $h`
-    <li class="item-content item-input in">
+    <li class="list-group-title ${p}">Redeem Intent</li>
+    <li class="item-content item-input in ${pin}">
       <div class="item-inner">
         <div class="item-input-wrap">
           <input type="text" id="assignin" placeholder="Pick a category for this pledge" readonly="readonly" required />
         </div>
       </div>
     </li>
-    `}
-    ${props.pldege === 'out' && $h`
-    <li class="item-content item-input out">
+    <li class="item-content item-input out ${pout}">
       <div class="item-inner">
         <div class="item-input-wrap">
           <input type="text" id="assignout" placeholder="Pick a category for this pledge" readonly="readonly" required />
         </div>
       </div>
     </li>
-    `}
     <li class="item-content item-input hide">
       <div class="item-inner">
         <div class="item-input-wrap">
@@ -336,7 +346,7 @@ const Details = (props, { $h }) => {
         <div class="item-inner">
           <div class="item-title item-label">${partyLabel(props.categ)}</div>
           <div class="item-input-wrap">
-            <input name="party" type="text" placeholder="Enter name of "+${partyLabel(props.categ)} />
+            <input name="party" type="text" placeholder="Enter name of "${partyLabel(props.categ)} />
             <span class="input-clear-button"></span>
           </div>
         </div>

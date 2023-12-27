@@ -97,19 +97,19 @@
 
   import Categories from '../pages/local-components/categ.js';
   import {TrackerType, RedeemIntent, Details} from '../pages/local-components/categ.js';
-  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
     let categ = "Loan out", pledge = null;
 
     const TOPG = {};
 
     $onMounted(() => {
       $('input[name="track"]').on("change", function () {
-        categ = this.value; let arr = categ.split();
+        categ = this.value; let arr = categ.trim().split(' ');
         if (arr[0] === 'Pledge') {
           pledge = arr[1];
         } else {
           pledge = null;
-        }; $update();
+        }; $update(() => $f7.emit('checkredeem'));
       })
     })
     $on('pageInit', () => {

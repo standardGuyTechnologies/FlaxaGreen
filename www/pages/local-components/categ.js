@@ -371,6 +371,7 @@ const Details = (props, { $h }) => {
           </div>
         </div>
       </li>
+      `}
       <li class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Location</div>
@@ -380,7 +381,6 @@ const Details = (props, { $h }) => {
           </div>
         </div>
       </li>
-      `}
       <li class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Additional Information</div>

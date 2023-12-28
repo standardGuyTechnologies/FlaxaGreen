@@ -78,14 +78,14 @@ const labelmap = new Map([
 ]);
 
 const trackermap = new Map([
-  ["looutnP", {
-    label: "Loan (Administered)",
+  ["Loan out", {
+    label: "Loan Administered",
     sign: -1,
     placeholder: "Loan administered",
     subcateg: [],
   }],
-  ["loinnP", {
-    label: "Loan (Received)",
+  ["Loan in", {
+    label: "Loan Received",
     sign: 1,
     placeholder: "Loan received",
     subcateg: [],
@@ -114,14 +114,14 @@ const trackermap = new Map([
     placeholder: "Incurred loan pardoned",
     subcateg: [],
   }],
-  ["guoutnP", {
-    label: "Pledge (Made)",
+  ["Pledge out", {
+    label: "Pledge Made",
     sign: 0,
     placeholder: "Pledge made",
     subcateg: [],
   }],
-  ["guinnP", {
-    label: "Pledge (Expecting)",
+  ["Pledge in", {
+    label: "Pledge Expecting",
     sign: 0,
     placeholder: "Pledge expecting",
     subcateg: [],
@@ -150,14 +150,14 @@ const trackermap = new Map([
     placeholder: "Expectant pledge abandoned",
     subcateg: [],
   }],
-  ["sdoutnP", {
-    label: "Security-deposit (Made)",
+  ["Deposit out", {
+    label: "Security-deposit Made",
     sign: -1,
     placeholder: "Out deposits",
     subcateg: [],
   }],
-  ["sdinnP", {
-    label: "Security-deposit (Received)",
+  ["Deposit in", {
+    label: "Security-deposit Received",
     sign: 1,
     placeholder: "Accepted deposits",
     subcateg: [],

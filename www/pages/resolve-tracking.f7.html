@@ -1,0 +1,182 @@
+<template>
+  <div class="page" data-name="resolve-track">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title">Manage Tracker</div>
+      </div>
+    </div>
+    <div class="toolbar toolbar-bottom no-hairline">
+      <div class="toolbar-inner flex-c--">
+        <a href="#" class="link" @click=${save}>Save Data</a>
+      </div>
+    </div>
+    <div class="page-content">
+      <!-- <div></div> -->
+      <form class="list list-strong list-outline-ios list-dividers-ios">
+        <ul>
+          <li class="list-group-title">Resolve Options</li>
+          <li>
+            <label class="item-radio item-content">
+              <input type="radio" name="resolve" value="amt" checked />
+              <i class="icon icon-radio"></i>
+              <div class="item-inner">
+                <div class="item-title">${opt_raise(data.categ)}</div>
+              </div>
+            </label>
+          </li>
+          <li>
+            <label class="item-radio item-content">
+              <input type="radio" name="resolve" value="repaid" />
+              <i class="icon icon-radio"></i>
+              <div class="item-inner">
+                <div class="item-title">${opt_repaid(data.categ)}</div>
+              </div>
+            </label>
+          </li>
+          ${data.categ !== 'Deposit' && $h`
+          <li>
+            <label class="item-radio item-content">
+              <input type="radio" name="resolve" value="forfeit" />
+              <i class="icon icon-radio"></i>
+              <div class="item-inner">
+                <div class="item-title">${opt_forfeit(data.categ)}</div>
+              </div>
+            </label>
+          </li>
+          `}
+        </ul>
+      </form>
+      <${Details} />
+      <div class="list list-strong list-outline list-dividers-ios simple-list">
+        <ul>
+          <li class="list-group-title">Background Information</li>
+          <li><span>Category</span><span>${trackermap.get(groupcateg).label}</span></li>
+          <li><span>${partyLabel(groupcateg)}</span><span>${data.party}</span></li>
+          <li><span>Date Opened</span><span>${strDate(data.date)}</span></li>
+          <li><span>Opening Amount</span><span>${data.val}</span></li>
+          <li><span>Opening Account</span><span>${data.acc}</span></li>
+          <li><span>Last Update</span><span>${strDate(data.date2)}</span></li>
+          <li><span>Current Amount</span><span>${data.val2}</span></li>
+          <li><span>Todays Date</span><span>${date}</span></li>
+          <li><span>Active Account</span><span>${acc}</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .page[data-name="resolve-track"] .list-group-title {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+
+  .page[data-name="resolve-track"] .item-after .card {
+    margin: 0;
+  }
+
+  .page[data-name="resolve-track"] .item-after .card-header {
+    min-height: 0px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .page[data-name="resolve-track"] .item-after .card-content {
+    display: flex;
+    justify-content: flex-end;
+    line-height: 1.2px;
+  }
+</style>
+
+<script>
+  import validate from '../js/oopform.js';
+  import getDB from '../js/db.js';
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, trackermap } = G.V;
+  const { getFirstTime, aboveThreshold, strDate, partyLabel } = G.F;
+
+  import Categories from '../pages/local-components/categ.js';
+  import { TrackerType, RedeemIntent, Details } from '../pages/local-components/categ.js';
+  export default (props, { $f7ready, $f7, $f7route, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
+    const date = strDate(props.date), acc = props.acc;
+    const data = props.data;
+    const groupcateg = data.categ+' '+data.subcateg;
+
+    const TOPG = {};
+
+    $onMounted(() => {
+    })
+    $on('pageInit', () => {
+
+    })
+
+    $onBeforeUnmount(() => {
+    })
+
+    function opt_raise (categ) {
+      let value = '';
+      switch (categ) {
+        case 'Loan': value = "Top-up Loan"; break;
+        case 'Pledge': value = "Raise Pledge"; break;
+        case 'Deposit': value = "Additional Deposit"; break;
+        default: value = '';
+      }
+      return value;
+    }
+    function opt_repaid (categ) {
+      let value = '';
+      switch (categ) {
+        case 'Loan': value = "Repayment"; break;
+        case 'Pledge': value = "Redeem"; break;
+        case 'Deposit': value = "Retrieved"; break;
+        default: value = '';
+      }
+      return value;
+    }
+    function opt_forfeit (categ) {
+      let value = '';
+      switch (categ) {
+        case 'Loan': value = "Pardon"; break;
+        case 'Pledge': value = "Abandon"; break;
+        default: valule = '';
+      }
+      return value;
+    }
+
+    function save() {
+      const dform = $('form#details')[0];
+      const id = Math.round(Date.now() * Math.random());
+      const track = dform.track.value.split(' ');  // eg "loan out"
+      const categ = track[0];
+      const subcateg = track[1];
+      const party = dform.party.value;
+      const intent = $('form#redeem')[0].intent.value;
+      const val = Number(dform.amt.value) * trackermap.get(categ + subcateg + 'nP').sign
+      const info = dform.info.value;
+
+      getDB().transaction(function (tx) {
+        tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
+        tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, props.date, props.acc, info, val, 'amt'], function (tx, result) {
+          tx.executeSql('DELETE FROM TRACKDIFF', [], function (tx, result) {
+            tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {
+              $f7.dialog.alert('Tracker created', 'Done!')
+            });
+          });
+        })
+      }, function (e) { console.log(e) }, function () { $f7.emit(categ) });
+    }
+
+
+    return $render;
+  }
+</script>

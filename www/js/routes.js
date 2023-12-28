@@ -5,6 +5,7 @@ import Records from "../pages/records.f7.html"
 import Fast from "../pages/fast.f7.html"
 import Tracking from "../pages/tracking.f7.html"
 import NewTracking from "../pages/new-tracking.f7.html"
+import ResolveTracking from "../pages/resolve-tracking.f7.html"
 
 import getDB from './db.js';
 import G from './uiglobals.js';
@@ -92,7 +93,7 @@ export default [
           props1.date = Number(from.params.date); props1.acc = from.params.acc;
           const db = getDB();
           db.transaction(function (tx) {
-            tx.executeSql('SELECT id, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party HAVING date <= ? ORDER BY date DESC', ['active', props1.date], function (tx, result) {
+            tx.executeSql('SELECT id, date, acc, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party HAVING date <= ? ORDER BY date DESC', ['active', props1.date], function (tx, result) {
               const arr = [], res = result.rows;
               for(let i=0; i<res.length; i++){
                 arr.push(res.item(i));
@@ -100,7 +101,7 @@ export default [
               resolve(
                 { component: Tracking }, 
                 { 
-                  props: { data: arr } 
+                  props: { data: arr, date: props1.date, acc: props1.acc } 
                 }
               )
             })
@@ -113,6 +114,28 @@ export default [
         options: {
           animate: true,
           props: props1
+        },
+      },
+      {
+        path: '/resolve-track/',
+        async: function ({ app, from, to, resolve, reject }) {
+          const id = Number(to.query.id), date = Number(to.query.date), acc = to.query.acc;
+          const db = getDB(); const data = {};
+          db.transaction(function (tx) {
+            tx.executeSql('SELECT id, date, acc, categ, subcateg, party, intent, val FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE id = ? ORDER BY date ASC LIMIT 1', [id], function (tx, result) {
+              Object.assign(data, result.rows.item(0));
+            })
+            tx.executeSql('SELECT date AS date2, acc AS acc2, SUM(val) AS val2 FROM TRACKPHASE WHERE id = ? ORDER BY date DESC LIMIT 1', [id], function (tx, result) {
+              Object.assign(data, result.rows.item(0));
+            })
+          }, function (e) {reject(); console.log(e)}, function () {
+            resolve(
+              { component: ResolveTracking }, 
+              { 
+                props: { data, date, acc } 
+              }
+            )
+          });
         },
       },
     ],

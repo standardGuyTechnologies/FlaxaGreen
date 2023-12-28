@@ -28,7 +28,7 @@ function initDB(){
       tx.executeSql('CREATE TABLE IF NOT EXISTS QUICKDIFF (date INT NOT NULL, acc NOT NULL, qdiff DEFAULT 0)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS TRACK (id, categ, subcateg, state, party, intent)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKDIFF (date, acc, tdiff DEFAULT 0)');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKPHASE (id, date, acc, info, val DEFAULT 0, type)'); // type is of amt, repaid, forfeit
+      tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKPHASE (id, date, acc, val DEFAULT 0, type, location, info)'); // type is of amt, repaid, forfeit
     }, function(e) {reject(e)}, function(){resolve(db)})
   })
 }

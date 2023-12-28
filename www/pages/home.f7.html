@@ -75,7 +75,9 @@
                       <span>NET CASH FLOW:</span> <span>${entry.net}</span>
                     </div>
                   </div>
-                  <div class="item-after"><i class="f7-icons if-not-md">trash_fill</i></div>
+                  <!-- <div @click="${deleteTL}" class="item-after">
+                    <i class="f7-icons if-not-md">trash_fill</i>
+                  </div> -->
                 </div>
               </a>
             </li>
@@ -116,7 +118,7 @@
   import getDB from '../js/db.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs } = G.V;
-  const {getFirstTime, aboveThreshold, preload_image, } = G.F;
+  const {getFirstTime, toUTCms, aboveThreshold, preload_image, } = G.F;
 
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
@@ -125,6 +127,9 @@
 
     function datestr(str) {
       return new Date(str).toDateString();
+    }
+    function deleteTL () {
+
     }
 
     let active = '', counts = 0;
@@ -137,7 +142,15 @@
         text: '',
         content: dialoginputs,
         buttons: [
-          { text: 'Cancel', close: true, },
+          { text: 'Cancel', close: true, 
+            onClick: function(dialog, e) {
+              const inputs = $("#create input")
+              inputs.val('0');
+              $f7.input.validate(inputs.eq(0)[0]);
+              $f7.input.validate(inputs.eq(1)[0]);
+              inputs.val('');
+            } 
+          },
           {
             text: 'Save', keyCodes: [13], 
             close: false,
@@ -161,13 +174,13 @@
           closed: function (calendar) {
             let acc = active; let calArr = calendar.getValue();
             if (!calArr) return $f7.dialog.alert('Please pick a date', 'Alert!')
-            let date = calArr[0];
+            let date = toUTCms(calArr[0]);
             let test1 = tldata.filter(o => o.date === date)
             let test2 = test1.filter(o => o.acc === acc);
             if (test2.length) return $f7.dialog.alert('Date entry on this account already exist', "Oops!")
-            let datestr = date.toISOString();
+            let datestr = calArr[0].toISOString();
             let net = 0, qdiff = 0, tdiff = 0;
-            tldata.push({date, datestr, acc, net, qdiff, tdiff}); 
+            tldata.unshift({date, datestr, acc, net, qdiff, tdiff}); 
             $update(() => $f7.dialog.alert('Date entry added', 'Done!'));
           }
         }

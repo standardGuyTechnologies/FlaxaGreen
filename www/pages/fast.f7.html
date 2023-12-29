@@ -168,16 +168,23 @@
       const subcateg = dform.subcateg.value;
       const item = dform.item.value;
       const amt = Number(dform.amt.value) * labelmap.get(code).sign
-      const qty = dform.qty.value;
+      const target = dform.target ? dform.target.value : null;
+      const qty = dform.qty ? dform.qty.value : null;
       const location = dform.location.value;
       const info = dform.info.value;
 
       getDB().transaction(function (tx) {
-        // make a version for transfer, replacing qty with target todo
         // rule no1 anytime u update quick you must update quickdiff
-        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {
+        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, target, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc, categ, subcateg, item, amt, qty, target, location, info], function (tx, result) {
           updateQCHANGES($f7, tx, {date, acc, categ, subcateg});
         })
+        if (categ === 'Money Transfer' && target) {
+          console.log( "here" );
+          const nusubcateg = "Inbound Transfer";
+          tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, target, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, target, categ, nusubcateg, item, amt*-1, qty, acc, location, info], function (tx, result) {
+          updateQCHANGES($f7, tx, {date, target, categ, nusubcateg});
+        })
+        }
       }, function (e) {console.log(e)}, function () { 
         $f7.dialog.alert('Transaction saved', 'Done!') 
       });

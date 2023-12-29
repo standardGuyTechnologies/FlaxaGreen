@@ -50,12 +50,13 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
   let instances = []; let sheet
   $onMounted(() => {
     makeinstances(props).then(i => {instances = i; $update()} )
+    $f7.on('quick-sheet', (unique) => { // todo fix
+      if (props.unique !== unique) return;
+      makeinstances(props).then(i => {instances = i; $update()} )
+    })
   })
   $onUnmounted(() => {
     // sheet.destroy();
-  })
-  $f7.on('props.unique', () => { // todo fix
-    makeinstances(props).then(i => {instances = i; $update()} )
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
@@ -104,12 +105,13 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
   let instances = []; let sheet;
   $onMounted(() => {
     makeinstances2(props).then(i => {instances = i; $update()} )
+    $f7.on('track-sheet', (unique) => {
+      if (props.unique !== unique) return;
+      makeinstances2(props).then(i => {instances = i; $update()} )
+    })
   })
   $onUnmounted(() => {
     // sheet.destroy();
-  })
-  $f7.on('props.unique', () => { // todo fix 
-    makeinstances2(props).then(i => {instances = i; $update()} )
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">

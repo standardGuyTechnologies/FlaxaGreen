@@ -54,13 +54,14 @@
 <script>
   import validate from '../js/oopform.js';
   import getDB from '../js/db.js';
+  import {updateTCHANGES} from '../js/dbupdates.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs, trackermap } = G.V;
   const {getFirstTime, aboveThreshold, preload_image, } = G.F;
 
   import Categories from '../pages/local-components/categ.js';
   import {TrackerType, RedeemIntent, Details} from '../pages/local-components/categ.js';
-  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
+  export default (props, { $f7ready, $f7, $f7route, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
     let categ = "Loan out", pledge = null;
     const date = Number($f7route.query.date), acc = $f7route.query.acc;
 
@@ -99,22 +100,7 @@
       getDB().transaction(function (tx) { 
         tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
         tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, date, acc, info, val, 'amt'], function (tx, result) {
-          tx.executeSql('DELETE FROM TRACKDIFF', [], function (tx, result) {
-            tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {
-              tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [date, acc], function (tx, result) {
-                let x = result.rows.item(0); if (!x.qdiff) x.qdiff = 0;
-                Object.assign(window.$tlEntry, x);
-                window.$tlUpdate();
-              });
-            });
-          });
-          tx.executeSql('SELECT categ, info, COUNT(*) AS instances, SUM(val) AS sumamt FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? AND date = ? AND acc = ? GROUP BY categ', ["Pledge", "forfeit", date, acc], function (tx, result) {
-            const res = result.rows, arr = []; 
-            for(let i=0; i<res.length; i++){
-              arr.push(res.item(i));
-            }
-            $f7.emit('refresh-track', arr, categ, subcateg);
-          });
+          updateTCHANGES($f7, tx, {date, acc, categ, subcateg});
         })
       }, function (e) {console.log(e)}, function () { $f7.dialog.alert('Tracker created', 'Done!') });
     }

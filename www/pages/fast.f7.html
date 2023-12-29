@@ -102,6 +102,7 @@
 <script>
   import validate from '../js/oopform.js';
   import getDB from '../js/db.js';
+  import { updateQCHANGES } from '../js/dbupdates.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs, labelmap } = G.V;
   const {getFirstTime, aboveThreshold, preload_image, } = G.F;
@@ -175,22 +176,7 @@
         // make a version for transfer, replacing qty with target todo
         // rule no1 anytime u update quick you must update quickdiff
         tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {
-          tx.executeSql('DELETE FROM QUICKDIFF', [], function (tx, result) {
-            tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc', [], function (tx, result) {
-              tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [date, acc], function (tx, result) {
-                let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
-                Object.assign(window.$tlEntry, x);
-                window.$tlUpdate();
-              });
-            });
-          });
-          tx.executeSql('SELECT categ, subcateg, info, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [date, acc], function (tx, result) {
-            const res = result.rows, arr = []; 
-            for(let i=0; i<res.length; i++){
-              arr.push(res.item(i));
-            }
-            $f7.emit('refresh-quick', arr, categ, subcateg);
-          });
+          updateQCHANGES($f7, tx, {date, acc, categ, subcateg});
         })
       }, function (e) {console.log(e)}, function () { 
         $f7.dialog.alert('Transaction saved', 'Done!') 

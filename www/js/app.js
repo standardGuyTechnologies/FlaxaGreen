@@ -103,6 +103,7 @@ function mockdata (db) {
 document.addEventListener('deviceready', () => {
   // adsSDKconfig(); paymentsSDKconfig(); todo uncomment
   initDB().then(mockdata).then(db => {
+    store.dispatch('accrefresh', '');
     db.transaction(function (tx) {
       tx.executeSql('SELECT * FROM CONFIG', [], function (tx, result) {
         if (!result.rows.length) {

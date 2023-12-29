@@ -21,11 +21,11 @@ export default {
       state.hasCurr = val;
     },
     accrefresh({ state }, active) {
-      getDB().transactions(function(tx){
+      getDB().transaction(function(tx){
         tx.executeSql('SELECT * FROM ACCOUNTS WHERE acc <> ?', [active], function (tx, result) {
           const res = result.rows, accobj = [];
           for (let i = 0; i < res.length; i++) {
-            arr.push(res.item(i));
+            accobj.push(res.item(i));
           }
           state.accountsobj = accobj;
           state.accounts = accobj.map(x => x.acc);

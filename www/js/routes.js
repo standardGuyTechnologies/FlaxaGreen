@@ -78,6 +78,15 @@ export default [
         options: {
           animate: true,
         },
+        beforeEnter: function ({app, to, resolve}) {
+          const date = Number(to.query.date), acc = to.query.acc;
+          app.store.dispatch('accrefresh', acc);
+          resolve();
+        },
+        beforeLeave: function ({app, to, resolve}) {
+          app.store.dispatch('accrefresh', '');
+          resolve();
+        },
       },
       {
         path: '/tracking-transactions/',

@@ -134,11 +134,14 @@ export default [
   {
     path: '/general-info/',
     async: function ({ app, resolve, reject }) {
-      const db = getDB(); let query2; const activetrack = [];
+      const db = getDB(); const query2 = []; const activetrack = [];
       let trackamt = {}, trackr = {}, trackf = {};
       db.transaction(function (tx) {
         tx.executeSql('SELECT acc, SUM(qdiff) AS qnet, SUM(tdiff) AS tnet FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) GROUP BY acc ORDER BY acc', [], function (tx, result) {
-          query2 = result.rows;
+          const res = result.rows;
+          for(let i=0; i<res.length; i++){
+            query2.push(res.item(i));
+          }
         })
         tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK WHERE state = ? GROUP BY categ', ['active'], function (tx, result) {
           const res = result.rows;
@@ -169,16 +172,18 @@ export default [
           }
         })
       }, function (e) {reject(); console.log(e)}, function () {
-        const arr = []; let i = 0, j = 0;
         const query1 = app.store.getters.getaccobj.value;
-        for(; i<query1.length; i++){
-          let x = query1[i]; x.bal += query2.item(i).qnet + query2.item(i).tnet;
-          arr.push(x); j += x.bal;
-        }
+        const arr = query1.map((x, i) => {
+          const acc = query2[i] ? query2[i].acc : null;
+          if (x.acc == acc) x.bal += query2[i].qnet + query2[i].tnet;
+          return x;
+        })
+        const totalcount = query1.length;
+        const totalbal = arr.reduce((a, x) => { return a += x.bal }, 0);
         resolve(
           { component: Ginfo }, 
           { 
-            props: { data: arr, totalcount: i, totalbal: j, activetrack, trackamt, trackr, trackf } 
+            props: { data: arr, totalcount, totalbal, activetrack, trackamt, trackr, trackf } 
           }
         )
       });

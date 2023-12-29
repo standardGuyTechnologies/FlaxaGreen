@@ -3,13 +3,17 @@ export default {
   state: {
     hasCurr: true,
     accounts: [],
+    accountsobj: [],
   },
   getters: {
     hasCurr({ state }) {
       return state.hasCurr;
     },
-    getacc({ state }) {
+    getaccstr({ state }) {
       return [...state.accounts];
+    },
+    getaccobj({ state }) {
+      return [...state.accountsobj];
     },
   },
   actions: {
@@ -18,12 +22,13 @@ export default {
     },
     accrefresh({ state }, active) {
       getDB().transactions(function(tx){
-        tx.executeSql('SELECT acc FROM ACCOUNTS WHERE acc <> ?', [active], function (tx, result) {
-          const res = result.rows, arr = [];
+        tx.executeSql('SELECT * FROM ACCOUNTS WHERE acc <> ?', [active], function (tx, result) {
+          const res = result.rows, accobj = [];
           for (let i = 0; i < res.length; i++) {
-            arr.push(res.item(i).acc);
+            arr.push(res.item(i));
           }
-          state.accounts = arr;
+          state.accountsobj = accobj;
+          state.accounts = accobj.map(x => x.acc);
         })
       }, function (e) {console.log(e)}, function () {})
     }

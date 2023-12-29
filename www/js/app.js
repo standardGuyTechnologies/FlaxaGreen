@@ -7,6 +7,7 @@ import params from "./store.js"
 import {recordsItemSheet, recordsTrackSheet} from "./custom-components.js"
 import {initDB} from './db.js';
 import G from './uiglobals.js'; 
+import {adsSDKconfig, paymentsSDKconfig} from '../../cordova/sdk/sdk.js'; 
 
 const { utcTimeDate, xDaysAgo, digitcomma, computeInput, save4analyzer, reset_currtokens, errorclose } = G.F;
 const { ipcRenderer, labelmap, trackermap, box, analyzerRexe, appmsgs, } = G.V;
@@ -119,50 +120,6 @@ if (typeof cordova === 'undefined') {
   document.dispatchEvent(new Event('deviceready'));
 }
 
-function adsSDKconfig () {
-  // Before loading ads, have your app initialize the Google Mobile Ads SDK by calling
-  // This needs to be done only once, ideally at app launch.
-  cordova.plugins.emiAdmobPlugin.initialize(
-    // Optional
-    (info) => { console.log(info) },
-    (error) => { console.log(error) }
-  );
-  document.addEventListener('on.sdkInitialization', () => {
-    console.log("\n On Sdk Initialization");
-  });
-}
-function paymentsSDKconfig() {
-  // Configure RevenueCat SDK
-  if (process.env.ENVIRON === 'development') {
-    Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE); // should make a version 4 production
-  }
-  if (window.cordova.platformId === 'ios') {
-    // Purchases.configureWith({ apiKey: <public_ios_sdk_key> });
-  } else if (window.cordova.platformId === 'android') {
-    Purchases.configureWith({ apiKey: "goog_bJcMgQgiGSTGUiKqNcWKGhhlIzi" });
-    // OR: if building for Amazon, be sure to follow the installation instructions then:
-    // Purchases.configureWith({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
-  }
-  Purchases.getCustomerInfo(
-    customerInfo => {
-      Object.keys(customerInfo.entitlements.all).forEach(e_id => {
-        let status = customerInfo.entitlements.all[e_id];
-        let isActive = status.isActive, prodId = status.productIdentifier;
-        let arr = status.expirationDate ?
-          status.expirationDate.split('T').shift().split('-').map(x => Number(x)) :
-          [1970, 1, 1];
-        let expD = Date.UTC(arr[0], arr[1] - 1, arr[2]);
-        let premium = { isActive, prodId, expD };
-        let proEvt = new Event('proUser.config'); proEvt.premium = premium;
-        document.dispatchEvent(proEvt);
-      });
-    },
-    error => {
-      console.log('Error fetching customerInfo', error);
-      console.log(error.message, error.readableErrorCode)
-    }
-  )
-}
 
 document.addEventListener('securitypolicyviolation', (e) => {
   console.log(e.blockedURI);

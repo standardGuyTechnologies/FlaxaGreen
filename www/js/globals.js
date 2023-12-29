@@ -43,7 +43,7 @@ const labelmap = new Map([
     label: "Expenses", 
     sign: -1, 
     placeholder: "Cash spent", 
-    subcateg: ["Travel", "Commute", "Meals", "Fast food", "Snacks", "Drinks", "Fruits", "Drugs", "Connectivity", "Clothes", "Ornaments", "Provisions", "News", "Books", "Printing", "Furniture", "Devices", "Equipment", "Tuition", "Rent", "Bills", "Maintenance", "Repairs", "Saloon", "Toys", "Art", "Photos", "Movie", "Music", "Games", "Leisure", "Artifact", "Registration", "Membership", "Refuel", "Vehicle"], 
+    subcateg: ["Travel", "Public Transport", "Meals", "Fast Food", "Snacks", "Drinks", "Fruits", "Checkup", "Treatment", "Connectivity", "Clothes", "Ornaments", "Provisions", "Sweets", "News", "Books", "Printing", "Furniture", "Devices", "Security", "Tuition", "Housing", "Bills", "Maintenance", "Repairs", "Saloon", "Toys", "Art", "Photos", "Movie", "Music", "Games", "Leisure", "Artifact", "Registration", "Membership", "Refuel", "Vehicle"], 
   }],
   ['d', {
     label: "Dividends", 
@@ -67,13 +67,13 @@ const labelmap = new Map([
     label: "Investments", 
     sign: -1, 
     placeholder: "Cash invested", 
-    subcateg: ["Bets", "Goods", "Assets", "Corporate", ], 
+    subcateg: ["Bets", "Office Building", "Office Decor", "Office Equipment", "Advertisements", "Logistics", "Goods", "Corporate" ], 
   }],
   ['n', {
-    label: "Transfer into", 
+    label: "Money Transfer", 
     sign: -1, 
     placeholder: "Transfers to domicile", 
-    subcateg: ["via POS", "via ATM", ], 
+    subcateg: ["Outbound Transfer" ], 
   }],
 ]);
 

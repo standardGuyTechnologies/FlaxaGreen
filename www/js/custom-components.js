@@ -1,14 +1,13 @@
 import getDB from "./db";
 import G from "./uiglobals"
+import { updateQCHANGES } from "./dbupdates.js"
 const { maxamt, box, appmsgs } = G.V;
 const {getFirstTime, aboveThreshold, digitcomma, } = G.F;
-function onDeleted (rowid, props, type) {
+function onDeleted ($f7, rowid, props, type) {
   if (type === 'q') {
     getDB().transaction(function (tx) {
       tx.executeSql('DELETE FROM QUICK WHERE rowid = ?', [rowid], function (tx, result) {
-        tx.executeSql('SELECT SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc HAVING date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
-          tx.executeSql('UPDATE QUICKDIFF SET qdiff = ? WHERE date = ? AND acc = ?', [result.rows.item(0).qdiff, props.date, props.acc]);
-        });
+        updateQCHANGES($f7, tx, props);
       })
     }, function (e) { console.log(e) }, function () {  })
   } else if (type === 't') {
@@ -66,7 +65,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
         <div class="list list-outline-ios list-dividers-ios">
           <ul>
             ${instances.map(obj => $h`
-            <li class="swipeout" @swipeout:deleted=${() => onDeleted(obj.rowid, props, 'q')}>
+            <li class="swipeout" @swipeout:deleted=${() => onDeleted($f7, obj.rowid, props, 'q')}>
               <div class="item-content swipeout-content">
                 <div class="item-inner">
                   <div class="item-title">

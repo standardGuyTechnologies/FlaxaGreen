@@ -15,28 +15,30 @@ export default [
   {
     path: '/',
     async: function ({ app, resolve, reject }) {
-      const db = getDB(), arr1 = [], arr2 = []; let arr;
+      const db = getDB();
+      const tlmap = new Map();
       db.transaction(function (tx) {
         tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE qdiff IS NULL', [], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             let x = res.item(i); x.qdiff = 0;
-            arr2.push(x);
+            let date = x.date, acc = x.acc;
+            tlmap.set(date+acc, x);
           }
         })
         tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc)', [], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             let x = res.item(i); if (!x.tdiff) x.tdiff = 0;
-            arr1.push(x);
+            let date = x.date, acc = x.acc;
+            tlmap.set(date+acc, x);
           }
         })
       }, function (e) {reject(); console.log(e)}, function () {
-        arr = [...arr1, ...arr2].sort((x, y) => y.date - x.date);
         resolve(
           { component: Home }, 
           { 
-            props: { data: arr } 
+            props: { data: [...tlmap.entries()] } 
           }
         )
       });

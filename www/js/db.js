@@ -24,11 +24,11 @@ function initDB(){
       /* date is converted to Utcms before storage */
       tx.executeSql('CREATE TABLE IF NOT EXISTS CONFIG (currency, currindex, delimeter)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS ACCOUNTS (acc, bal)');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS QUICK (date INT NOT NULL, acc NOT NULL, categ NOT NULL, subcateg NOT NULL, item NOT NULL, amt DEFAULT 0, qty, target, location, info)');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS QUICK (date INT NOT NULL, acc NOT NULL, categ NOT NULL, subcateg NOT NULL, item NOT NULL, amt DEFAULT 0, qty, target, location, info, search)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS QUICKDIFF (date INT NOT NULL, acc NOT NULL, qdiff DEFAULT 0)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS TRACK (id, categ, subcateg, state, party, intent)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKDIFF (date, acc, tdiff DEFAULT 0)');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKPHASE (id, date, acc, val DEFAULT 0, type, location, info)'); // type is of amt, repaid, forfeit
+      tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKPHASE (id, date, acc, val DEFAULT 0, type, location, info, search)'); // type is of amt, repaid, forfeit
     }, function(e) {reject(e)}, function(){resolve(db)})
   })
 }

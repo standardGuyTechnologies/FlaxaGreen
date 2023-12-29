@@ -63,9 +63,9 @@
       <div class="list list-outline-ios list-strong-ios list-dividers-ios">
         <ul>
           <li class="list-group-title">Timeline</li>
-          ${tldata.map(entry => $h`
+          ${$store.getters.tlentries.value.map(entry => $h`
             <li key="${entry.date+entry.acc}">
-              <a @click="${()=> window.$tlEntry = entry}" href="/transact/${entry.date}/${entry.acc}/" class="item-link item-content no-chevron">
+              <a href="/transact/${entry.date}/${entry.acc}/" class="item-link item-content no-chevron">
                 <div class="item-inner">
                   <div class="item-title" style="width: 100%;">
                     <div class="item-header" style="display: flex; justify-content: space-between;">
@@ -123,7 +123,7 @@
   export default (props, { $f7ready, $f7, $, $store, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
-    let tldata = props.data;
+    $store.dispatch('settldata', props.data);
 
     function datestr(str) {
       return new Date(str).toDateString();
@@ -134,7 +134,7 @@
 
     let active = '', counts = 0;
     $on('pageInit', () => {
-      $f7.on('tlUpdate', () => $update());
+      // $f7.on('tlUpdate', () => $update());
       accListUpdate();
       let dialog = TOPG.dialog = $f7.dialog.create({
         // containerEl: ".page-master",
@@ -176,13 +176,13 @@
             let acc = active; let calArr = calendar.getValue();
             if (!calArr) return $f7.dialog.alert('Please pick a date', 'Alert!')
             let date = toUTCms(calArr[0]);
-            let test1 = tldata.filter(o => o.date === date)
+            let test1 = $store.getters.tlentries.value.filter(o => o.date === date)
             let test2 = test1.filter(o => o.acc === acc);
             if (test2.length) return $f7.dialog.alert('Date entry on this account already exist', "Oops!")
             let datestr = calArr[0].toISOString();
             let qdiff = 0, tdiff = 0;
-            tldata.unshift({date, datestr, acc, qdiff, tdiff}); 
-            $update(() => $f7.dialog.alert('Date entry added', 'Done!'));
+            $store.dispatch('settldata', [[date+acc, {date, datestr, acc, qdiff, tdiff}]])
+            $f7.dialog.alert('Date entry added', 'Done!');
           }
         }
       });

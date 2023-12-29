@@ -123,7 +123,7 @@
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
-    let tldata = props.data; window.$tlUpdate = $update;
+    let tldata = props.data;
 
     function datestr(str) {
       return new Date(str).toDateString();
@@ -134,6 +134,7 @@
 
     let active = '', counts = 0;
     $on('pageInit', () => {
+      $f7.on('tlUpdate', () => $update());
       accListUpdate();
       let dialog = TOPG.dialog = $f7.dialog.create({
         // containerEl: ".page-master",

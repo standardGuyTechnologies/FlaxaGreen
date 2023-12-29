@@ -6,7 +6,7 @@ function qbackupplan($f7, tx, props) {
       let x = result.rows.item(0); if (!x.qdiff) x.qdiff = 0;
       Object.assign(window.$tlEntry, x);
     }
-    window.$tlUpdate();
+    $f7.emit('tlUpdate');
   });
 }
 function tbackupplan($f7, tx, props) {
@@ -17,7 +17,7 @@ function tbackupplan($f7, tx, props) {
       let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
       Object.assign(window.$tlEntry, x);
     }
-    window.$tlUpdate();
+    $f7.emit('tlUpdate');
   });
 }
 function updateQCHANGES ($f7, tx, props) {
@@ -27,7 +27,7 @@ function updateQCHANGES ($f7, tx, props) {
         if (!result.rows.length) return qbackupplan($f7, tx, props);
         let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
         Object.assign(window.$tlEntry, x);
-        window.$tlUpdate();
+        $f7.emit('tlUpdate');
       });
     });
   });
@@ -47,7 +47,7 @@ function updateTCHANGES ($f7, tx, props) {
         if (!result.rows.length) return tbackupplan($f7, tx, props);
         let x = result.rows.item(0); if (!x.qdiff) x.qdiff = 0;
         Object.assign(window.$tlEntry, x);
-        window.$tlUpdate();
+        $f7.emit('tlUpdate');
       });
     });
   });

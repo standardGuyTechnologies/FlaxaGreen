@@ -4,6 +4,7 @@ export default {
     hasCurr: true,
     accounts: [],
     accountsobj: [],
+    tldata: new Map(),
   },
   getters: {
     hasCurr({ state }) {
@@ -15,6 +16,9 @@ export default {
     getaccobj({ state }) {
       return [...state.accountsobj];
     },
+    tlentries({ state }) {
+      return [...state.tldata.values()];
+    }
   },
   actions: {
     accExists({ state }, val) {
@@ -31,6 +35,18 @@ export default {
           state.accounts = accobj.map(x => x.acc);
         })
       }, function (e) {console.log(e)}, function () {})
-    }
+    }, 
+    settldata ({ state }, maparr) {
+      maparr.sort((x, y) => y[1].date - x[1].date);
+      state.tldata = new Map([...maparr, ...state.tldata]);
+    },
+    updatetl ({ state }, {key, data}) {
+      let oldmap = state.tldata;
+      if (oldmap.get(key)) {
+        state.tldata = new Map([...oldmap.set(key, data)])
+      } else {
+        state.tldata = new Map([[key, data], ...oldmap])
+      }
+    },
   },
 }

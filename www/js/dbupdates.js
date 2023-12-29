@@ -1,33 +1,39 @@
-function qbackupplan($f7, tx, props) {
+function qbackupplan($f7, $store, tx, props) {
   tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
     if (!result.rows.length) {
-      Object.assign(window.$tlEntry, {qdiff: 0, tdiff: 0});
+      const date = props.date, datestr = date.toISOString(), acc = props.acc;
+      let x = {date, datestr,  acc, qdiff: 0, tdiff: 0}
+        let key = props.date+props.acc
+        $store.dispatch('updatetl', {key, data: x})
     } else {
       let x = result.rows.item(0); if (!x.qdiff) x.qdiff = 0;
-      Object.assign(window.$tlEntry, x);
+      let key = props.date+props.acc
+      $store.dispatch('updatetl', {key, data: x})
     }
-    $f7.emit('tlUpdate');
   });
 }
-function tbackupplan($f7, tx, props) {
+function tbackupplan($f7, $store, tx, props) {
   tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
     if (!result.rows.length) {
-      Object.assign(window.$tlEntry, {qdiff: 0, tdiff: 0});
+      const date = props.date, datestr = date.toISOString(), acc = props.acc;
+      let x = {date, datestr,  acc, qdiff: 0, tdiff: 0}
+        let key = props.date+props.acc
+        $store.dispatch('updatetl', {key, data: x})
     } else {
       let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
-      Object.assign(window.$tlEntry, x);
+      let key = props.date+props.acc
+      $store.dispatch('updatetl', {key, data: x})
     }
-    $f7.emit('tlUpdate');
   });
 }
-function updateQCHANGES ($f7, tx, props) {
+function updateQCHANGES ($f7, $store, tx, props) {
   tx.executeSql('DELETE FROM QUICKDIFF', [], function (tx, result) {
     tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc', [], function (tx, result) {
       tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
         if (!result.rows.length) return qbackupplan($f7, tx, props);
         let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
-        Object.assign(window.$tlEntry, x);
-        $f7.emit('tlUpdate');
+        let key = props.date+props.acc
+        $store.dispatch('updatetl', {key, data: x})
       });
     });
   });
@@ -40,14 +46,14 @@ function updateQCHANGES ($f7, tx, props) {
   });
 }
 
-function updateTCHANGES ($f7, tx, props) {
+function updateTCHANGES ($f7, $store, tx, props) {
   tx.executeSql('DELETE FROM TRACKDIFF', [], function (tx, result) {
     tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {
       tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
         if (!result.rows.length) return tbackupplan($f7, tx, props);
         let x = result.rows.item(0); if (!x.qdiff) x.qdiff = 0;
-        Object.assign(window.$tlEntry, x);
-        $f7.emit('tlUpdate');
+        let key = props.date+props.acc
+        $store.dispatch('updatetl', {key, data: x})
       });
     });
   });

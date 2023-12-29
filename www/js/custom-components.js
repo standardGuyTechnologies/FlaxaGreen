@@ -59,7 +59,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
     // sheet.destroy();
   })
   return () => $h`
-  <div class="sheet-modal" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
+  <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
     <div class="sheet-modal-inner">
       <div class="swipe-handler"></div>
       <div class="page-content">
@@ -114,7 +114,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
     // sheet.destroy();
   })
   return () => $h`
-  <div class="sheet-modal" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
+  <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
     <div class="sheet-modal-inner">
       <div class="swipe-handler"></div>
       <div class="page-content">

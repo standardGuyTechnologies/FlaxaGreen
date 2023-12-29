@@ -120,7 +120,7 @@
   const { maxamt, box, appmsgs } = G.V;
   const {getFirstTime, toUTCms, aboveThreshold, preload_image, } = G.F;
 
-  export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
+  export default (props, { $f7ready, $f7, $, $store, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
     let tldata = props.data;
@@ -196,9 +196,11 @@
         const acc = inputs.eq(0).val().trim();
         const bal = Math.round(Number(inputs.eq(1).val()) * 100)/100; /* round 2dp */
         getDB().transaction(function (tx) {
-          tx.executeSql('INSERT INTO ACCOUNTS (acc, bal) VALUES (?, ?)', [acc, bal])
-          TOPG.dialog.close(); $f7.dialog.alert('Account created.', 'Success!');
-          accListUpdate();
+          tx.executeSql('INSERT INTO ACCOUNTS (acc, bal) VALUES (?, ?)', [acc, bal], function(tx, result) {
+            $store.dispatch('accrefresh', '');
+            TOPG.dialog.close(); 
+            $f7.dialog.alert('Account created.', 'Success!', () => accListUpdate());
+          })
         })
       });
     })
@@ -220,28 +222,24 @@
     */
 
     function accListUpdate() {
-      const db = getDB();
-      db.transaction(function (tx) {
-        tx.executeSql('SELECT acc FROM ACCOUNTS', [], function (tx, result) {
-          const res = result.rows, accounts = [];
-          for (let i = 0; i < res.length; i++) {
-            accounts.push({ text: res.item(i).acc, onClick: setActive });
-          }
-          TOPG.actionSheet && TOPG.actionSheet.destroy();
-          TOPG.actionSheet = $f7.actions.create({
-            // containerEl: ".page-master",
-            buttons: [
-              // First Group
-              accounts,
-              // Second Group
-              [
-                { text: 'Cancel', color: 'red' }
-              ]
-            ],
-          });
-          active = accounts[0].text; counts = accounts.length; $update();
-        })
-      }, function (e) { $f7.dialog.alert(e) }, function () { });
+      const accounts = $store.getters.getaccstr.value.map(acc => {
+        return {text: acc, onClick: setActive}
+      })
+      TOPG.actionSheet && TOPG.actionSheet.destroy();
+      TOPG.actionSheet = $f7.actions.create({
+        // containerEl: ".page-master",
+        buttons: [
+          // First Group
+          accounts,
+          // Second Group
+          [
+            { text: 'Cancel', color: 'red' }
+          ]
+        ],
+      });
+      counts = accounts.length; 
+      active = counts ? accounts[0].text : ''; 
+      $update();
     }
     function setActive (actions, e) {
       active = e.target.textContent; $update();

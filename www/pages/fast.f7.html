@@ -9,7 +9,7 @@
             <span class="if-not-md">Back</span>
           </a>
         </div>
-        <div class="title">Fast Transactions</div>
+        <div class="title">Quick Transactions</div>
       </div>
     </div>
     <div class="toolbar toolbar-bottom no-hairline">
@@ -20,7 +20,7 @@
     <div class="page-content">
       <!-- <div></div> -->
       <${Categories} code="x" categ=${categ} subcateg=${subcateg} type="fast" />
-      <${Details} categ=${categ} subcateg=${subcateg} type="fast" />
+      <${Details} code="x" categ=${categ} subcateg=${subcateg} type="fast" />
       
     </div>
   </div>  
@@ -108,16 +108,31 @@
 
   import Categories from '../pages/local-components/categ.js';
   import {Details} from '../pages/local-components/categ.js';
-  export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
+  export default (props, { $f7ready, $f7, $f7route, $, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $store, $update }) => {
 
     const TOPG = {};
     const categ = "Expenses", subcateg="Fast food";
+    const date = Number($f7route.query.date), acc = $f7route.query.acc;
 
-
+    let locationSet = new Set();
+    $onBeforeMount(() => {
+      getDB().transaction(function (tx) {
+        tx.executeSql('SELECT location FROM QUICK WHERE location IS NOT NULL', [], function (tx, result) {
+          const res = result.rows;
+          for (let i = 0; i < res.length; i++) {
+            locationSet.add(res.item(i).location);
+          }
+        })
+        tx.executeSql('SELECT location FROM TRACKPHASE WHERE location IS NOT NULL', [], function (tx, result) {
+          const res = result.rows;
+          for (let i = 0; i < res.length; i++) {
+            locationSet.add(res.item(i).location);
+          }
+        })
+      }, function (e) { $f7.dialog.alert(e) }, function () {  });
+    })
     $on('pageInit', () => {
 
-      // todo create a factual prevlocation db/store
-      const prevlocation = ["Yaba", "Ikeja", "Victoria Island", "Ikeja"];
       TOPG.typeahead = $f7.autocomplete.create({
         inputEl: '#typeahead',
         openIn: 'dropdown',
@@ -129,6 +144,7 @@
             return;
           }
           // Find matched items
+          const prevlocation = [...locationSet];
           for (var i = 0; i < prevlocation.length; i++) {
             if (prevlocation[i].toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(prevlocation[i]);
           }
@@ -146,10 +162,11 @@
 
     function save () {
       const dform = $('form#details')[0];
+      const code = dform.code.value;
       const categ = dform.categ.value; 
       const subcateg = dform.subcateg.value;
       const item = dform.item.value;
-      const amt = Number(dform.amt.value) * labelmap.get(categ).sign
+      const amt = Number(dform.amt.value) * labelmap.get(code).sign
       const qty = dform.qty.value;
       const location = dform.location.value;
       const info = dform.info.value;
@@ -157,14 +174,27 @@
       getDB().transaction(function (tx) {
         // make a version for transfer, replacing qty with target todo
         // rule no1 anytime u update quick you must update quickdiff
-        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [props.date, props.acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {
-        tx.executeSql('DELETE FROM QUICKDIFF', [], function (tx, result) {
-          tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc', [], function (tx, result) {
-            $f7.dialog.alert('Transaction saved', 'Done!')
+        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc, categ, subcateg, item, amt, qty, location, info], function (tx, result) {
+          tx.executeSql('DELETE FROM QUICKDIFF', [], function (tx, result) {
+            tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc', [], function (tx, result) {
+              tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [date, acc], function (tx, result) {
+                let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
+                Object.assign(window.$tlEntry, x);
+                window.$tlUpdate();
+              });
+            });
           });
-        });
-      })
-      }, function (e) {console.log(e)}, function () {$f7.emit(categ+subcateg)});
+          tx.executeSql('SELECT categ, subcateg, info, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [date, acc], function (tx, result) {
+            const res = result.rows, arr = []; 
+            for(let i=0; i<res.length; i++){
+              arr.push(res.item(i));
+            }
+            $f7.emit('refresh-quick', arr, categ, subcateg);
+          });
+        })
+      }, function (e) {console.log(e)}, function () { 
+        $f7.dialog.alert('Transaction saved', 'Done!') 
+      });
     }
 
     return $render;

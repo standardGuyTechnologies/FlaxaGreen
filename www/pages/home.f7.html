@@ -64,15 +64,15 @@
         <ul>
           <li class="list-group-title">Timeline</li>
           ${tldata.map(entry => $h`
-            <li>
-              <a href="/transact/${entry.date}/${entry.acc}/" class="item-link item-content no-chevron">
+            <li key="${entry.date+entry.acc}">
+              <a @click="${()=> window.$tlEntry = entry}" href="/transact/${entry.date}/${entry.acc}/" class="item-link item-content no-chevron">
                 <div class="item-inner">
-                  <div class="item-title" style="width: 90%;">
+                  <div class="item-title" style="width: 100%;">
                     <div class="item-header" style="display: flex; justify-content: space-between;">
                       <span>${entry.acc}</span> <span>${datestr(entry.datestr)}</span>
                     </div>
                     <div class="inout">
-                      <span>NET CASH FLOW:</span> <span>${entry.net}</span>
+                      <span>NET CASH FLOW:</span> <span>${entry.qdiff+entry.tdiff}</span>
                     </div>
                   </div>
                   <!-- <div @click="${deleteTL}" class="item-after">
@@ -123,7 +123,7 @@
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.
     const page = $('.page[data-name="home"]')[0];
-    let tldata = props.data;
+    let tldata = props.data; window.$tlUpdate = $update;
 
     function datestr(str) {
       return new Date(str).toDateString();
@@ -179,8 +179,8 @@
             let test2 = test1.filter(o => o.acc === acc);
             if (test2.length) return $f7.dialog.alert('Date entry on this account already exist', "Oops!")
             let datestr = calArr[0].toISOString();
-            let net = 0, qdiff = 0, tdiff = 0;
-            tldata.unshift({date, datestr, acc, net, qdiff, tdiff}); 
+            let qdiff = 0, tdiff = 0;
+            tldata.unshift({date, datestr, acc, qdiff, tdiff}); 
             $update(() => $f7.dialog.alert('Date entry added', 'Done!'));
           }
         }

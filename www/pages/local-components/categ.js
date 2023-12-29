@@ -12,7 +12,7 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
       TOPG.popsubcateg && TOPG.popsubcateg.close();
       const form = $('form#details')[0];
       if (this.dataset.code) {
-        props.code = this.dataset.code
+        props.code = form.code.value = this.dataset.code
         props.categ = form.categ.value = this.dataset.categ
         props.subcateg = form.subcateg.value = labelmap.get(props.code).subcateg[0];
       } else if (this.dataset.subcateg) {
@@ -325,6 +325,7 @@ const Details = (props, { $h }) => {
     return () => $h`
   <form id="details" class="list list-strong list-outline-ios list-dividers-ios">
     <ul class="hide">
+      <li><input name="code" type="text" value=${props.code} /></li>
       <li><input name="categ" type="text" value=${props.categ} /></li>
       <li><input name="subcateg" type="text" value=${props.subcateg} /></li>
     </ul>

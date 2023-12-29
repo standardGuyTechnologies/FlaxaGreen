@@ -11,8 +11,6 @@ import getDB from './db.js';
 import G from './uiglobals.js';
 const {toUTCms, strDate } = G.F;
 
-const props1 = {};
-
 export default [
   {
     path: '/',
@@ -22,15 +20,14 @@ export default [
         tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE qdiff IS NULL', [], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            let x = res.item(i); x.net = x.tdiff;
+            let x = res.item(i); x.qdiff = 0;
             arr2.push(x);
           }
         })
         tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc)', [], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            let x = res.item(i); 
-            if (!x.tdiff) x.tdiff = 0; x.net = x.qdiff + x.tdiff;
+            let x = res.item(i); if (!x.tdiff) x.tdiff = 0;
             arr1.push(x);
           }
         })
@@ -80,20 +77,15 @@ export default [
         component: Fast,
         options: {
           animate: true,
-          props: props1
-        },
-        beforeEnter: function ({from, to, resolve}) {
-          props1.date = Number(from.params.date); props1.acc = from.params.acc;
-          resolve();
         },
       },
       {
         path: '/tracking-transactions/',
         async: function ({ app, from, to, resolve, reject }) {
-          props1.date = Number(from.params.date); props1.acc = from.params.acc;
+          const date = Number(from.params.date), acc = from.params.acc;
           const db = getDB();
           db.transaction(function (tx) {
-            tx.executeSql('SELECT id, date, acc, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party HAVING date <= ? ORDER BY date DESC', ['active', props1.date], function (tx, result) {
+            tx.executeSql('SELECT id, date, acc, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party HAVING date <= ? ORDER BY date DESC', ['active', date], function (tx, result) {
               const arr = [], res = result.rows;
               for(let i=0; i<res.length; i++){
                 arr.push(res.item(i));
@@ -101,7 +93,7 @@ export default [
               resolve(
                 { component: Tracking }, 
                 { 
-                  props: { data: arr, date: props1.date, acc: props1.acc } 
+                  props: { data: arr, date, acc } 
                 }
               )
             })
@@ -113,7 +105,6 @@ export default [
         component: NewTracking,
         options: {
           animate: true,
-          props: props1
         },
       },
       {

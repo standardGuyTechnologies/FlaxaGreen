@@ -321,7 +321,9 @@ const RedeemIntent = (props, { $h, $f7, $onMounted, $update }) => {
   </ul>
   </form>`;
 }
-const Details = (props, { $h }) => {
+const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
+  $onMounted(() => {
+  })
     return () => $h`
   <form id="details" class="list list-strong list-outline-ios list-dividers-ios">
     <ul class="hide">
@@ -329,6 +331,29 @@ const Details = (props, { $h }) => {
       <li><input name="categ" type="text" value=${props.categ} /></li>
       <li><input name="subcateg" type="text" value=${props.subcateg} /></li>
     </ul>
+    ${props.categ === "Money Transfer" && $h`
+    <ul>
+      <li class="list-group-title">Target Account</li>
+      ${$store.getters.getaccstr.value.map((acc, i) => $h`
+      <li>
+        <label class="item-radio item-content">
+          <input type="radio" name="transfer" value="${acc}" ${i==0 && "checked"} />
+          <i class="icon icon-radio"></i>
+          <div class="item-inner">
+            <div class="item-title">${acc}</div>
+          </div>
+        </label>
+      </li>
+      `)}
+      ${!store.getters.getaccstr.value.length && $h`
+      <li class="item-content">
+      <div class="item-inner">
+        <div class="item-title">Opps! You don't have another account</div>
+      </div>
+      </li>
+      `}
+    </ul>
+    `}
     <ul>
       <li class="list-group-title">Details</li>
       ${props.type === "fast" && $h`

@@ -37,6 +37,7 @@ function updateQCHANGES ($f7, $store, tx, props) {
       });
     });
   });
+  if (props.subcateg === 'Inbound Transfer') return;
   tx.executeSql('SELECT categ, subcateg, info, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [props.date, props.acc], function (tx, result) {
     const res = result.rows, arr = []; 
     for(let i=0; i<res.length; i++){

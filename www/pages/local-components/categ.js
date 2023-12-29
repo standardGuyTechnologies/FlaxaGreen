@@ -1,8 +1,9 @@
 import G from '../../js/uiglobals.js';
+import Framework7 from "framework7";
 const { maxamt, labelmap, trackermap, box, analyzerRexe, } = G.V;
 const { digitcomma, filtercomma, computeInput, partyLabel, aboveThreshold, utcTimeDate, getFirstTime, } = G.F;
 
-
+const comms = new Framework7.Events();
 const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
   const TOPG = {};
   $onMounted(() => {
@@ -10,14 +11,14 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
     function (e) {
       TOPG.popcateg && TOPG.popcateg.close();
       TOPG.popsubcateg && TOPG.popsubcateg.close();
-      const form = $('form#details')[0];
       if (this.dataset.code) {
-        props.code = form.code.value = this.dataset.code
-        props.categ = form.categ.value = this.dataset.categ
-        props.subcateg = form.subcateg.value = labelmap.get(props.code).subcateg[0];
+        props.code = this.dataset.code
+        props.categ = this.dataset.categ
+        props.subcateg = labelmap.get(props.code).subcateg[0];
       } else if (this.dataset.subcateg) {
-        props.subcateg = form.subcateg.value = this.dataset.subcateg
+        props.subcateg = this.dataset.subcateg
       }
+      comms.emit('update-details', props);
       $update();
     })
   })
@@ -323,21 +324,25 @@ const RedeemIntent = (props, { $h, $f7, $onMounted, $update }) => {
 }
 const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
   $onMounted(() => {
+    comms.on('update-details', (obj) => { /// todo off it
+      Object.assign(props, obj); $update();
+    })
   })
     return () => $h`
-  <form id="details" class="list list-strong list-outline-ios list-dividers-ios">
+  <form id="details">
     <ul class="hide">
       <li><input name="code" type="text" value=${props.code} /></li>
       <li><input name="categ" type="text" value=${props.categ} /></li>
       <li><input name="subcateg" type="text" value=${props.subcateg} /></li>
     </ul>
     ${props.categ === "Money Transfer" && $h`
+    <div class="list list-strong list-outline-ios list-dividers-ios">
     <ul>
       <li class="list-group-title">Target Account</li>
       ${$store.getters.getaccstr.value.map((acc, i) => $h`
       <li>
         <label class="item-radio item-content">
-          <input type="radio" name="transfer" value="${acc}" ${i==0 && "checked"} />
+          <input type="radio" name="transfer" value="${acc}" checked=${i==0 && "checked"} />
           <i class="icon icon-radio"></i>
           <div class="item-inner">
             <div class="item-title">${acc}</div>
@@ -345,15 +350,16 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
         </label>
       </li>
       `)}
-      ${!store.getters.getaccstr.value.length && $h`
+      ${!$store.getters.getaccstr.value.length && $h`
       <li class="item-content">
-      <div class="item-inner">
-        <div class="item-title">Opps! You don't have another account</div>
-      </div>
-      </li>
-      `}
+        <div class="item-inner">
+          <div class="item-title">Opps! You don't have another account</div>
+        </div>
+      </li>`}
     </ul>
+    </div>
     `}
+    <div class="list list-strong list-outline-ios list-dividers-ios">
     <ul>
       <li class="list-group-title">Details</li>
       ${props.type === "fast" && $h`
@@ -416,6 +422,7 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
         </div>
       </li>
     </ul>
+    </div>
   </form>`;
 }
 

@@ -1,6 +1,6 @@
 import getDB from "./db";
 import G from "./uiglobals"
-import { updateQCHANGES } from "./dbupdates.js"
+import { updateQCHANGES, updateTCHANGES } from "./dbupdates.js"
 const { maxamt, box, appmsgs } = G.V;
 const {getFirstTime, aboveThreshold, digitcomma, } = G.F;
 function onDeleted ($f7, rowid, props, type) {
@@ -13,9 +13,7 @@ function onDeleted ($f7, rowid, props, type) {
   } else if (type === 't') {
     getDB().transaction(function (tx) {
       tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [rowid], function (tx, result) {
-        tx.executeSql('SELECT SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc HAVING date = ? AND acc = ?', ["Pledge", "forfeit", props.date, props.acc], function (tx, result) {
-          tx.executeSql('UPDATE TRACKDIFF SET tdiff = ? WHERE date = ? AND acc = ?', [result.rows.item(0).tdiff, props.date, props.acc]);
-        });
+        updateTCHANGES($f7, tx, props);
       })
     }, function (e) { console.log(e) }, function () {  })
   }
@@ -120,7 +118,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
         <div class="list list-outline-ios list-dividers-ios">
           <ul>
             ${instances.map(obj => $h`
-            <li class="swipeout" @swipeout:deleted=${() => onDeleted(obj.rowid, props, 't')}>
+            <li class="swipeout" @swipeout:deleted=${() => onDeleted($f7, obj.rowid, props, 't')}>
               <div class="item-content swipeout-content">
                 <div class="item-inner">
                   <div class="item-title">

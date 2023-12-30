@@ -28,7 +28,7 @@ function onDeleted ($f7, id, props, type) {
 function makeinstances (props) {
   return new Promise ((resolve, reject) => {
     getDB().transaction(function (tx) {
-      tx.executeSql('SELECT rowid, item, amt, qty, target, location, info FROM QUICK WHERE date = ? AND acc = ? AND categ = ? AND subcateg = ?', [props.date, props.acc, props.categ, props.subcateg], function (tx, result) {
+      tx.executeSql('SELECT rowid, item, amt, qty, location, info FROM QUICK WHERE date = ? AND acc = ? AND categ = ? AND subcateg = ?', [props.date, props.acc, props.categ, props.subcateg], function (tx, result) {
         const res = result.rows, instances = [];
         for(let i=0; i<res.length; i++){
           instances.push(res.item(i));

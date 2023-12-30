@@ -65,7 +65,7 @@ function updateQTRANSFER ($f7, props) {
     });
   });
   if (props.subcateg === 'Inbound Transfer') return;
-  tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [props.date, props.acc, "Money Transfer"], function (tx, result) {
+  tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc, tid) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [props.date, props.acc, "Money Transfer"], function (tx, result) {
     const res = result.rows, arr = []; 
     for(let i=0; i<res.length; i++){
       arr.push(res.item(i));

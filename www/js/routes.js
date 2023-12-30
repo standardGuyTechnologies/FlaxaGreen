@@ -52,7 +52,7 @@ export default [
           const date = Number(to.params.date), acc = to.params.acc;
           const datestr = strDate(date);
           db.transaction(function (tx) {
-            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [date, acc, "Money Transfer"], function (tx, result) {
+            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc, tid) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [date, acc, "Money Transfer"], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr0.push(res.item(i));

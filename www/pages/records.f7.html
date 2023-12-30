@@ -120,7 +120,7 @@
     ${ndata.map(item => {
     const unique = (item.categ+item.subcateg).trim().split(' ').join(''); 
     return $h`
-    <records-item-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-item-sheet>
+    <records-transfer-sheet unique=${unique} date=${date} acc=${acc} categ=${item.categ} subcateg=${item.subcateg}></records-item-sheet>
     `})}
     ${qdata.map(item => {
     const unique = (item.categ+item.subcateg).trim().split(' ').join(''); 

@@ -48,11 +48,17 @@ export default [
       {
         path: '/transact/:date/:acc/',
         async: function ({ app, from, to, resolve, reject }) {
-          const db = getDB(), arr1 = [], arr2 = [];
+          const db = getDB(), arr0 = [], arr1 = [], arr2 = [];
           const date = Number(to.params.date), acc = to.params.acc;
           const datestr = strDate(date);
           db.transaction(function (tx) {
-            tx.executeSql('SELECT categ, subcateg, info, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [date, acc], function (tx, result) {
+            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [date, acc, "Money Transfer"], function (tx, result) {
+              const res = result.rows; 
+              for(let i=0; i<res.length; i++){
+                arr0.push(res.item(i));
+              }
+            })
+            tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? AND categ <> ? GROUP BY categ, subcateg', [date, acc, "Money Transfer"], function (tx, result) {
               const res = result.rows; 
               for(let i=0; i<res.length; i++){
                 arr1.push(res.item(i));
@@ -68,7 +74,7 @@ export default [
             resolve(
               { component: Records }, 
               { 
-                props: { date, datestr, acc, qdata: arr1, tdata: arr2  } 
+                props: { date, datestr, acc, ndata: arr0, qdata: arr1, tdata: arr2  } 
               }
             )
           });

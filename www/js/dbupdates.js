@@ -65,7 +65,7 @@ function updateQTRANSFER ($f7, props) {
     });
   });
   if (props.subcateg === 'Inbound Transfer') return;
-  tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [date, acc, "Money Transfer"], function (tx, result) {
+  tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [props.date, props.acc, "Money Transfer"], function (tx, result) {
     const res = result.rows, arr = []; 
     for(let i=0; i<res.length; i++){
       arr.push(res.item(i));
@@ -78,7 +78,7 @@ function updateQTRANSFER ($f7, props) {
 function updateTCHANGES ($f7, props) {
   getDB().transaction(function(tx) {
     tx.executeSql('DELETE FROM TRACKDIFF', [], function (tx, result) {
-      tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {
+      tx.executeSql('INSERT INTO TRACKDIFF SELECT props.date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {
         tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
           let key = props.date+props.acc
           if (!result.rows.length) return tbackupplan($f7, tx, props, key);

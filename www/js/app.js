@@ -4,7 +4,7 @@ import Framework7, { Dom7, createStore } from "framework7/bundle";
 import Mainapp from "../pages/index.f7.html"
 import routes from "./routes.js"
 import params from "./store.js"
-import {recordsItemSheet, recordsTrackSheet} from "./custom-components.js"
+import {recordsItemSheet, recordsTrackSheet, recordsTransferSheet} from "./custom-components.js"
 import {initDB} from './db.js';
 import G from './uiglobals.js'; 
 import {adsSDKconfig, paymentsSDKconfig} from '../../cordova/sdk/sdk.js'; 
@@ -18,6 +18,9 @@ Framework7.registerComponent(
 )
 Framework7.registerComponent(
   'records-track-sheet', recordsTrackSheet
+)
+Framework7.registerComponent(
+  'records-transfer-sheet', recordsTransferSheet
 )
 
 var $ = Dom7;

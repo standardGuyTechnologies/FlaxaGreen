@@ -13,6 +13,7 @@ function initDB(){
     };
     db.transaction(function (tx) {
       tx.executeSql('drop table if exists CONFIG')
+      tx.executeSql('drop table if exists TRANSFER')
       tx.executeSql('drop table if exists QUICK')
       tx.executeSql('drop table if exists QUICKDIFF')
       tx.executeSql('drop table if exists TRACK')
@@ -24,7 +25,8 @@ function initDB(){
       /* date is converted to Utcms before storage */
       tx.executeSql('CREATE TABLE IF NOT EXISTS CONFIG (currency, currindex, delimeter)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS ACCOUNTS (acc, bal)');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS QUICK (date INT NOT NULL, acc NOT NULL, categ NOT NULL, subcateg NOT NULL, item NOT NULL, amt DEFAULT 0, qty, target, location, info, search)');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS TRANSFER (tid NOT NULL, date INT NOT NULL, acc NOT NULL, target NOT NULL)');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS QUICK (date INT NOT NULL, acc NOT NULL, categ NOT NULL, subcateg NOT NULL, item NOT NULL, amt DEFAULT 0, qty, tid, location, info, search)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS QUICKDIFF (date INT NOT NULL, acc NOT NULL, qdiff DEFAULT 0)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS TRACK (id, categ, subcateg, state, party, intent)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS TRACKDIFF (date, acc, tdiff DEFAULT 0)');
@@ -45,7 +47,7 @@ function wipeDb(db, opts) {
   return cordova.plugins.sqlitePorter.wipeDb(db, opts)
 }
 function dBList() { 
-  return ["ACCOUNTS","QUICK", "QUICKDIFF", "TRACK","TRACDIFF", "TRACKPHASE"]
+  return ["ACCOUNTS", "TRANSFER", "QUICK", "QUICKDIFF", "TRACK","TRACDIFF", "TRACKPHASE"]
 }
 function getDB(){ return db }
 export {initDB, importDb, exportDb, wipeDb, dBList};

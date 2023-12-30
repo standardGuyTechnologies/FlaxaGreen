@@ -37,14 +37,33 @@ function updateQCHANGES ($f7, $store, tx, props) {
       });
     });
   });
-  if (props.subcateg === 'Inbound Transfer') return;
-  tx.executeSql('SELECT categ, subcateg, info, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? GROUP BY categ, subcateg', [props.date, props.acc], function (tx, result) {
+  tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK WHERE date = ? AND acc = ? AND categ <> ? GROUP BY categ, subcateg', [props.date, props.acc, "Money Transfer"], function (tx, result) {
     const res = result.rows, arr = []; 
     for(let i=0; i<res.length; i++){
       arr.push(res.item(i));
     }
     $f7.emit('refresh-quick', arr, props.categ, props.subcateg);
   });
+}
+function updateQTRANSFER ($f7, $store, tx, props) {
+  tx.executeSql('DELETE FROM QUICKDIFF', [], function (tx, result) {
+    tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc', [], function (tx, result) {
+      tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
+        if (!result.rows.length) return qbackupplan($f7, tx, props);
+        let x = result.rows.item(0); if (!x.tdiff) x.tdiff = 0;
+        let key = props.date+props.acc
+        $store.dispatch('updatetl', {key, data: x})
+      });
+    });
+  });
+  if (props.subcateg === 'Inbound Transfer') return;
+  tx.executeSql('SELECT categ, subcateg, COUNT(*) AS instances, SUM(amt) AS sumamt FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? GROUP BY categ, subcateg', [date, acc, "Money Transfer"], function (tx, result) {
+    const res = result.rows, arr = []; 
+    for(let i=0; i<res.length; i++){
+      arr.push(res.item(i));
+    }
+    $f7.emit('refresh-transfer', arr, props.categ, props.subcateg);
+  })
 }
 
 function updateTCHANGES ($f7, $store, tx, props) {
@@ -67,4 +86,4 @@ function updateTCHANGES ($f7, $store, tx, props) {
   });
 }
 
-export { updateQCHANGES, updateTCHANGES };
+export { updateQCHANGES, updateQTRANSFER, updateTCHANGES };

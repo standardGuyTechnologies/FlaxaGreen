@@ -46,7 +46,7 @@ function makeinstances2 (props) {
 function makeinstances3 (props) {
   return new Promise ((resolve, reject) => {
     getDB().transaction(function (tx) {
-      tx.executeSql('SELECT tid, item, amt, target, location, info FROM QUICK INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? AND subcateg = ?', [props.date, props.acc, props.categ, props.subcateg], function (tx, result) {
+      tx.executeSql('SELECT q.tid, item, amt, target, location, info FROM QUICK q INNER JOIN TRANSFER USING(date, acc) WHERE date = ? AND acc = ? AND categ = ? AND subcateg = ?', [props.date, props.acc, props.categ, props.subcateg], function (tx, result) {
         const res = result.rows, instances = [];
         for(let i=0; i<res.length; i++){
           instances.push(res.item(i));

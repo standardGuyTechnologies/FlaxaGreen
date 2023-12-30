@@ -168,24 +168,29 @@
       const subcateg = dform.subcateg.value;
       const item = dform.item.value;
       const amt = Number(dform.amt.value) * labelmap.get(code).sign
-      const target = dform.transfer ? dform.transfer.value : null;
-      const qty = dform.qty ? dform.qty.value : null;
+      const target = dform.transfer.value;
+      const tid = code === 'n' ? Math.trunc(Date.now() * Math.random())+acc+target : null;
+      const qty = dform.qty.value;
       const location = dform.location.value;
       const info = dform.info.value;
+      const [acc2, target2] = [target, acc];
 
       getDB().transaction(function (tx) {
         // rule no1 anytime u update quick you must update quickdiff
-        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, target, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc, categ, subcateg, item, amt, qty, target, location, info], function (tx, result) {
-          updateQCHANGES($f7, $store, tx, {date, acc, categ, subcateg});
-        })
-        if (categ === 'Money Transfer' && target) {
-          const inbound = "Inbound Transfer";
-          tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, target, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, target, categ, inbound, item, amt*-1, qty, acc, location, info], function (tx, result) {
-          updateQCHANGES($f7, $store, tx, {date, acc: target, categ, subcateg: inbound});
-        })
-        }
+        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, tid, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc, categ, subcateg, item, amt, qty, tid, location, info]);
+        if (code !== 'n') return;
+        tx.executeSql('INSERT INTO TRANSFER (tid, date, acc, target) VALUES (?, ?, ?, ?)', [tid, date, acc, target])
+
+        /* Target account */
+        tx.executeSql('INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, tid, location, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, acc2, categ, 'Inbound Transfer', item, amt*-1, qty, tid, location, info])
+        tx.executeSql('INSERT INTO TRANSFER (tid, date, acc, target) VALUES (?, ?, ?, ?)', [tid, date, acc2, target2])
       }, function (e) {console.log(e)}, function () { 
         $f7.dialog.alert('Transaction saved', 'Done!') 
+        if (code === 'n') {
+          updateQTRANSFER($f7, $store, tx, {date, acc, acc2, categ, subcateg});
+        } else {
+          updateQCHANGES($f7, $store, tx, {date, acc, categ, subcateg});
+        }
       });
     }
 

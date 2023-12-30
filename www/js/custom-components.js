@@ -6,23 +6,17 @@ const {getFirstTime, aboveThreshold, digitcomma, } = G.F;
 function onDeleted ($f7, id, props, type) {
   if (type === 'tr') {
     getDB().transaction(function (tx) {
-      tx.executeSql('DELETE FROM QUICK WHERE tid = ?', [id], function (tx, result) {
-        updateQTRANSFER($f7, tx, props);
-      })
+      tx.executeSql('DELETE FROM QUICK WHERE tid = ?', [id])
       tx.executeSql('DELETE FROM TRANSFER WHERE tid = ?', [props.tid])
-    }, function (e) { console.log(e) }, function () {  })
+    }, function (e) { console.log(e) }, function () { updateQTRANSFER($f7, props); })
   } else if (type === 'q') {
     getDB().transaction(function (tx) {
-      tx.executeSql('DELETE FROM QUICK WHERE rowid = ?', [id], function (tx, result) {
-        updateQCHANGES($f7, tx, props);
-      })
-    }, function (e) { console.log(e) }, function () {  })
+      tx.executeSql('DELETE FROM QUICK WHERE rowid = ?', [id])
+    }, function (e) { console.log(e) }, function () { updateQCHANGES($f7, props); })
   } else if (type === 't') {
     getDB().transaction(function (tx) {
-      tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [id], function (tx, result) {
-        updateTCHANGES($f7, tx, props);
-      })
-    }, function (e) { console.log(e) }, function () {  })
+      tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [id])
+    }, function (e) { console.log(e) }, function () { updateTCHANGES($f7, props); })
   }
 }
 function makeinstances (props) {

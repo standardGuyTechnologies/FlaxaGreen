@@ -20,7 +20,7 @@
     <div class="page-content">
       <div></div>
       ${data.map(item => $h`
-      <div class="list list-strong inset">
+      <div  key="${data.id}" class="list list-strong inset">
         <ul>
           <li class="swipeout" @swipeout:deleted=${() => onDeleted(item)}>
           <div class="item-content swipeout-content">
@@ -93,10 +93,17 @@
     const TOPG = {};
     const data = props.data;
 
+    let deleted = false;
     $on('pageInit', () => {
+      $f7.on('refresh-tracklist', (nudata, categ) => {
+        if (deleted) { deleted = false; return; }
+        data.length = 0; Object.assign(data, nudata);
+        $update();
+      })
     })
 
     function onDeleted(item) {
+      deleted = true;
       const id = item.id, categ = item.categ;
       const date = props.date, acc = props.acc;
       getDB().transaction(function (tx) {

@@ -1,4 +1,5 @@
 import G from '../../js/uiglobals.js';
+import getDB from '../../js/db.js';
 import Framework7 from "framework7";
 const { maxamt, labelmap, trackermap, box, analyzerRexe, } = G.V;
 const { digitcomma, filtercomma, computeInput, partyLabel, aboveThreshold, utcTimeDate, getFirstTime, } = G.F;
@@ -322,20 +323,64 @@ const RedeemIntent = (props, { $h, $f7, $onMounted, $update }) => {
   </ul>
   </form>`;
 }
-const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
+const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $store, $update }) => {
+  
+  const TOPG = {}, locationSet = new Set();
+  $onBeforeMount(() => {
+    getDB().transaction(function (tx) {
+      tx.executeSql('SELECT location FROM QUICK WHERE location IS NOT NULL', [], function (tx, result) {
+        const res = result.rows;
+        for (let i = 0; i < res.length; i++) {
+          locationSet.add(res.item(i).location);
+        }
+      })
+      tx.executeSql('SELECT location FROM TRACKPHASE WHERE location IS NOT NULL', [], function (tx, result) {
+        const res = result.rows;
+        for (let i = 0; i < res.length; i++) {
+          locationSet.add(res.item(i).location);
+        }
+      })
+    }, function (e) { $f7.dialog.alert(e) }, function () { comms.emit('typeahead') });
+  })
   $onMounted(() => {
     comms.on('update-details', (obj) => { /// todo off it
       Object.assign(props, obj); $update();
     })
+    comms.on('typeahead', () => {
+      TOPG.typeahead = $f7.autocomplete.create({
+        inputEl: '#typeahead',
+        openIn: 'dropdown',
+        typeahead: true,
+        source: function (query, render) {
+          var results = [];
+          if (query.length === 0) {
+            render(results);
+            return;
+          }
+          // Find matched items
+          const prevlocation = [...locationSet];
+          for (var i = 0; i < prevlocation.length; i++) {
+            if (prevlocation[i].toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(prevlocation[i]);
+          }
+          // Render items by passing array with result items
+          render(results);
+        }
+      });
+    })
+  })
+
+  $onUnmounted(() => {
+    TOPG.typeahead.destroy();
   })
     return () => $h`
   <form id="details">
-    <ul class="hide">
-      <li><input name="code" type="text" value=${props.code} /></li>
-      <li><input name="categ" type="text" value=${props.categ} /></li>
-      <li><input name="subcateg" type="text" value=${props.subcateg} /></li>
+    <ul key="ghost" class="hide">
+      <li key="h1"><input name="code" type="text" value=${props.code} /></li>
+      <li key="h2"><input name="categ" type="text" value=${props.categ} /></li>
+      <li key="h3"><input name="subcateg" type="text" value=${props.subcateg} /></li>
     </ul>
-    ${props.categ === "Money Transfer" && $h`
+    
+    ${props.code==="n" && $h`
     <div class="list list-strong list-outline-ios list-dividers-ios">
     <ul>
       <li class="list-group-title">Target Account</li>
@@ -355,15 +400,16 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
         <div class="item-inner">
           <div class="item-title">Opps! You don't have another account</div>
         </div>
-      </li>`}
+      </li>
+      `}
     </ul>
     </div>
     `}
-    <div class="list list-strong list-outline-ios list-dividers-ios">
+    <div key="info" class="list list-strong list-outline-ios list-dividers-ios">
     <ul>
-      <li class="list-group-title">Details</li>
+      <li key="d0" class="list-group-title">Details</li>
       ${props.type === "fast" && $h`
-      <li class="item-content item-input">
+      <li key="d1" class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Specify Item</div>
           <div class="item-input-wrap">
@@ -374,7 +420,7 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
       </li>
       `}
       ${props.type === "tracking" && $h`
-      <li class="item-content item-input">
+      <li key="d2" class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">${partyLabel(props.categ)}</div>
           <div class="item-input-wrap">
@@ -384,7 +430,7 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
         </div>
       </li>
       `}
-      <li class="item-content item-input">
+      <li key="d3" class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Amount</div>
           <div class="item-input-wrap">
@@ -394,7 +440,7 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
         </div>
       </li>
       ${props.type === 'fast' && $h`
-      <li class="item-content item-input">
+      <li key="d4" class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Quantity</div>
           <div class="item-input-wrap">
@@ -404,7 +450,7 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
         </div>
       </li>
       `}
-      <li class="item-content item-input">
+      <li key="d5" class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Location</div>
           <div class="item-input-wrap">
@@ -413,7 +459,7 @@ const Details = (props, { $h, $f7, $onMounted, $store, $update }) => {
           </div>
         </div>
       </li>
-      <li class="item-content item-input">
+      <li key="d6" class="item-content item-input">
         <div class="item-inner">
           <div class="item-title item-label">Additional Information</div>
           <div class="item-input-wrap">

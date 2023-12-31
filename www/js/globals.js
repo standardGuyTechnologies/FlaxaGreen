@@ -43,7 +43,7 @@ const labelmap = new Map([
     label: "Expenses", 
     sign: -1, 
     placeholder: "Cash spent", 
-    subcateg: ["Travel", "Public Transport", "Meals", "Fast Food", "Snacks", "Drinks", "Fruits", "Checkup", "Treatment", "Connectivity", "Clothes", "Ornaments", "Provisions", "Sweets", "News", "Books", "Printing", "Furniture", "Devices", "Security", "Tuition", "Housing", "Bills", "Maintenance", "Repairs", "Saloon", "Toys", "Art", "Photos", "Movie", "Music", "Games", "Leisure", "Artifact", "Registration", "Membership", "Refuel", "Vehicle"], 
+    subcateg: ["Travel", "Public Transport", "Meals", "Fast Food", "Snacks", "Drinks", "Fruits", "Checkup", "Treatment", "Connectivity", "Clothes", "Ornaments", "Provisions", "Confectionary", "News", "Books", "Printing", "Furniture", "Devices", "Security", "Tuition", "Housing", "Bills", "Maintenance", "Repairs", "Saloon", "Toys", "Art", "Photos", "Movie", "Music", "Games", "Leisure", "Artifact", "Registration", "Membership", "Refuel", "Vehicle"], 
   }],
   ['d', {
     label: "Dividends", 

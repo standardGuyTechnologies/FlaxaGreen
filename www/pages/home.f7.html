@@ -12,7 +12,7 @@
         </div>
         <div class="title sliding">Flaxa Green</div>
         <div class="right">
-          <a href="#" class="link icon-only">
+          <a href="#" class="link icon-only" @click="${setScheme}">
             <i class="icon f7-icons if-not-md">menu</i>
             <i class="icon material-icons if-md">menu</i>
           </a>
@@ -130,6 +130,14 @@
     }
     function deleteTL () {
 
+    }
+    const setScheme = () => {
+      if(!aboveThreshold($f7, "Dark Mode Toggle")) return;
+      if ($store.getters.mode.value === 'light') {
+        $f7.setDarkMode(true); $store.dispatch('mode', 'dark');
+      } else {
+        $f7.setDarkMode(false); $store.dispatch('mode', 'light');
+      }
     }
 
     let active = '', counts = 0;

@@ -74,11 +74,11 @@ function mockdata (db) {
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\
       INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location) VALUES \
-      (1703456767, "FirstBank", "Expenses", "Fast Food", "Cheese Burger", -600, 2, "Alausa market"),\
-      (1703456767, "GTBank", "Expenses", "Connectivity", "MTN airtime", -4000, 1, null),\
+      (1703456767, "FirstBank", "Expenses", "Fast Food", "Cheese Burger", -600, 2, "Shoprite"),\
+      (1703456767, "GTBank", "Expenses", "Connectivity", "MTN airtime", -4000, 1, "Valley Estate"),\
       (1702166400, "GTBank", "Wages", "Freelance", "Web Design", 2500, null, "Ikorodu"),\
-      (1702252800, "FirstBank", "Expenses", "News", "The Sun", -180, 1, "Mangoro"),\
-      (1702425600, "GTBank", "Expenses", "Games", "Fifa23", -1400, 1, "Alausa market"),\
+      (1702252800, "FirstBank", "Expenses", "News", "The Sun", -180, 1, "Victoria Island"),\
+      (1702425600, "GTBank", "Expenses", "Games", "Fifa23", -1400, 1, "Jos market"),\
       (1702598400, "FirstBank", "Expenses", "Clothes", "Casuals", -3000, 4, "Alausa market")', [], function (tx, result) {
         tx.executeSql('INSERT INTO QUICKDIFF SELECT date, acc, SUM(amt) AS qdiff FROM QUICK GROUP BY date, acc;', [], function (tx, result) {});
       });

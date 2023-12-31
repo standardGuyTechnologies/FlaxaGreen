@@ -1,12 +1,16 @@
 import getDB from './db.js'
 export default {
   state: {
+    mode: 'light',
     hasCurr: true,
     accounts: [],
     accountsobj: [],
     tldata: new Map(),
   },
   getters: {
+    mode({ state }) {
+      return state.mode;
+    },
     hasCurr({ state }) {
       return state.hasCurr;
     },
@@ -21,6 +25,9 @@ export default {
     }
   },
   actions: {
+    mode({ state }, val) {
+      state.mode = val;
+    },
     accExists({ state }, val) {
       state.hasCurr = val;
     },

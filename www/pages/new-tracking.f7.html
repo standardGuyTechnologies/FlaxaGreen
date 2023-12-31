@@ -40,7 +40,7 @@
             </div>
           </label>
         </li>
-        <li>
+        <!-- <li>
           <label class="item-radio item-content">
             <input type="radio" name="track" value="Pledge out" />
             <i class="icon icon-radio"></i>
@@ -57,7 +57,7 @@
               <div class="item-title">Pledge Expecting</div>
             </div>
           </label>
-        </li>
+        </li> -->
         <li>
           <label class="item-radio item-content">
             <input type="radio" name="track" value="Deposit out" />
@@ -78,7 +78,7 @@
         </li>
       </ul>
       </form>
-      <${RedeemIntent} pledge=${pledge} />
+      <!-- <${RedeemIntent} pledge=${pledge} /> -->
       <${Details} categ=${categ} type="tracking" />
       
     </div>
@@ -153,12 +153,12 @@
       const categ = track[0];
       const subcateg = track[1];
       const party = dform.party.value;
-      const intent = ''//$('form#redeem')[0].intent.value;
+      // const intent = $('form#redeem')[0].intent.value;
       const val = Number(dform.amt.value) * trackermap.get(tform.track.value).sign
       const info = dform.info.value;
 
       getDB().transaction(function (tx) { 
-        tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
+        tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, null]);
         tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, date, acc, info, val, 'amt']);
       }, function (e) {console.log(e)}, function () { 
         $f7.dialog.alert('Tracker created', 'Done!') 

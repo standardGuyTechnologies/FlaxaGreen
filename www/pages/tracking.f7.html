@@ -22,7 +22,7 @@
       ${data.map(item => $h`
       <div class="list list-strong inset">
         <ul>
-          <li class="swipeout" @swipeout:deleted=${onDeleted}>
+          <li class="swipeout" @swipeout:deleted=${() => onDeleted(item)}>
           <div class="item-content swipeout-content">
             <div class="item-media">
               <i class="icon f7-icons">person</i>
@@ -84,31 +84,31 @@
 
 <script>
   import getDB from '../js/db.js';
+  import {updateTCHANGES} from '../js/dbupdates.js';
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, trackermap } = G.V;
+  const { getFirstTime, aboveThreshold, strDate, partyLabel } = G.F;
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
 
     const TOPG = {};
     const data = props.data;
 
     $on('pageInit', () => {
-      TOPG.sheetSwipeToClose = $f7.sheet.create({
-        containerEl: ".page-master-detail",
-        el: '.demo-sheet-swipe-to-close',
-        backdrop: true,
-        swipeToClose: true,
-        swipeHandler: ".swipe-handler",
-        backdrop: true,
-      });
+      $f7.on('refresh-tracklist', (nudata, categ) => {
+        data.length = 0; Object.assign(data, data);
+        $update();
+      })
     })
 
-    function onDeleted() {
+    function onDeleted(item) {
+      const id = item.id, categ = item.categ;
+      const date = props.date, acc = props.acc;
       getDB().transaction(function (tx) {
-        tx.executeSql('DELETE FROM TRACKDIFF', []);
-        tx.executeSql('DELETE FROM TRACK WHERE id = ?', [props.id]);
-        // del the entiire history of this id, and reconstruct trackdiff
-        tx.executeSql('DELETE FROM TRACKPHASE WHERE id = ?', [props.id], function (tx, result) {
-          tx.executeSql('INSERT INTO TRACKDIFF SELECT date, acc, SUM(val) AS tdiff FROM TRACK INNER JOIN TRACKPHASE USING(id) WHERE categ <> ? AND type <> ? GROUP BY date, acc', ["Pledge", "forfeit"], function (tx, result) {});
-        })
-      }, function (e) { console.log(e) }, function () {  })
+        tx.executeSql('DELETE FROM TRACK WHERE id = ?', [id]);
+        tx.executeSql('DELETE FROM TRACKPHASE WHERE id = ?', [id]);
+      }, function (e) { console.log(e) }, function () { 
+        updateTCHANGES($f7, {date, acc, categ}); 
+      })
     }
     return $render;
   }

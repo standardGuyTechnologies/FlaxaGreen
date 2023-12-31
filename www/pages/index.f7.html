@@ -36,7 +36,7 @@
                   </a>
                 </li>
                 <li>
-                  <a  href="#" class="item-content item-link">
+                  <a  href="#" class="item-content item-link" @click="${rateUs}">
                     <div class="item-media">
                       <i class="icon f7-icons">star</i>
                     </div>
@@ -46,12 +46,22 @@
                   </a>
                 </li>
                 <li>
-                  <a  href="#" class="item-content item-link">
+                  <a  href="#" class="item-content item-link" @clic="${supportUs">
                     <div class="item-media">
                       <i class="icon f7-icons">creditcard</i>
                     </div>
                     <div class="item-inner">
                       <div class="item-title">Support Us</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a  href="#" class="item-content item-link" @clic="${exit}">
+                    <div class="item-media">
+                      <i class="icon f7-icons">creditcard</i>
+                    </div>
+                    <div class="item-inner">
+                      <div class="item-title">Exit</div>
                     </div>
                   </a>
                 </li>
@@ -84,91 +94,44 @@
       <div class="view view-init" id="app-setup" data-url="/app-setup/"></div>
     </div>
     `}
-    <div class="popup popup-tablet-fullscreen" id="tracker">
-      <div class="view view-init popup1-view" id="popup1" data-name="logusd" data-load-initial-page="false"></div>
-    </div>
-    <div class="popup popup-tablet-fullscreen" id="summary">
-      <div class="view view-init popup2-view" id="popup2" data-name="summary" data-load-initial-page="false"></div>
-    </div>
-
-    <div class="popup" id="my-popup">
-      <div class="view">
-        <div class="page">
-          <div class="navbar">
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner">
-              <div class="title">Popup</div>
-              <div class="right">
-                <a href="#" class="link popup-close">Close</a>
-              </div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="block">
-              <p>Popup content goes here.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="login-screen" id="my-login-screen">
-      <div class="view">
-        <div class="page">
-          <div class="page-content login-screen-content">
-            <div class="login-screen-title">Login</div>
-            <div class="list">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Username</div>
-                    <div class="item-input-wrap">
-                      
-                      <input type="text" name="username" placeholder="Your username"/>
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Password</div>
-                    <div class="item-input-wrap">
-                      
-                      <input type="password" name="password" placeholder="Your password"/>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="list">
-              <ul>
-                <li>
-                  
-                  <a href="#" class="item-link list-button login-button">Sign In</a>
-                </li>
-              </ul>
-              <div class="block-footer">Some text about login information.<br/>Click "Sign In" to close Login Screen</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
+  import getDB from '../js/db.js';
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, trackermap } = G.V;
+  const { getFirstTime, aboveThreshold, strDate, partyLabel } = G.F;
 
   export default (props, { $f7ready, $f7, $, $on, $onMounted, $store, $update }) => {
+    var openlink = () => {};
+    if (window.cordova) openlink = cordova.InAppBrowser.open;
     $f7ready(() => {
-      // Login Screen Demo
-      $('#my-login-screen .login-button').on('click', function () {
-        var username = $('#my-login-screen [name="username"]').val();
-        var password = $('#my-login-screen [name="password"]').val();
-      
-        // Close login screen
-        $f7.loginScreen.close('#my-login-screen');
-      
-        // Alert username and password
-        $f7.dialog.alert('Username: ' + username + '<br/>Password: ' + password);
-      });
     });
+
+    function rateUs(evt) {
+      openlink(appmsgs.googleplaystore, '_system')
+    }
+    function supportUs(evt) {
+      openlink(appmsgs.donatelink, '_system')
+    }
+    function share(evt) {
+      if (window.cordova) {
+        const options = {
+          title: 'Share app',
+          text: 'Flaxa is available for Download on the Google play store',
+          url: appmsgs.googleplaystore,
+        };
+        navigator.share(options).then(function (pkgnmarr) {
+          console.log('shared successfully via activity:', pkgnmarr[0])
+        }).catch(function (err) {
+          console.log('Failed to share:', err.message);
+        });
+      }
+    }
+    function exit(evt) {
+      getDB().transaction( ()=> {}, ()=> db.close() );
+        window.cordova && cordova.plugins.exit();
+    }
 
     return $render;
   }

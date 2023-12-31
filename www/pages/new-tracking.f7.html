@@ -99,10 +99,11 @@
 
       getDB().transaction(function (tx) { 
         tx.executeSql('INSERT INTO TRACK (id, categ, subcateg, state, party, intent) VALUES (?, ?, ?, ?, ?, ?)', [id, categ, subcateg, 'active', party, intent]);
-        tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, date, acc, info, val, 'amt'], function (tx, result) {
-          updateTCHANGES($f7, tx, {date, acc, categ, subcateg});
-        })
-      }, function (e) {console.log(e)}, function () { $f7.dialog.alert('Tracker created', 'Done!') });
+        tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, date, acc, info, val, 'amt']);
+      }, function (e) {console.log(e)}, function () { 
+        $f7.dialog.alert('Tracker created', 'Done!') 
+        updateTCHANGES($f7, {date, acc, categ, subcateg});
+      });
     }
 
 

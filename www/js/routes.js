@@ -212,7 +212,7 @@ export default [
   },
   {
     path: '/left-page-2/',
-    url: './pages/left-page-2.html',
+    componentUrl: './pages/left-page-2.f7.html',
   },
   // Default route (404 page). MUST BE THE LAST
   {

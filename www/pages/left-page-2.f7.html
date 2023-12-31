@@ -1,0 +1,43 @@
+<template>
+<div class="page">
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">About</div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="block block-strong">
+      <p>Flaxa is a mobile personal money manager created and owned by the publisher StandardGuy Technologies</p>
+      <p><a href="#" class="mylink external" data-ref="emaillink">contact</a></p>
+      <p><a href="#" class="mylink external" data-ref="termslink">Terms of service</a></p>
+      <p><a href="#" class="mylink external" data-ref="liblink">Third party software</a></p>
+    </div>
+  </div>
+</div>
+</template>
+<script>
+  export default (props, context) => {
+    const appmsgs = {
+      termslink: 'https://standardguytechnologies.github.io/Flaxa/',
+      emaillink: 'mailto:gethelp.fga@gmail.com',
+      liblink: "https://standardguytechnologies.github.io/Flaxa/external_lib.html"
+    }
+    context.$on('pageInit', () => {
+      context.$(document).on('click', '.mylink', function (e) {
+        if (!window.cordova) return;
+        e.stopImmediatePropagation();
+        let thelink = e.target.dataset.ref;
+        cordova.InAppBrowser.open(appmsgs[thelink], '_system');
+      });
+    })
+    return $render;
+  }
+</script>
+

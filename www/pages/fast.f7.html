@@ -127,7 +127,7 @@
       const subcateg = dform.subcateg.value;
       const item = dform.item.value;
       const amt = Number(dform.amt.value) * labelmap.get(code).sign
-      const target = dform.transfer.value;
+      const target = code === 'n' ? dform.transfer.value : null;
       const tid = code === 'n' ? Math.trunc(Date.now() * Math.random())+acc+target : null;
       const qty = dform.qty.value;
       const location = dform.location.value;

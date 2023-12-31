@@ -26,7 +26,15 @@ export default {
   },
   actions: {
     mode({ state }, val) {
-      state.mode = val;
+      getDB().transaction(function(tx){
+        tx.executeSql('SELECT * FROM CONFIG?', [], function (tx, result) {
+          if(!result.rows.length) {
+            tx.executeSql('INSERT INTO CONFIG (mode) VALUES (?)', [val])
+          } else {
+            tx.executeSql('UPDATE CONFIG SET mode = ?', [val])
+          }
+        })
+      }, function (e) {console.log(e)}, function () {state.mode = val;})
     },
     accExists({ state }, val) {
       state.hasCurr = val;

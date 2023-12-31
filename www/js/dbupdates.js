@@ -94,6 +94,13 @@ function updateTCHANGES ($f7, props) {
       }
       $f7.emit('refresh-track', arr, props.categ, props.subcateg);
     });
+    tx.executeSql('SELECT id, date, acc, categ, party, SUM(val) AS pending FROM TRACK LEFT JOIN TRACKPHASE USING(id) WHERE state = ? GROUP BY categ, subcateg, party HAVING date <= ? ORDER BY date DESC', ["active", props.date], function (tx, result) {
+      const res = result.rows, arr = []; 
+      for(let i=0; i<res.length; i++){
+        arr.push(res.item(i));
+      }
+      $f7.emit('refresh-tracklist', arr);
+    });
   }, function(e) {console.log(e)}, function () {})
 }
 

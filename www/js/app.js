@@ -7,7 +7,7 @@ import params from "./store.js"
 import {recordsItemSheet, recordsTrackSheet, recordsTransferSheet} from "./custom-components.js"
 import {initDB} from './db.js';
 import G from './uiglobals.js'; 
-import {adsSDKconfig, paymentsSDKconfig} from '../../cordova/sdk/sdk.js'; 
+// import {adsSDKconfig, paymentsSDKconfig} from '../../cordova/sdk/sdk.js'; 
 
 const { utcTimeDate, xDaysAgo, digitcomma, computeInput, save4analyzer, reset_currtokens, errorclose } = G.F;
 const { ipcRenderer, labelmap, trackermap, box, analyzerRexe, appmsgs, } = G.V;

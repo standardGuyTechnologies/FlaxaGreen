@@ -85,7 +85,6 @@ function mockdata (db) {
       tx.executeSql('\
       INSERT INTO TRACK (id, categ, subcateg, state, party) VALUES\
       (193671473, "Loan", "out", "active", "Chukwulozie"),\
-      (435744213, "Pledge", "out", "active", "Church"),\
       (198097934, "Deposit", "in", "active", "Chukwulozie"),\
       (1667998085, "Loan", "in", "active", "FirstBank"),\
       (1478170465, "Loan", "in", "active", "Microventures")');

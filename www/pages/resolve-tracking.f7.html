@@ -107,7 +107,7 @@
   const { getFirstTime, aboveThreshold, strDate, partyLabel } = G.F;
 
   import Categories, { RedeemIntent, Details } from '../pages/local-components/categ.js';
-  export default (props, { $f7ready, $f7, $f7route, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
+  export default (props, { $f7ready, $f7, $f7route, $f7router, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
     const id = Number($f7route.query.id);
     const date = Number($f7route.query.date), acc = $f7route.query.acc;
     const datestr = strDate(date);
@@ -120,7 +120,6 @@
     $onMounted(() => {
     })
     $on('pageInit', () => {
-
     })
 
     $onBeforeUnmount(() => {
@@ -168,7 +167,7 @@
         tx.executeSql('UPDATE TRACK SET state = ? WHERE id = ?', [state, id]);
         tx.executeSql('INSERT INTO TRACKPHASE (id, date, acc, info, val, type) VALUES (?, ?, ?, ?, ?, ?)', [id, date, acc, info, val, type])
       }, function (e) { console.log(e) }, function () { 
-        $f7.dialog.alert('Tracker updated', 'Done!') 
+        $f7.dialog.alert('Tracker updated', 'Done!', () => $f7router.back()) 
         updateTCHANGES($f7, {date, acc, categ, subcateg});
        });
     }

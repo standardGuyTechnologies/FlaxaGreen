@@ -70,7 +70,7 @@ function mockdata (db) {
   window.db = db; // todo del;
   return new Promise((resolve, reject) => {
     db.transaction(function (tx) {
-      tx.executeSql("INSERT INTO CONFIG (currency, currindex, delimeter) VALUES ('$', 0, ',')");
+      tx.executeSql("INSERT INTO CONFIG (mode) VALUES ('light')");
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\
       INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location) VALUES \
@@ -109,10 +109,11 @@ document.addEventListener('deviceready', () => {
     db.transaction(function (tx) {
       tx.executeSql('SELECT * FROM CONFIG', [], function (tx, result) {
         if (!result.rows.length) {
-          store.dispatch("accExists", false);
+          // store.dispatch("accExists", false);
         } else {
-          reset_currtokens(result.rows.item(0));
-          store.dispatch("accExists", true); 
+          store.dispatch("mode", result.rows.item(0).mode);
+          // reset_currtokens(result.rows.item(0));
+          // store.dispatch("accExists", true); 
         }
       })
     }, function (e) {console.log(e)}, function () {app.init()});

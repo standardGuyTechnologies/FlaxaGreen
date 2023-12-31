@@ -1,8 +1,8 @@
 import G from '../../js/uiglobals.js';
 import getDB from '../../js/db.js';
 import Framework7 from "framework7";
-const { maxamt, labelmap, trackermap, box, analyzerRexe, } = G.V;
-const { digitcomma, filtercomma, computeInput, partyLabel, aboveThreshold, utcTimeDate, getFirstTime, } = G.F;
+const { maxamt, labelmap, trackermap, box, } = G.V;
+const { digitcomma, partyLabel } = G.F;
 
 const comms = new Framework7.Events();
 const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {

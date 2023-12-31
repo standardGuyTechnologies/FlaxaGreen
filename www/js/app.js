@@ -9,8 +9,8 @@ import {initDB} from './db.js';
 import G from './uiglobals.js'; 
 // import {adsSDKconfig, paymentsSDKconfig} from '../../cordova/sdk/sdk.js'; 
 
-const { utcTimeDate, xDaysAgo, digitcomma, computeInput, save4analyzer, reset_currtokens, errorclose } = G.F;
-const { ipcRenderer, labelmap, trackermap, box, analyzerRexe, appmsgs, } = G.V;
+const { toUTCms, xDaysAgo, digitcomma, reset_currtokens} = G.F;
+const { labelmap, trackermap, box, appmsgs, } = G.V;
 
 // Register custom components
 Framework7.registerComponent(

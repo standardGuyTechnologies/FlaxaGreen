@@ -89,7 +89,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
                   <div class="item-after">
                     <div class="card no-shadow">
                       <div class="card-header">
-                        <strong>${digitcomma(obj.amt)}</strong>
+                        <strong>${(obj.amt)}</strong>
                       </div>
                       <div class="card-content">
                         <small><small>Qty: ${obj.qty || 'N/A'}</small></small>
@@ -144,7 +144,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
                   <div class="item-after">
                     <div class="card no-shadow">
                       <div class="card-header">
-                        <strong>${digitcomma(obj.val)}</strong>
+                        <strong>${(obj.val)}</strong>
                       </div>
                     </div>
                   </div>
@@ -196,7 +196,7 @@ function recordsTransferSheet(props, { $h, $f7, $onUnmounted, $onMounted, $updat
                   <div class="item-after">
                     <div class="card no-shadow">
                       <div class="card-header">
-                        <strong>${digitcomma(obj.amt)}</strong>
+                        <strong>${(obj.amt)}</strong>
                       </div>
                       <div class="card-content">
                         <small><small>

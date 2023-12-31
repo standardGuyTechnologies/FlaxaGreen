@@ -115,49 +115,8 @@
     const categ = "Expenses", subcateg="Fast Food";
     const date = Number($f7route.query.date), acc = $f7route.query.acc;
 
-    let locationSet = new Set();
-    $onBeforeMount(() => {
-      getDB().transaction(function (tx) {
-        tx.executeSql('SELECT location FROM QUICK WHERE location IS NOT NULL', [], function (tx, result) {
-          const res = result.rows;
-          for (let i = 0; i < res.length; i++) {
-            locationSet.add(res.item(i).location);
-          }
-        })
-        tx.executeSql('SELECT location FROM TRACKPHASE WHERE location IS NOT NULL', [], function (tx, result) {
-          const res = result.rows;
-          for (let i = 0; i < res.length; i++) {
-            locationSet.add(res.item(i).location);
-          }
-        })
-      }, function (e) { $f7.dialog.alert(e) }, function () {  });
-    })
     $on('pageInit', () => {
-
-      TOPG.typeahead = $f7.autocomplete.create({
-        inputEl: '#typeahead',
-        openIn: 'dropdown',
-        typeahead: true,
-        source: function (query, render) {
-          var results = [];
-          if (query.length === 0) {
-            render(results);
-            return;
-          }
-          // Find matched items
-          const prevlocation = [...locationSet];
-          for (var i = 0; i < prevlocation.length; i++) {
-            if (prevlocation[i].toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(prevlocation[i]);
-          }
-          // Render items by passing array with result items
-          render(results);
-        }
-      });
-
-    })
-
-    $onBeforeUnmount(() => {
-      TOPG.typeahead.destroy();
+      
     })
     
 

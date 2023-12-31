@@ -188,12 +188,6 @@ const trackermap = new Map([
   }],
 ])
 
-const PENDING_TR_KEYS = ['o', 'eo', 'go', 'dt', 'edt', 'idt'];
-
-const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December'];
-
 
 
 
@@ -232,23 +226,6 @@ function getFirstTime(num) {
   let y = b.getFullYear(), m = b.getMonth(), d = b.getDate();
   return Date.UTC(y, m, d); //date0num;
 };
-function inputdefault(itsname, value) {
-  if (itsname == 'nacc' || itsname == 'nFrmsg') {
-    return ''
-  } else if(value) {
-    return value
-  } else {
-    return digitcomma(0);
-  }
-}
-function formdefault(bal, value=digitcomma(0)) {
-  let obj = {}; bal = digitcomma(bal);
-  for (let key of labelmap.keys()) {
-    obj[key] = value;
-  }
-  Object.assign(obj, {nFr: "", nacc: "", nFrmsg: "", wi: bal, wf: bal})
-  return JSON.stringify(obj);
-}
 function digitcomma(num) {
   /* Helper to give num 3-placevalue commas for legibility */
   if (typeof num == 'string') num = Number(num);
@@ -286,19 +263,9 @@ function digitcomma(num) {
   }
   return chunk;
 }
-function filtercomma(str) {
-  if(typeof str !== 'string') throw new Error('Argument to filtercomma must be of type string')
-  str = str.trim(); if(!str) str = '0';
-  let sign = (str.includes('-')) ? -1 : 1;
-  let x = str.replace(sanitize, ''); x = x.replace(',', '.');/* for type $1.000,00 */
-  x = parseFloat(x) * sign;
-  if (x > maxamt) x = maxamt + 1;
-  if (x < -maxamt) x = -maxamt - 1;
-  return x;
-}
 function reset_currtokens(tokens) {
   ({currency, currindex, delimeter} = tokens);
 }
 
-module.exports.var = { maxamt, labelmap, trackermap, PENDING_TR_KEYS, DAYS, MONTHS };
-module.exports.func = { toUTCms, partyLabel, utcTimeDate, getFirstTime, inputdefault, formdefault, digitcomma, filtercomma, reset_currtokens };
+module.exports.var = { maxamt, labelmap, trackermap };
+module.exports.func = { toUTCms, partyLabel, utcTimeDate, getFirstTime, digitcomma, reset_currtokens };

@@ -160,7 +160,7 @@
       const dform = $('form#details')[0];
       const reform = $('form#resolve')[0];
       const type = reform.resolve.value;
-      const val = Number(dform.amt.value) * trackermap.get(groupcateg).sign
+      const val = Number(dform.amt.value) * trackermap.get(groupcateg+' '+type).sign
       const state = val+data.val2 ? 'active' : 'archive';
       const info = dform.info.value;
 

@@ -90,27 +90,27 @@ const trackermap = new Map([
     placeholder: "Loan received",
     subcateg: [],
   }],
-  ["looutnR", {
+  ["Loan out repaid", {
     label: "Repaid",
     sign: 1,
     placeholder: "Debtors loan payments",
     subcateg: [],
   }],
-  ["loinnR", {
+  ["Loan in repaid", {
     label: "Repay",
     sign: -1,
     placeholder: "Incurred loan repaid",
     subcateg: [],
   }],
-  ["looutnF", {
+  ["Loan out forfeit", {
     label: "Pardon",
-    sign: 0,
+    sign: 1,
     placeholder: " Debtors loan pardoned",
     subcateg: [],
   }],
-  ["loinnF", {
+  ["Loan in forfeit", {
     label: "Pardoned",
-    sign: 0,
+    sign: -1,
     placeholder: "Incurred loan pardoned",
     subcateg: [],
   }],
@@ -126,25 +126,25 @@ const trackermap = new Map([
     placeholder: "Pledge expecting",
     subcateg: [],
   }],
-  ["guoutnR", {
+  ["Pledge out repaid", {
     label: "Redeem",
     sign: 0,
     placeholder: "Redeemed pledge made",
     subcateg: [],
   }],
-  ["guinnR", {
+  ["Pledge in repaid", {
     label: "Redeemed",
     sign: 0,
     placeholder: "Expectant pledge redeemed",
     subcateg: [],
   }],
-  ["guoutnF", {
+  ["Pledge out forfeit", {
     label: "Abandon",
     sign: 0,
     placeholder: "Abandoned pledge made",
     subcateg: [],
   }],
-  ["guinnF", {
+  ["Pledge in forfeit", {
     label: "Abandoned",
     sign: 0,
     placeholder: "Expectant pledge abandoned",
@@ -162,27 +162,27 @@ const trackermap = new Map([
     placeholder: "Accepted deposits",
     subcateg: [],
   }],
-  ["sdoutnR", {
+  ["Deposit out repaid", {
     label: "Exonerate",
     sign: 1,
     placeholder: "Out deposits retrieved",
     subcateg: [],
   }],
-  ["sdinnR", {
+  ["Deposit in repaid", {
     label: "Exonerated",
     sign: -1,
     placeholder: "Accepted deposits returned",
     subcateg: ["Returned", "Transferred"],
   }],
-  ["sdoutnF", {
+  ["Deposit out forfeit", {
     label: "Forgo",
-    sign: 0,
+    sign: 1,
     placeholder: "Out deposits forgone",
     subcateg: [],
   }],
-  ["sdinnF", {
+  ["Deposit in forfeit", {
     label: "Forgone",
-    sign: 0,
+    sign: -1,
     placeholder: "Accepted deposits forgone",
     subcateg: [],
   }],

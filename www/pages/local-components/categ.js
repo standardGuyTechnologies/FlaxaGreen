@@ -145,68 +145,6 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
   </div>`;
 }
 
-const TrackerType = (props, { $h }) => {
-    return () => $h`
-  <form class="list list-strong list-outline-ios list-dividers-ios">
-  <ul>
-  <li class="list-group-title">Categories</li>
-    <li>
-      <label class="item-radio item-content">
-        <input type="radio" name="track" value="Loan out" checked />
-        <i class="icon icon-radio"></i>
-        <div class="item-inner">
-          <div class="item-title">Loan Administered</div>
-        </div>
-      </label>
-    </li>
-    <li>
-      <label class="item-radio item-content">
-        <input type="radio" name="track" value="Loan in" />
-        <i class="icon icon-radio"></i>
-        <div class="item-inner">
-          <div class="item-title">Loan Received</div>
-        </div>
-      </label>
-    </li>
-    <li>
-      <label class="item-radio item-content">
-        <input type="radio" name="track" value="Pledge out" />
-        <i class="icon icon-radio"></i>
-        <div class="item-inner">
-          <div class="item-title">Pledge Made</div>
-        </div>
-      </label>
-    </li>
-    <li>
-      <label class="item-radio item-content">
-        <input type="radio" name="track" value="Pledge in" />
-        <i class="icon icon-radio"></i>
-        <div class="item-inner">
-          <div class="item-title">Pledge Expecting</div>
-        </div>
-      </label>
-    </li>
-    <li>
-      <label class="item-radio item-content">
-        <input type="radio" name="track" value="Deposit out" />
-        <i class="icon icon-radio"></i>
-        <div class="item-inner">
-          <div class="item-title">Deposit Made</div>
-        </div>
-      </label>
-    </li>
-    <li>
-      <label class="item-radio item-content">
-        <input type="radio" name="track" value="Deposit in" />
-        <i class="icon icon-radio"></i>
-        <div class="item-inner">
-          <div class="item-title">Deposit Received</div>
-        </div>
-      </label>
-    </li>
-  </ul>
-  </form>`;
-}
 
 const RedeemIntent = (props, { $h, $f7, $onMounted, $update }) => {
   function getCateg(subtype) {
@@ -473,5 +411,5 @@ const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $st
 }
 
 
-export {Categories, RedeemIntent, TrackerType, Details};
+export {Categories, RedeemIntent, Details};
 export default Categories;

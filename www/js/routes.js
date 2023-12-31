@@ -207,8 +207,8 @@ export default [
     },
   },
   {
-    path: '/left-page-1/',
-    url: './pages/left-page-1.html',
+    path: '/paywall/',
+    componentUrl: './pages/meta/paywall.f7.html',
   },
   {
     path: '/left-page-2/',

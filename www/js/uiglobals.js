@@ -27,8 +27,15 @@ document.addEventListener('proUser.config', function (evt) {
   proStatus.prodId = evt.premium.prodId;
 }, true);
 
-function aboveThreshold(app, feature, val) {
-  if (proStatus.prodId && proStatus.expire < G.func.getFirstTime()) {
+function aboveThreshold(app, feature) {
+  if (!window.cordova) return;
+  if (!proStatus.prodId) {
+    app.toast.show({
+      text: `${feature} is available with premium.`,
+      closeTimeout: 2500,
+      destroyOnClose: true,
+    });
+  } else if (proStatus.expire < G.func.getFirstTime()) {
     app.toast.show({
       text: `Your subscription has expired! Please check your billing information and network connection to reclaim access.`,
       closeTimeout: 2500,

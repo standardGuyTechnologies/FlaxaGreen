@@ -94,10 +94,6 @@
     const data = props.data;
 
     $on('pageInit', () => {
-      $f7.on('refresh-tracklist', (nudata, categ) => {
-        data.length = 0; Object.assign(data, data);
-        $update();
-      })
     })
 
     function onDeleted(item) {

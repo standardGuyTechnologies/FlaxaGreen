@@ -78,56 +78,56 @@ const labelmap = new Map([
 ]);
 
 const trackermap = new Map([
-  ["Loan out", {
+  ["Loan out amt", {
     label: "Loan Administered",
     sign: -1,
     placeholder: "Loan administered",
     subcateg: [],
   }],
-  ["Loan in", {
+  ["Loan in amt", {
     label: "Loan Received",
     sign: 1,
     placeholder: "Loan received",
     subcateg: [],
   }],
   ["Loan out repaid", {
-    label: "Repaid",
+    label: "Debtors Repaid",
     sign: 1,
     placeholder: "Debtors loan payments",
     subcateg: [],
   }],
   ["Loan in repaid", {
-    label: "Repay",
+    label: "Repay Loan received",
     sign: -1,
     placeholder: "Incurred loan repaid",
     subcateg: [],
   }],
   ["Loan out forfeit", {
-    label: "Pardon",
+    label: "Pardon Debtors",
     sign: 1,
     placeholder: " Debtors loan pardoned",
     subcateg: [],
   }],
   ["Loan in forfeit", {
-    label: "Pardoned",
+    label: "My Debts Pardoned",
     sign: -1,
     placeholder: "Incurred loan pardoned",
     subcateg: [],
   }],
-  ["Pledge out", {
+  ["Pledge out amt", {
     label: "Pledge Made",
     sign: 0,
     placeholder: "Pledge made",
     subcateg: [],
   }],
-  ["Pledge in", {
+  ["Pledge in amt", {
     label: "Pledge Expecting",
     sign: 0,
     placeholder: "Pledge expecting",
     subcateg: [],
   }],
   ["Pledge out repaid", {
-    label: "Redeem",
+    label: "Redeem Pledge",
     sign: 0,
     placeholder: "Redeemed pledge made",
     subcateg: [],
@@ -139,7 +139,7 @@ const trackermap = new Map([
     subcateg: [],
   }],
   ["Pledge out forfeit", {
-    label: "Abandon",
+    label: "Abandon Pledge",
     sign: 0,
     placeholder: "Abandoned pledge made",
     subcateg: [],
@@ -150,26 +150,26 @@ const trackermap = new Map([
     placeholder: "Expectant pledge abandoned",
     subcateg: [],
   }],
-  ["Deposit out", {
-    label: "Security-deposit Made",
+  ["Deposit out amt", {
+    label: "Deposit Made",
     sign: -1,
     placeholder: "Out deposits",
     subcateg: [],
   }],
-  ["Deposit in", {
-    label: "Security-deposit Received",
+  ["Deposit in amt", {
+    label: "Deposit Received",
     sign: 1,
     placeholder: "Accepted deposits",
     subcateg: [],
   }],
   ["Deposit out repaid", {
-    label: "Exonerate",
+    label: "Retrieved my deposits",
     sign: 1,
     placeholder: "Out deposits retrieved",
     subcateg: [],
   }],
   ["Deposit in repaid", {
-    label: "Exonerated",
+    label: "Returned entrusted deposits",
     sign: -1,
     placeholder: "Accepted deposits returned",
     subcateg: ["Returned", "Transferred"],

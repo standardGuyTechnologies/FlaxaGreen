@@ -1,7 +1,7 @@
 import getDB from "./db";
-import G from "./uiglobals"
 import { updateQCHANGES, updateQTRANSFER, updateTCHANGES } from "./dbupdates.js"
-const { maxamt, box, appmsgs } = G.V;
+import G from "./uiglobals"
+const { maxamt, box, appmsgs, trackermap } = G.V;
 const {getFirstTime, aboveThreshold, digitcomma, } = G.F;
 function onDeleted ($f7, id, props, type) {
   if (type === 'tr') {
@@ -135,7 +135,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
               <div class="item-content swipeout-content">
                 <div class="item-inner">
                   <div class="item-title">
-                    ${obj.categ + obj.subcateg + obj.type}
+                    ${trackermap.get(obj.categ +' '+ obj.subcateg +' '+ obj.type).label}
                     <div class="item-footer">
                       <i class="icon f7-icons location">person</i>
                       <span>${obj.party}</span>

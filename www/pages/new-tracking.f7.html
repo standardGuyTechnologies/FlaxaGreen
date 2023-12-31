@@ -153,8 +153,9 @@
       const categ = track[0];
       const subcateg = track[1];
       const party = dform.party.value;
+      const code = tform.track.value+ ' amt';
       // const intent = $('form#redeem')[0].intent.value;
-      const val = Number(dform.amt.value) * trackermap.get(tform.track.value).sign
+      const val = Number(dform.amt.value) * trackermap.get(code).sign
       const info = dform.info.value;
 
       getDB().transaction(function (tx) { 

@@ -1,6 +1,6 @@
 //@ts-check
 const maxamt = Math.pow(10, 15);/* 1000 trillion */
-let currency = '', currindex = '', delimeter = '', sanitize = /\D/g;
+let currency = '', currindex = 0, delimeter = '', sanitize = /\D/g;
 
 const labelmap = new Map([
   ['l', {
@@ -191,7 +191,6 @@ const trackermap = new Map([
 
 
 
-const dregex = new RegExp(`[\\d\\D]{3}$`, 'ig');/* only digitcomma uses it */
 
 
 function partyLabel (categ) {
@@ -228,38 +227,29 @@ function getFirstTime(num) {
 };
 function digitcomma(num) {
   /* Helper to give num 3-placevalue commas for legibility */
-  if (typeof num == 'string') num = Number(num);
-  if(typeof num !== 'number' || isNaN(num)){
-    throw new Error('argument must be a number!');
-  } 
-  if (num > maxamt) num = maxamt + 1;
-  if (num < -maxamt) num = -maxamt - 1;/* Todo: why this! */
+  if (typeof num === 'string') num = Number(num);
+  if(typeof num !== 'number' || isNaN(num)) throw new Error('argument must be a number!');
+  if (num > maxamt) num = maxamt;
+  if (num < -maxamt) num = -maxamt;
 
-  let dot = '.', intnum = Math.trunc(num);/* parseInt is not suitable due to possibility of num presented in standard form */
-  let kobo = num - intnum;
-  kobo = Math.round(kobo * 100) / 100;/* incased  js IEE7 fl0ting point bullshit happens */
-  if (delimeter == '.') dot = ',';
-  if (kobo) {
-    kobo = kobo.toString().replace(/-?0\./g, '');/* Todo: make it a onetime regex */
-    kobo.length - 1 || (kobo += '0'); kobo = dot += kobo;
-  } else {
-    kobo = '';
-  }
-
-  let chunk = ''; let last3;
-  let ve = (intnum >= 0) ? '' : '-';
-  let val = Math.abs(intnum) + '';
+  let dot = '.'; if (delimeter === '.') dot = ',';
+  let intnum = Math.trunc(num);
+  let kobo = Math.round(Math.abs(num - intnum) * 100) / 100;
+  let kobostr = '';
+  if (kobo) kobostr = ((kobo+'').length == 1) ? kobo+'0' : kobo+'';
+  
+  let chunk = ''; let last3 = '';
+  let val = ( Math.abs(intnum) + '').split('');
   while (val.length > 3) {
-    last3 = val.slice(-3);
-    val = val.replace(dregex, '');
+    last3 = val.pop()+val.pop()+val.pop();
     chunk = delimeter + last3 + chunk;
   }
-  chunk = val + chunk;
+  chunk = val.join('') + chunk;
   switch (currindex) {
     case 0: case 1:
-      chunk = ve + currency + chunk + kobo; break;
+      chunk = currency + chunk + dot + kobo; break;
     case 2: case 3:
-      chunk = ve + chunk + kobo + currency; break;
+      chunk = chunk + dot + kobo + currency; break;
   }
   return chunk;
 }

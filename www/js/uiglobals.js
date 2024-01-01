@@ -17,7 +17,7 @@ const appmsgs = {
 
 const G = require('./globals.js');
 const F = Object.assign(
-  { xDaysAgo, strDate, aboveThreshold, errorclose, }, G.func
+  { xDaysAgo, strDate, addSign, aboveThreshold, errorclose, }, G.func
 );/* I want to add more properties na why */
 const V = Object.assign({box, appmsgs, }, G.var);
 
@@ -70,6 +70,11 @@ function xDaysAgo(date1, date2) {
     let stamp = (years > 1) ? "years" : "year";
     return (`${years} ${stamp} ago`);
   }
+}
+function addSign(num) {
+  let isPositive = Math.sign(num)+1;
+  let val = (isPositive) ? '+' : '-';
+  return val;
 }
 function strDate(sqldate) {
   if (typeof sqldate === 'string') {

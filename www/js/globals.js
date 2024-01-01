@@ -231,12 +231,14 @@ function digitcomma(num) {
   if(typeof num !== 'number' || isNaN(num)) throw new Error('argument must be a number!');
   if (num > maxamt) num = maxamt;
   if (num < -maxamt) num = -maxamt;
-
-  let dot = '.'; if (delimeter === '.') dot = ',';
+  
   let intnum = Math.trunc(num);
   let kobo = Math.round(Math.abs(num - intnum) * 100) / 100;
-  let kobostr = '';
-  if (kobo) kobostr = ((kobo+'').length == 1) ? kobo+'0' : kobo+'';
+  let kobostr = '', dot = '';
+  if (kobo) {
+    (delimeter === '.') ? dot = ',' : dot = '.';
+    kobostr = ((kobo+'').length == 1) ? kobo+'0' : kobo+''
+  };
   
   let chunk = ''; let last3 = '';
   let val = ( Math.abs(intnum) + '').split('');
@@ -247,9 +249,9 @@ function digitcomma(num) {
   chunk = val.join('') + chunk;
   switch (currindex) {
     case 0: case 1:
-      chunk = currency + chunk + dot + kobo; break;
+      chunk = currency + chunk + dot + kobostr; break;
     case 2: case 3:
-      chunk = chunk + dot + kobo + currency; break;
+      chunk = chunk + dot + kobostr + currency; break;
   }
   return chunk;
 }

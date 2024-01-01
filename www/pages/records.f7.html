@@ -44,7 +44,7 @@
                 <div class="item-after">
                   <div class="card no-shadow">
                     <div class="card-header">
-                      <strong>${item.sumamt}</strong>
+                      <strong>${addSign(item.sumamt)+digitcomma(item.sumamt)}</strong>
                     </div>
                     <div class="card-content">
                       <small><small>Net Output</small></small>
@@ -71,7 +71,7 @@
                 <div class="item-after">
                   <div class="card no-shadow">
                     <div class="card-header">
-                      <strong>${item.sumamt}</strong>
+                      <strong>${addSign(item.sumamt)+digitcomma(item.sumamt)}</strong>
                     </div>
                     <div class="card-content">
                       <small><small>${item.categ}</small></small>
@@ -98,10 +98,10 @@
                 <div class="item-after">
                   <div class="card no-shadow">
                     <div class="card-header">
-                      <strong>${item.sumamt}</strong>
+                      <strong>${addSign(item.sumamt)+digitcomma(item.sumamt)}</strong>
                     </div>
                     <div class="card-content">
-                      <small><small>Expenses/Cash-out</small></small>
+                      <small><small>${item.categ}</small></small>
                     </div>
                   </div>
                 </div>
@@ -159,7 +159,7 @@
 <script>
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs, labelmap } = G.V;
-  const { getFirstTime, strDate, preload_image, } = G.F;
+  const { addSign, digitcomma, strDate, preload_image, } = G.F;
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
     const { date, datestr, acc, ndata, qdata, tdata } = props;
 

@@ -60,11 +60,11 @@
           <li><span>Category</span><span>${trackermap.get(groupcateg+' amt').label}</span></li>
           <li><span>${partyLabel(groupcateg)}</span><span>${data.party}</span></li>
           <li><span>Date Opened</span><span>${strDate(data.date)}</span></li>
-          <li><span>Opening Amount</span><span>${data.val}</span></li>
+          <li><span>Opening Amount</span><span>${Math.abs(data.val)}</span></li>
           <li><span>Opening Account</span><span>${data.acc}</span></li>
           <li><span>Last Update</span><span>${strDate(data.date2)}</span></li>
-          <li><span>Current Amount</span><span>${data.val2}</span></li>
-          <li><span>Todays Date</span><span>${datestr}</span></li>
+          <li><span>Current Amount</span><span>${Math.abs(data.val2)}</span></li>
+          <li><span>Active Date</span><span>${datestr}</span></li>
           <li><span>Active Account</span><span>${acc}</span></li>
         </ul>
       </div>
@@ -104,7 +104,7 @@
   import {updateTCHANGES} from '../js/dbupdates.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs, trackermap } = G.V;
-  const { getFirstTime, aboveThreshold, strDate, partyLabel } = G.F;
+  const { digitcomma, aboveThreshold, strDate, partyLabel } = G.F;
 
   import Categories, { RedeemIntent, Details } from '../pages/local-components/categ.js';
   export default (props, { $f7ready, $f7, $f7route, $f7router, $on, $onMounted, $onBeforeUnmount, $, $update }) => {

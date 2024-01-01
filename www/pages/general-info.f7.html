@@ -18,11 +18,11 @@
           <li class="list-group-title">Accounts</li>
           ${props.data.map(item => $h`
             <li>
-              <span>${item.acc}</span><span>${item.bal}</span>
+              <span>${item.acc}</span><span>${digitcomma(item.bal)}</span>
             </li>
           `)}
           <li><span>Total Accounts</span><span>${props.totalcount}</span></li>
-          <li><span>Total Amount</span><span>${props.totalbal}</span></li>
+          <li><span>Total Amount</span><span>${digitcomma(props.totalbal)}</span></li>
         </ul>
       </div>
       <div class="list list-strong list-outline list-dividers-ios simple-list">
@@ -39,13 +39,13 @@
         <ul>
           <li class="list-group-title">Loan Stats</li>
           <li>
-            <span>Loan administered</span><span>${outloan}</span>
+            <span>Loan administered</span><span>${digitcomma(outloan)}</span>
           </li>
           <li>
             <span>Pardon percentage</span><span>${pardonloan}%</span>
           </li>
           <li>
-            <span>Loan received</span><span>${inloan}</span>
+            <span>Loan received</span><span>${digitcomma(inloan)}</span>
           </li>
           <li>
             <span>Repay percentage</span><span>${repayloan}%</span>
@@ -56,7 +56,7 @@
         <ul>
           <li class="list-group-title">Pledge Stats</li>
           <li>
-            <span>Pledge made</span><span>${outpledge}</span>
+            <span>Pledge made</span><span>${digitcomma(outpledge)}</span>
           </li>
           <li>
             <span>Redeem percentage</span><span>${redeem}%</span>
@@ -67,10 +67,10 @@
         <ul>
           <li class="list-group-title">Deposit Stats</li>
           <li>
-            <span>Security deposit made</span><span>${outdeposit}</span>
+            <span>Security deposit made</span><span>${digitcomma(outdeposit)}</span>
           </li>
           <li>
-            <span>Security deposit received</span><span>${indeposit}</span>
+            <span>Security deposit received</span><span>${digitcomma(indeposit)}</span>
           </li>
         </ul>
       </div>
@@ -83,20 +83,23 @@
 </style>
 
 <script>
+  import G from '../js/uiglobals.js';
+  const { maxamt, box, appmsgs, trackermap } = G.V;
+  const { digitcomma, aboveThreshold, strDate, partyLabel } = G.F;
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
-    const outloan = Math.abs(props.trackamt["Loanout"] || 1);
+    const outloan = Math.abs(props.trackamt["Loanout"] || 0);
     const loanf = Math.abs(props.trackf["Loanout"] || 0);
-    const pardonloan = Math.round(loanf*100/outloan)
+    const pardonloan = Math.round(loanf*100/(outloan || 0))
 
-    const inloan = Math.abs(props.trackamt["Loanin"] || 1);
+    const inloan = Math.abs(props.trackamt["Loanin"] || 0);
     const loanr = Math.abs(props.trackr["Loanin"] || 0);
-    const repayloan = Math.round(loanr*100/inloan);
+    const repayloan = Math.round(loanr*100/(inloan || 0));
 
-    const outpledge = Math.abs(props.trackamt["Pledgeout"] || 1);
+    const outpledge = Math.abs(props.trackamt["Pledgeout"] || 0);
     const pledger = Math.abs(props.trackr["Pledgeout"] || 0);
-    const redeem = Math.round(pledger*100/outpledge);
+    const redeem = Math.round(pledger*100/(outpledge || 0));
 
-    const outdeposit = Math.abs(props.trackamt["Depositout"] || 1);
+    const outdeposit = Math.abs(props.trackamt["Depositout"] || 0);
     const indeposit = Math.abs(props.trackamt["Depositin"] || 0);
 
     return $render;

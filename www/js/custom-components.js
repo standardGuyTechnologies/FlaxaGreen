@@ -2,7 +2,7 @@ import getDB from "./db";
 import { updateQCHANGES, updateQTRANSFER, updateTCHANGES } from "./dbupdates.js"
 import G from "./uiglobals"
 const { maxamt, box, appmsgs, trackermap } = G.V;
-const {getFirstTime, aboveThreshold, digitcomma, } = G.F;
+const {addSign, aboveThreshold, digitcomma, } = G.F;
 function onDeleted ($f7, id, props, type) {
   if (type === 'tr') {
     getDB().transaction(function (tx) {
@@ -89,7 +89,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
                   <div class="item-after">
                     <div class="card no-shadow">
                       <div class="card-header">
-                        <strong>${(obj.amt)}</strong>
+                        <strong>${addSign(obj.amt)+digitcomma(obj.amt)}</strong>
                       </div>
                       <div class="card-content">
                         <small><small>Qty: ${obj.qty || 'N/A'}</small></small>
@@ -144,7 +144,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
                   <div class="item-after">
                     <div class="card no-shadow">
                       <div class="card-header">
-                        <strong>${(obj.val)}</strong>
+                        <strong>${addSign(obj.val)+digitcomma(obj.val)}</strong>
                       </div>
                     </div>
                   </div>
@@ -196,7 +196,7 @@ function recordsTransferSheet(props, { $h, $f7, $onUnmounted, $onMounted, $updat
                   <div class="item-after">
                     <div class="card no-shadow">
                       <div class="card-header">
-                        <strong>${(obj.amt)}</strong>
+                        <strong>${addSign(obj.amt)+digitcomma(obj.amt)}</strong>
                       </div>
                       <div class="card-content">
                         <small><small>

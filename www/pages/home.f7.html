@@ -72,7 +72,10 @@
                       <span>${entry.acc}</span> <span>${datestr(entry.datestr)}</span>
                     </div>
                     <div class="inout">
-                      <span>NET CASH FLOW:</span> <span>${entry.qdiff+entry.tdiff}</span>
+                      <span>NET CASH FLOW:</span>
+                      <span>
+                        ${addSign(entry.qdiff+entry.tdiff)+digitcomma(entry.qdiff+entry.tdiff)}
+                      </span>
                     </div>
                   </div>
                   <!-- <div @click="${deleteTL}" class="item-after">
@@ -118,7 +121,7 @@
   import getDB from '../js/db.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs } = G.V;
-  const {getFirstTime, toUTCms, aboveThreshold, preload_image, } = G.F;
+  const {digitcomma, addSign, toUTCms, aboveThreshold, preload_image, } = G.F;
 
   export default (props, { $f7ready, $f7, $, $store, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {};  // todo unmount everything on this obj when page unmount.

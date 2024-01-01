@@ -84,19 +84,19 @@
 
 <script>
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
-    const outloan = Math.abs(props.trackamt["Loanout"] || 0);
+    const outloan = Math.abs(props.trackamt["Loanout"] || 1);
     const loanf = Math.abs(props.trackf["Loanout"] || 0);
     const pardonloan = Math.round(loanf*100/outloan)
 
-    const inloan = Math.abs(props.trackamt["Loanin"] || 0);
+    const inloan = Math.abs(props.trackamt["Loanin"] || 1);
     const loanr = Math.abs(props.trackr["Loanin"] || 0);
     const repayloan = Math.round(loanr*100/inloan);
 
-    const outpledge = Math.abs(props.trackamt["Pledgeout"] || 0);
+    const outpledge = Math.abs(props.trackamt["Pledgeout"] || 1);
     const pledger = Math.abs(props.trackr["Pledgeout"] || 0);
     const redeem = Math.round(pledger*100/outpledge);
 
-    const outdeposit = Math.abs(props.trackamt["Depositout"] || 0);
+    const outdeposit = Math.abs(props.trackamt["Depositout"] || 1);
     const indeposit = Math.abs(props.trackamt["Depositin"] || 0);
 
     return $render;

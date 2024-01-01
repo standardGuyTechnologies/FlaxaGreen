@@ -7,7 +7,7 @@ import params from "./store.js"
 import {recordsItemSheet, recordsTrackSheet, recordsTransferSheet} from "./custom-components.js"
 import {initDB} from './db.js';
 import G from './uiglobals.js'; 
-// import {adsSDKconfig, paymentsSDKconfig} from '../../cordova/sdk/sdk.js'; 
+// import {adsSDKconfig, paymentsSDKconfig} from './meta/sdk.js'; 
 
 const { toUTCms, xDaysAgo, digitcomma, reset_currtokens} = G.F;
 const { labelmap, trackermap, box, appmsgs, } = G.V;
@@ -28,7 +28,7 @@ var device = Framework7.getDevice();
 const store = createStore(params);
 
 var app = new Framework7({
-  name: 'Flaxa Green', // App name
+  name: 'Flaxa', // App name
   theme: 'ios',
   colors: {
     primary: '#1ceb4f',
@@ -67,9 +67,10 @@ var app = new Framework7({
   },
 });
 function mockdata (db) {
-  window.db = db; // todo del;
   return new Promise((resolve, reject) => {
+    if (window.sqlitePlugin) return;
     db.transaction(function (tx) {
+      window.db = db; // todo del;
       tx.executeSql("INSERT INTO CONFIG (mode) VALUES ('light')");
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\
@@ -103,7 +104,7 @@ function mockdata (db) {
 }
 
 document.addEventListener('deviceready', () => {
-  // adsSDKconfig(); paymentsSDKconfig(); todo uncomment
+  // adsSDKconfig(); paymentsSDKconfig(); //todo uncomment
   initDB().then(mockdata).then(db => {
     store.dispatch('accrefresh', '');
     db.transaction(function (tx) {

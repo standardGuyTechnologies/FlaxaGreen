@@ -109,7 +109,9 @@ function mockdata (db) {
 }
 
 document.addEventListener('deviceready', () => {
-  // adsSDKconfig(); paymentsSDKconfig(); //todo uncomment
+  if (typeof adsSDKconfig === 'function') {
+    adsSDKconfig(); paymentsSDKconfig();
+  }
   initDB().then(mockdata).then(db => {
     store.dispatch('accrefresh', '');
     db.transaction(function (tx) {

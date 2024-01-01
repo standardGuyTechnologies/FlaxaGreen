@@ -11,16 +11,18 @@ function initDB(){
     } else {
       reject ('Not a supported platform for flaxa database')
     };
-    db.transaction(function (tx) {
-      tx.executeSql('drop table if exists CONFIG')
-      tx.executeSql('drop table if exists TRANSFER')
-      tx.executeSql('drop table if exists QUICK')
-      tx.executeSql('drop table if exists QUICKDIFF')
-      tx.executeSql('drop table if exists TRACK')
-      tx.executeSql('drop table if exists TRACKDIFF')
-      tx.executeSql('drop table if exists TRACKPHASE')
-      tx.executeSql('drop table if exists ACCOUNTS')
-    }, function (e) {reject(e)}, function () {});
+    if(!window.sqlitePlugin) {
+      db.transaction(function (tx) {
+        tx.executeSql('drop table if exists CONFIG')
+        tx.executeSql('drop table if exists TRANSFER')
+        tx.executeSql('drop table if exists QUICK')
+        tx.executeSql('drop table if exists QUICKDIFF')
+        tx.executeSql('drop table if exists TRACK')
+        tx.executeSql('drop table if exists TRACKDIFF')
+        tx.executeSql('drop table if exists TRACKPHASE')
+        tx.executeSql('drop table if exists ACCOUNTS')
+      }, function (e) {reject(e)}, function () {});
+    }
     db.transaction(function (tx) {
       /* date is converted to Utcms before storage */
       tx.executeSql('CREATE TABLE IF NOT EXISTS CONFIG (currency, currindex, delimeter, mode)');

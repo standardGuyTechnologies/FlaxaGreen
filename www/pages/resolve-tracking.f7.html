@@ -60,10 +60,10 @@
           <li><span>Category</span><span>${trackermap.get(groupcateg+' amt').label}</span></li>
           <li><span>${partyLabel(groupcateg)}</span><span>${data.party}</span></li>
           <li><span>Date Opened</span><span>${strDate(data.date)}</span></li>
-          <li><span>Opening Amount</span><span>${Math.abs(data.val)}</span></li>
+          <li><span>Opening Amount</span><span>${digitcomma(data.val)}</span></li>
           <li><span>Opening Account</span><span>${data.acc}</span></li>
           <li><span>Last Update</span><span>${strDate(data.date2)}</span></li>
-          <li><span>Current Amount</span><span>${Math.abs(data.val2)}</span></li>
+          <li><span>Current Amount</span><span>${digitcomma(data.val2)}</span></li>
           <li><span>Active Date</span><span>${datestr}</span></li>
           <li><span>Active Account</span><span>${acc}</span></li>
         </ul>

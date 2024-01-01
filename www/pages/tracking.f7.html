@@ -35,7 +35,7 @@
               <div class="item-after">
                 <div class="card no-shadow">
                   <div class="card-header">
-                    <strong>${item.pending*-1}</strong>
+                    <strong>${addSign(item.pending*-1)+digitcomma(item.pending)}</strong>
                   </div>
                   <div class="card-content">
                     <small><small>pending</small></small>
@@ -87,7 +87,7 @@
   import {updateTCHANGES} from '../js/dbupdates.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs, trackermap } = G.V;
-  const { getFirstTime, aboveThreshold, strDate, partyLabel } = G.F;
+  const { addSign, digitcomma, aboveThreshold, strDate, partyLabel } = G.F;
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
 
     const TOPG = {};

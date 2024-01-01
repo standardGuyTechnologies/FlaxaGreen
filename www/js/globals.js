@@ -1,6 +1,6 @@
 //@ts-check
 const maxamt = Math.pow(10, 15);/* 1000 trillion */
-let currency, currindex, delimeter, sanitize = /\D/g;
+let currency = '', currindex = '', delimeter = '', sanitize = /\D/g;
 
 const labelmap = new Map([
   ['l', {

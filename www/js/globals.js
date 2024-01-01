@@ -37,7 +37,7 @@ const labelmap = new Map([
     label: "Awarded", 
     sign: +1, 
     placeholder: "Awards received", 
-    subcateg: ["Allowance", "Gifts", "Tuition", "Prize", "Grant", "Bonuses", "Subsidy", "Pension", "Donations"], 
+    subcateg: ["Allowance", "Gifts", "Tuition", "Prize", "Grant", "Bonuses", "Pension", "Donations"], 
   }],
   ['x', {
     label: "Expenses", 
@@ -61,7 +61,7 @@ const labelmap = new Map([
     label: "Generosity", 
     sign: -1, 
     placeholder: "Charitable gestures", 
-    subcateg: ["Gifts", "Subsidy", "Donations", "Philanthropy"], 
+    subcateg: ["Gifts", "Donations", "Philanthropy"], 
   }],
   ['i', {
     label: "Investments", 
@@ -243,7 +243,7 @@ function digitcomma(num) {
   let chunk = ''; let last3 = '';
   let val = ( Math.abs(intnum) + '').split('');
   while (val.length > 3) {
-    last3 = val.pop()+val.pop()+val.pop();
+    last3 = [val.pop(),val.pop(),val.pop()].reverse().join('');
     chunk = delimeter + last3 + chunk;
   }
   chunk = val.join('') + chunk;

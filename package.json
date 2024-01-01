@@ -13,8 +13,10 @@
     "electron": "electron .",
     "start": "npm run serve",
     "serve": "http-server ./www/ -o -c 1 -a localhost -p 8080",
-    "build-cordova": "node ./build/build.mjs && cd cordova && cordova build",
+    "build-cordova": "npm run bash-replace && npm run bundle && npm run bash-replace2 && node ./build/build.mjs && cd cordova && cordova build",
     "bundle": "webpack --config webpack.config.js",
+    "bash-replace": "sed -i 's+// import {adsSDKconfig+import {adsSDKconfig+' www/js/app.js",
+    "bash-replace2": "sed -i 's+import {adsSDKconfig+// import {adsSDKconfig+' www/js/app.js",
     "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./www/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./www/fonts/ && cpy --flat ./node_modules/framework7/*.js ./www/framework7 && cpy --flat ./node_modules/framework7/*.css ./www/framework7 && cpy --flat ./node_modules/framework7/*.map ./www/framework7"
   },
   "browserslist": [

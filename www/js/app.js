@@ -68,8 +68,8 @@ var app = new Framework7({
 });
 function mockdata (db) {
   return new Promise((resolve, reject) => {
-    if (window.sqlitePlugin) return;
     db.transaction(function (tx) {
+      if (window.sqlitePlugin) return;
       window.db = db; // todo del;
       tx.executeSql("INSERT INTO CONFIG (mode) VALUES ('light')");
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
@@ -128,7 +128,7 @@ document.addEventListener('deviceready', () => {
   }).catch(e => console.log(e))
 }, false);
 
-if (typeof cordova === 'undefined') {
+if (!window.cordova) {
   document.dispatchEvent(new Event('deviceready'));
 }
 

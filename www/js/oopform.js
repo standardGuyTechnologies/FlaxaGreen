@@ -1,5 +1,4 @@
 //@ts-check
-// todo test
 function validate(form, notify = alerton, notifyoff = alertoff) {
   const arr = form.querySelectorAll('[data-required], [data-pattern], [data-step], [data-max], [data-min], [data-type]');
   form.addEventListener('submit', function (e) {

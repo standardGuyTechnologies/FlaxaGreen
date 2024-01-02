@@ -73,7 +73,7 @@ function mockdata (db) {
   return new Promise((resolve, reject) => {
     db.transaction(function (tx) {
       if (window.sqlitePlugin) return;
-      window.db = db; // todo del;
+      window.db = db;
       tx.executeSql("INSERT INTO CONFIG (mode) VALUES ('light')");
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\

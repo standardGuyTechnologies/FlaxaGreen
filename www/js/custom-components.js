@@ -60,7 +60,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
   let instances = []; let sheet
   $onMounted(() => {
     makeinstances(props).then(i => {instances = i; $update()} )
-    $f7.on('quick-sheet', (unique) => { // todo fix
+    $f7.on('quick-sheet', (unique) => {
       if (props.unique !== unique) return;
       makeinstances(props).then(i => {instances = i; $update()} )
     })

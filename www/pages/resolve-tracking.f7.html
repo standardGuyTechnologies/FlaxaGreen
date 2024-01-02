@@ -155,7 +155,7 @@
       const reform = $('form#resolve')[0];
       const type = reform.resolve.value;
       const val = Number(dform.amt.value) * trackermap.get(groupcateg+' '+type).sign
-      const state = (val+data.val2 > 0) ? 'active' : 'archive';
+      const state = (type=='amt') ? 'active' : (Math.abs(val) > Math.abs(data.val2)) ? 'archive' : 'active';
       const info = dform.info.value;
 
       getDB().transaction(function (tx) {

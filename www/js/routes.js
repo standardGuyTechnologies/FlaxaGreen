@@ -154,17 +154,16 @@ export default [
       const db = getDB(); const query2 = [], query3 = []; const activetrack = [];
       let trackamt = {}, trackr = {}, trackf = {};
       db.transaction(function (tx) {
-        tx.executeSql('SELECT acc, SUM(qdiff) AS qnet, SUM(tdiff) AS tnet FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) GROUP BY acc ORDER BY acc', [], function (tx, result) {
+        tx.executeSql('SELECT acc, SUM(qdiff) AS qnet FROM QUICKDIFF GROUP BY acc ORDER BY acc', [], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
             query2.push(res.item(i));
           }
         })
-        tx.executeSql('SELECT acc, SUM(tdiff) AS tnet FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE qdiff IS NULL GROUP BY acc ORDER BY acc', [], function (tx, result) {
+        tx.executeSql('SELECT acc, SUM(tdiff) AS tnet FROM TRACKDIFF GROUP BY acc ORDER BY acc', [], function (tx, result) {
           const res = result.rows;
           for(let i=0; i<res.length; i++){
-            let x = res.item(i); x.qnet = 0;
-            query3.push(x);
+            query3.push(res.item(i));
           }
         })
         tx.executeSql('SELECT categ, COUNT(*) AS num FROM TRACK WHERE state = ? GROUP BY categ', ['active'], function (tx, result) {
@@ -199,9 +198,9 @@ export default [
         const query1 = app.store.getters.getaccobj.value;
         const arr = query1.map((x, i) => {
           const acc = query2[i] ? query2[i].acc : null;
-          if (x.acc == acc) x.bal += query2[i].qnet + query2[i].tnet;
-          const acc2 = query3[i] ? query3[i].acc2 : null;
-          if (x.acc == acc2) x.bal += query3[i].qnet + query3[i].tnet;
+          if (x.acc == acc) x.bal += query2[i].qnet;
+          const acc2 = query3[i] ? query3[i].acc : null;
+          if (x.acc == acc2) x.bal += query3[i].tnet;
           return x;
         })
         const totalcount = query1.length;

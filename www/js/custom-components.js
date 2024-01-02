@@ -67,7 +67,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
   })
   $onUnmounted(() => {
     $f7.off('quick-sheet');
-    $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
+    // $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
@@ -123,7 +123,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
   })
   $onUnmounted(() => {
     $f7.off('track-sheet');
-    $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
+    // $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
@@ -176,7 +176,7 @@ function recordsTransferSheet(props, { $h, $f7, $onUnmounted, $onMounted, $updat
   })
   $onUnmounted(() => {
     $f7.off('transfer-sheet');
-    $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
+    // $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">

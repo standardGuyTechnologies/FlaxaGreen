@@ -76,11 +76,19 @@ function addSign(num) {
   let val = (isPositive) ? '+' : '-';
   return val;
 }
+const days = '00 01 02 03 04 05 06 07 09'.split(' ');
+const weeks = 'Sun,Mon,Tue,Wed,Thu,Fri,Sat'.split(',');
+const months = 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec'.split(',');
+function dateformat (date) {
+  let y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
+  let day = date.getDay();
+  return `${weeks[day]} ${days[d] || d}/${months[m]}/${y}`
+}
 function strDate(sqldate) {
   if (typeof sqldate === 'string') {
-    return new Date(sqldate).toDateString();
+    return dateformat(new Date(sqldate));
   } else if (typeof sqldate === 'number') {
-    return G.func.utcTimeDate(sqldate*1000).toDateString();
+    return dateformat(G.func.utcTimeDate(sqldate*1000));
   } else {
     throw new Error ("Bad arguent "+typeof sqldate);
   }

@@ -10,8 +10,8 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "electron": "electron .",
-    "start": "npm run serve",
+    "electron": "npm run bundle && electron .",
+    "start": "npm run electron",
     "serve": "http-server ./www/ -o -c 1 -a localhost -p 8080",
     "build-cordova": "npm run bash-replace && npm run bundle && npm run bash-replace2 && node ./build/build.mjs && cd cordova && cordova build",
     "build-test": "npm run bundle && node ./build/build2.mjs && cd cordova-f7-default && cordova build",

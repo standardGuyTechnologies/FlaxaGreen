@@ -18,10 +18,10 @@ export default {
       return [...state.accounts];
     },
     getaccobj({ state }) {
-      return [...state.accountsobj];
+      return state.accountsobj.map(obj => Object.assign({}, obj));
     },
     tlentries({ state }) {
-      return [...state.tldata.values()];
+      return [...state.tldata.values()].map(obj => Object.assign({}, obj));
     }
   },
   actions: {
@@ -44,7 +44,7 @@ export default {
     },
     accrefresh({ state }, active) {
       getDB().transaction(function(tx){
-        tx.executeSql('SELECT * FROM ACCOUNTS WHERE acc <> ?', [active], function (tx, result) {
+        tx.executeSql('SELECT * FROM ACCOUNTS WHERE acc <> ? ORDER BY rowid', [active], function (tx, result) {
           const res = result.rows, accobj = [];
           for (let i = 0; i < res.length; i++) {
             accobj.push(res.item(i));

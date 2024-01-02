@@ -6,7 +6,7 @@ const box = new Map(); const proStatus = {expire: 0, prodId: null};
 const 
 donatelink = 'https://www.paypal.com/donate?hosted_button_id=P6VFWELXZESVQ',
 googleplaystore = 'https://play.google.com/store/apps/details?id=com.standardguysoftware.fgg',
-appversion = "App version: 6.0.0",
+appversion = "App version: 6.0.1",
 termslink = 'https://standardguytechnologies.github.io/Flaxa/',
 emaillink = 'mailto:gethelp.fga@gmail.com',
 liblink = "https://standardguytechnologies.github.io/Flaxa/external_lib.html";

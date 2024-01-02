@@ -14,6 +14,7 @@
     "start": "npm run serve",
     "serve": "http-server ./www/ -o -c 1 -a localhost -p 8080",
     "build-cordova": "npm run bash-replace && npm run bundle && npm run bash-replace2 && node ./build/build.mjs && cd cordova && cordova build",
+    "build-test": "npm run bundle && node ./build/build2.mjs && cd cordova-f7-default && cordova build",
     "bundle": "webpack --config webpack.config.js",
     "bash-replace": "sed -i 's+// import {adsSDKconfig+import {adsSDKconfig+' www/js/app.js",
     "bash-replace2": "sed -i 's+import {adsSDKconfig+// import {adsSDKconfig+' www/js/app.js",

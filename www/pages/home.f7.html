@@ -137,9 +137,9 @@
     const setScheme = () => {
       if(!aboveThreshold($f7, "Dark Mode Toggle")) return;
       if ($store.getters.mode.value === 'light') {
-        $f7.setDarkMode(true); $store.dispatch('mode', 'dark');
+        $f7.setDarkMode(true); $store.dispatch('savemode', 'dark');
       } else {
-        $f7.setDarkMode(false); $store.dispatch('mode', 'light');
+        $f7.setDarkMode(false); $store.dispatch('savemode', 'light');
       }
     }
 

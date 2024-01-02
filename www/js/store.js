@@ -25,7 +25,10 @@ export default {
     }
   },
   actions: {
-    mode({ state }, val) {
+    setmode({ state }, val) {
+      state.mode = val;
+    },
+    savemode({ state }, val) {
       getDB().transaction(function(tx){
         tx.executeSql('SELECT * FROM CONFIG', [], function (tx, result) {
           if(!result.rows.length) {

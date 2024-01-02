@@ -119,7 +119,7 @@ document.addEventListener('deviceready', () => {
         if (!result.rows.length) {
           // store.dispatch("accExists", false);
         } else {
-          store.dispatch("mode", result.rows.item(0).mode);
+          store.dispatch("setmode", result.rows.item(0).mode);
           // reset_currtokens(result.rows.item(0));
           // store.dispatch("accExists", true); 
         }

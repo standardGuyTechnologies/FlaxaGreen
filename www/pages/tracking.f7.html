@@ -106,7 +106,7 @@
     function onDeleted(item) {
       deleted = true;
       const id = item.id, categ = item.categ;
-      const date = props.date, acc = props.acc;
+      const date = Number(props.date), acc = props.acc;
       getDB().transaction(function (tx) {
         tx.executeSql('DELETE FROM TRACK WHERE id = ?', [id]);
         tx.executeSql('DELETE FROM TRACKPHASE WHERE id = ?', [id]);

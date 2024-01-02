@@ -78,12 +78,14 @@ function mockdata (db) {
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\
       INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location) VALUES \
+      (1703456767, "FirstBank", "Expenses", "Allowance", "Monthly Allowance", 4000, 1, "Home"),\
       (1703456767, "FirstBank", "Expenses", "Fast Food", "Cheese Burger", -600, 2, "Shoprite"),\
       (1703456767, "FirstBank", "Expenses", "Public Transport", "BRT Transit Ticket", -500, 1, "Leventis Bus station"),\
       (1703456767, "FirstBank", "Expenses", "Fruits", "Apples & Bananas", -1200, 1, "Main Market"),\
+      (1703456767, "FirstBank", "Expenses", "Art", "Graphics Design", -1400, 1, "Online"),\
+      (1703456767, "FirstBank", "Expenses", "Drinks", "Smirnoff Ice", -900, 1, "Shoprite"),\
       (1703456767, "FirstBank", "Dividends", "Sales", "Old Electronics", 1750, 3, "Main Market"),\
       (1703456767, "FirstBank", "Expenses", "Fast Food", "Potato Chips", -400, 2, "Shoprite"),\
-      (1703456767, "FirstBank", "Expenses", "Drinks", "Smirnoff Ice", -900, 1, "Shoprite"),\
       (1703456767, "GTBank", "Expenses", "Connectivity", "MTN airtime", -4000, 1, "Valley Estate"),\
       (1702166400, "GTBank", "Wages", "Freelance", "Web Design", 2500, null, "Ikorodu"),\
       (1702252800, "FirstBank", "Expenses", "News", "The Sun", -180, 1, "Victoria Island"),\

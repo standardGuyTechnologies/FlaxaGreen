@@ -20,7 +20,7 @@ function onDeleted ($f7, id, props, type, id2) {
           tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [id])
         } else {
           $f7.toast.show({
-            text: 'Delete track origin from the track listing',
+            text: 'Failed! Delete track origin from the track listing.',
             closeTimeout: 2500,
             destroyOnClose: true,
           })

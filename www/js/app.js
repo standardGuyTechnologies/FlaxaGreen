@@ -78,7 +78,7 @@ function mockdata (db) {
       tx.executeSql("INSERT INTO ACCOUNTS (acc, bal) VALUES ('FirstBank', 30000), ('GTBank', 17000);");
       tx.executeSql('\
       INSERT INTO QUICK (date, acc, categ, subcateg, item, amt, qty, location) VALUES \
-      (1703456767, "FirstBank", "Expenses", "Allowance", "Monthly Allowance", 4000, 1, "Home"),\
+      (1703456767, "FirstBank", "Awarded", "Allowance", "Monthly Allowance", 4000, 1, "Home"),\
       (1703456767, "FirstBank", "Expenses", "Fast Food", "Cheese Burger", -600, 2, "Shoprite"),\
       (1703456767, "FirstBank", "Expenses", "Public Transport", "BRT Transit Ticket", -500, 1, "Leventis Bus station"),\
       (1703456767, "FirstBank", "Expenses", "Fruits", "Apples & Bananas", -1200, 1, "Main Market"),\

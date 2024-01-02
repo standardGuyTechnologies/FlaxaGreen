@@ -1,9 +1,10 @@
 import getDB from './db.js';
+import G from './uiglobals.js';
 
 function qbackupplan($f7, tx, props, key) {
   tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM TRACKDIFF LEFT JOIN QUICKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
     if (!result.rows.length) {
-      const date = props.date, datestr = date.toISOString(), acc = props.acc;
+      const date = props.date, datestr = G.F.utcTimeDate(date*1000).toISOString(), acc = props.acc;
       let x = {date, datestr,  acc, qdiff: 0, tdiff: 0}
         $f7.store.dispatch('updatetl', {key, data: x})
     } else {
@@ -15,7 +16,7 @@ function qbackupplan($f7, tx, props, key) {
 function tbackupplan($f7, tx, props, key) {
   tx.executeSql('SELECT date, datetime(date, "unixepoch") AS datestr, acc, qdiff, tdiff FROM QUICKDIFF LEFT JOIN TRACKDIFF USING(date, acc) WHERE date = ? AND acc = ?', [props.date, props.acc], function (tx, result) {
     if (!result.rows.length) {
-      const date = props.date, datestr = date.toISOString(), acc = props.acc;
+      const date = props.date, datestr = G.F.utcTimeDate(date*1000).toISOString(), acc = props.acc;
       let x = {date, datestr,  acc, qdiff: 0, tdiff: 0}
         $f7.store.dispatch('updatetl', {key, data: x})
     } else {

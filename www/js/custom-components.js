@@ -3,7 +3,7 @@ import { updateQCHANGES, updateQTRANSFER, updateTCHANGES } from "./dbupdates.js"
 import G from "./uiglobals"
 const { maxamt, box, appmsgs, trackermap } = G.V;
 const {addSign, aboveThreshold, digitcomma, } = G.F;
-function onDeleted ($f7, id, props, type) {
+function onDeleted ($f7, id, props, type, id2) {
   if (type === 'tr') {
     getDB().transaction(function (tx) {
       tx.executeSql('DELETE FROM QUICK WHERE tid = ?', [id])
@@ -15,7 +15,17 @@ function onDeleted ($f7, id, props, type) {
     }, function (e) { console.log(e) }, function () { updateQCHANGES($f7, props); })
   } else if (type === 't') {
     getDB().transaction(function (tx) {
-      tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [id])
+      tx.executeSql('SELECT * FROM TRACKPHASE WHERE id = ?', [id2], function (tx, result) {
+        if (result.rows.length > 1) {
+          tx.executeSql('DELETE FROM TRACKPHASE WHERE rowid = ?', [id])
+        } else {
+          $f7.toast.show({
+            text: 'Delete track origin from the track listing',
+            closeTimeout: 2500,
+            destroyOnClose: true,
+          })
+        }
+      })
     }, function (e) { console.log(e) }, function () { updateTCHANGES($f7, props); })
   }
 }
@@ -34,7 +44,7 @@ function makeinstances (props) {
 function makeinstances2 (props) {
   return new Promise ((resolve, reject) => {
     getDB().transaction(function (tx) {
-      tx.executeSql('SELECT tp.rowid, party, categ, subcateg, type, val, info FROM TRACK INNER JOIN TRACKPHASE tp USING(id) WHERE date = ? AND acc = ? AND categ = ?', [props.date, props.acc, props.categ], function (tx, result) {
+      tx.executeSql('SELECT tp.rowid, tp.id, party, categ, subcateg, type, val, info FROM TRACK INNER JOIN TRACKPHASE tp USING(id) WHERE date = ? AND acc = ? AND categ = ?', [props.date, props.acc, props.categ], function (tx, result) {
         const res = result.rows, instances = [];
         for(let i=0; i<res.length; i++){
           instances.push(res.item(i));
@@ -133,7 +143,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
         <div class="list list-outline-ios list-dividers-ios">
           <ul>
             ${instances.map(obj => $h`
-            <li class="swipeout" @swipeout:deleted=${() => onDeleted($f7, obj.rowid, props, 't')}>
+            <li class="swipeout" @swipeout:deleted=${() => onDeleted($f7, obj.rowid, props, 't', obj.id)}>
               <div class="item-content swipeout-content">
                 <div class="item-inner">
                   <div class="item-title">

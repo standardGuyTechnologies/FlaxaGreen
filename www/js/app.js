@@ -33,6 +33,9 @@ var app = new Framework7({
   colors: {
     primary: '#0254a5',
   },
+  panel: {
+    swipe: true,
+  },
 
   el: '#app', // App root element
   component: Mainapp,

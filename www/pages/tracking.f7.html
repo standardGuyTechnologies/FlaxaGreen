@@ -99,6 +99,9 @@
         $update();
       })
     })
+    $onBeforeUnmount(() => {
+      $f7.off('refresh-tracklist')
+    })
 
     function onDeleted(item) {
       deleted = true;

@@ -186,6 +186,11 @@
         });
       })
     })
+    $onBeforeUnmount(() => {
+      $f7.off('refresh-transfer')
+      $f7.off('refresh-quick')
+      $f7.off('refresh-track')
+    })
 
     return $render;
   }

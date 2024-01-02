@@ -66,6 +66,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
     })
   })
   $onUnmounted(() => {
+    $f7.off('quick-sheet');
     $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
@@ -121,6 +122,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
     })
   })
   $onUnmounted(() => {
+    $f7.off('track-sheet');
     $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
@@ -173,6 +175,7 @@ function recordsTransferSheet(props, { $h, $f7, $onUnmounted, $onMounted, $updat
     })
   })
   $onUnmounted(() => {
+    $f7.off('transfer-sheet');
     $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`

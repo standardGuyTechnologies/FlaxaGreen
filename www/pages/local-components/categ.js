@@ -5,7 +5,7 @@ const { maxamt, labelmap, trackermap, box, } = G.V;
 const { digitcomma, partyLabel } = G.F;
 
 const comms = new Framework7.Events();
-const Categories = (props, { $h, $f7, $, $on, $update, $onMounted, $onUnmounted }) => {
+const Categories = (props, { $h, $f7, $, $on, $update, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
   const TOPG = {};
   $onMounted(() => {
     $(document).on('click', ".popover .item-content", 
@@ -22,6 +22,9 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted, $onUnmounted 
       comms.emit('update-details', props);
       $update();
     })
+  })
+  $onBeforeUnmount(() => {
+    comms.off('update-details');
   })
   $onUnmounted(() => {
     Object.keys(TOPG).forEach(key => delete TOPG[key]);
@@ -149,7 +152,7 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted, $onUnmounted 
 }
 
 
-const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $store, $update }) => {
+const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onBeforeUnmount, $store, $update }) => {
   
   const TOPG = {}, locationSet = new Set();
   $onBeforeMount(() => {
@@ -169,7 +172,7 @@ const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $st
     }, function (e) { $f7.dialog.alert(e) }, function () { comms.emit('typeahead') });
   })
   $onMounted(() => {
-    comms.on('update-details', (obj) => { /// todo off it
+    comms.on('update-details', (obj) => {
       Object.assign(props, obj); $update();
     })
     comms.on('typeahead', () => {
@@ -195,7 +198,8 @@ const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $st
     })
   })
 
-  $onUnmounted(() => {
+  $onBeforeUnmount(() => {
+    comms.off('typeahead')
     TOPG.typeahead.destroy();
     Object.keys(TOPG).forEach(key => delete TOPG[key]);
   })

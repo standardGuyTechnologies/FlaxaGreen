@@ -124,7 +124,7 @@
   const {digitcomma, addSign, toUTCms, aboveThreshold, preload_image, } = G.F;
 
   export default (props, { $f7ready, $f7, $, $store, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
-    const TOPG = {};  // todo unmount everything on this obj when page unmount.
+    const TOPG = {}; 
     const page = $('.page[data-name="home"]')[0];
     $store.dispatch('settldata', props.data);
 

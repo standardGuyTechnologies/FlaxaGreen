@@ -91,6 +91,7 @@
     var openlink = () => {};
     if (window.cordova) openlink = cordova.InAppBrowser.open;
     $f7ready(() => {
+      $f7.setDarkMode($store.getters.mode.value === 'dark');
     });
 
     function rateUs(evt) {

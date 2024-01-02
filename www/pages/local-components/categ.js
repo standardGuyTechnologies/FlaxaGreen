@@ -5,7 +5,7 @@ const { maxamt, labelmap, trackermap, box, } = G.V;
 const { digitcomma, partyLabel } = G.F;
 
 const comms = new Framework7.Events();
-const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
+const Categories = (props, { $h, $f7, $, $on, $update, $onMounted, $onUnmounted }) => {
   const TOPG = {};
   $onMounted(() => {
     $(document).on('click', ".popover .item-content", 
@@ -22,6 +22,9 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
       comms.emit('update-details', props);
       $update();
     })
+  })
+  $onUnmounted(() => {
+    Object.keys(TOPG).forEach(key => delete TOPG[key]);
   })
   function openCateg () {
     TOPG.popcateg = $f7.popover.create({
@@ -194,6 +197,7 @@ const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $st
 
   $onUnmounted(() => {
     TOPG.typeahead.destroy();
+    Object.keys(TOPG).forEach(key => delete TOPG[key]);
   })
     return () => $h`
   <form id="details">

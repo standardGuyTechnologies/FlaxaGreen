@@ -57,7 +57,7 @@ function makeinstances3 (props) {
 }
 
 function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }) {
-  let instances = []; let sheet
+  let instances = [];
   $onMounted(() => {
     makeinstances(props).then(i => {instances = i; $update()} )
     $f7.on('quick-sheet', (unique) => {
@@ -66,7 +66,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
     })
   })
   $onUnmounted(() => {
-    // sheet.destroy();
+    $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
@@ -112,7 +112,7 @@ function recordsItemSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update })
 };
 
 function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }) {
-  let instances = []; let sheet;
+  let instances = [];;
   $onMounted(() => {
     makeinstances2(props).then(i => {instances = i; $update()} )
     $f7.on('track-sheet', (unique) => {
@@ -121,7 +121,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
     })
   })
   $onUnmounted(() => {
-    // sheet.destroy();
+    $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">
@@ -164,7 +164,7 @@ function recordsTrackSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }
 };
 
 function recordsTransferSheet(props, { $h, $f7, $onUnmounted, $onMounted, $update }) {
-  let instances = []; let sheet
+  let instances = [];
   $onMounted(() => {
     makeinstances3(props).then(i => {instances = i; $update()} )
     $f7.on('transfer-sheet', (unique) => {
@@ -173,7 +173,7 @@ function recordsTransferSheet(props, { $h, $f7, $onUnmounted, $onMounted, $updat
     })
   })
   $onUnmounted(() => {
-    // sheet.destroy();
+    $f7.sheet.destroy(`.sheet-modal.${props.unique}`);
   })
   return () => $h`
   <div class="sheet-modal ${props.unique}" key="${props.unique}" data-container-el=".page-master-detail" data-backdrop="true" data-swipe-to-close="true" data-swipe-handler=".swipe-handler" data-backdrop="true">

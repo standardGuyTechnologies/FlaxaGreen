@@ -145,7 +145,6 @@
 
     let active = '', counts = 0;
     $on('pageInit', () => {
-      // $f7.on('tlUpdate', () => $update());
       accListUpdate();
       let dialog = TOPG.dialog = $f7.dialog.create({
         // containerEl: ".page-master",
@@ -217,12 +216,13 @@
     })
 
     $onBeforeUnmount(() => {
-      $f7.calendar.destroy('#demo-calendar-modal');
     })
     $on('pageBeforeRemove', () => {
       TOPG.actionSheet.destroy();
     })
     $onUnmounted(() => {
+      TOPG.calendarModal.destroy();
+      TOPG.dialog.destroy();
       Object.keys(TOPG).forEach(key => delete TOPG[key]);
     })
 

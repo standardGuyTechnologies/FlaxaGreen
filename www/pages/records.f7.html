@@ -163,8 +163,6 @@
   export default (props, { $f7ready, $f7, $on, $onMounted, $onBeforeUnmount, $store, $update }) => {
     const { date, datestr, acc, ndata, qdata, tdata } = props;
 
-    const TOPG = {};
-
     $on('pageInit', () => {
       $f7.on('refresh-transfer', (data, categ, subcateg) => {
         ndata.length = 0; Object.assign(ndata, data);
@@ -187,14 +185,6 @@
           $f7.emit('track-sheet', unique);
         });
       })
-      // TOPG.sheetSwipeToClose = $f7.sheet.create({
-      //   containerEl: ".page-master-detail",
-      //   el: '.demo-sheet-swipe-to-close',
-      //   backdrop: true,
-      //   swipeToClose: true,
-      //   swipeHandler: ".swipe-handler",
-      //   backdrop: true,
-      // });
     })
 
     return $render;

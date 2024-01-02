@@ -44,7 +44,7 @@ export default {
     },
     accrefresh({ state }, active) {
       getDB().transaction(function(tx){
-        tx.executeSql('SELECT * FROM ACCOUNTS WHERE acc <> ? ORDER BY rowid', [active], function (tx, result) {
+        tx.executeSql('SELECT * FROM ACCOUNTS WHERE acc <> ? ORDER BY acc', [active], function (tx, result) {
           const res = result.rows, accobj = [];
           for (let i = 0; i < res.length; i++) {
             accobj.push(res.item(i));

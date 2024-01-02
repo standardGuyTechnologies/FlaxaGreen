@@ -69,7 +69,7 @@
                 <div class="item-inner">
                   <div class="item-title" style="width: 100%;">
                     <div class="item-header" style="display: flex; justify-content: space-between;">
-                      <span>${entry.acc}</span> <span>${datestr(entry.datestr)}</span>
+                      <span>${entry.acc}</span> <span>${strDate(entry.datestr)}</span>
                     </div>
                     <div class="inout">
                       <span>NET CASH FLOW:</span>
@@ -121,16 +121,13 @@
   import getDB from '../js/db.js';
   import G from '../js/uiglobals.js';
   const { maxamt, box, appmsgs } = G.V;
-  const {digitcomma, addSign, toUTCms, aboveThreshold, preload_image, } = G.F;
+  const {digitcomma, addSign, toUTCms, aboveThreshold, strDate, } = G.F;
 
   export default (props, { $f7ready, $f7, $, $store, $on, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) => {
     const TOPG = {}; 
     const page = $('.page[data-name="home"]')[0];
     $store.dispatch('settldata', props.data);
 
-    function datestr(str) {
-      return new Date(str).toDateString();
-    }
     function deleteTL () {
 
     }

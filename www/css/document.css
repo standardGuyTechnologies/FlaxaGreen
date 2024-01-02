@@ -1,4 +1,7 @@
 /* global structural css */
+:root {
+  user-select: none;
+}
 .hide{
   display: none!important;
 }

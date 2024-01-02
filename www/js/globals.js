@@ -114,42 +114,6 @@ const trackermap = new Map([
     placeholder: "Incurred loan pardoned",
     subcateg: [],
   }],
-  ["Pledge out amt", {
-    label: "Pledge Made",
-    sign: 0,
-    placeholder: "Pledge made",
-    subcateg: [],
-  }],
-  ["Pledge in amt", {
-    label: "Pledge Expecting",
-    sign: 0,
-    placeholder: "Pledge expecting",
-    subcateg: [],
-  }],
-  ["Pledge out repaid", {
-    label: "Redeem Pledge",
-    sign: 0,
-    placeholder: "Redeemed pledge made",
-    subcateg: [],
-  }],
-  ["Pledge in repaid", {
-    label: "Redeemed",
-    sign: 0,
-    placeholder: "Expectant pledge redeemed",
-    subcateg: [],
-  }],
-  ["Pledge out forfeit", {
-    label: "Abandon Pledge",
-    sign: 0,
-    placeholder: "Abandoned pledge made",
-    subcateg: [],
-  }],
-  ["Pledge in forfeit", {
-    label: "Abandoned",
-    sign: 0,
-    placeholder: "Expectant pledge abandoned",
-    subcateg: [],
-  }],
   ["Deposit out amt", {
     label: "Deposit Made",
     sign: -1,
@@ -198,8 +162,6 @@ function partyLabel (categ) {
   switch (categ) {
     case "Loan out": value = "Recepient"; break;
     case "Loan in": value = "Administrator"; break;
-    case "Pledge out": value = "Beneficiary"; break;
-    case "Pledge in": value = "Benefactor"; break;
     case "Deposit out": value = "Trustee"; break;
     case "Deposit in": value = "Depositor"; break;
   }

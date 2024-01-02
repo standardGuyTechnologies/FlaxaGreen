@@ -52,17 +52,6 @@
           </li>
         </ul>
       </div>
-      <!-- <div class="list list-strong list-outline list-dividers-ios simple-list">
-        <ul>
-          <li class="list-group-title">Pledge Stats</li>
-          <li>
-            <span>Pledge made</span><span>${digitcomma(outpledge)}</span>
-          </li>
-          <li>
-            <span>Redeem percentage</span><span>${redeem}%</span>
-          </li>
-        </ul>
-      </div> -->
       <div class="list list-strong list-outline list-dividers-ios simple-list">
         <ul>
           <li class="list-group-title">Deposit Stats</li>
@@ -94,10 +83,6 @@
     const inloan = Math.abs(props.trackamt["Loanin"] || 0);
     const loanr = Math.abs(props.trackr["Loanin"] || 0);
     const repayloan = Math.round(loanr*100/(inloan || 1));
-
-    const outpledge = Math.abs(props.trackamt["Pledgeout"] || 0);
-    const pledger = Math.abs(props.trackr["Pledgeout"] || 0);
-    const redeem = Math.round(pledger*100/(outpledge || 1));
 
     const outdeposit = Math.abs(props.trackamt["Depositout"] || 0);
     const indeposit = Math.abs(props.trackamt["Depositin"] || 0);

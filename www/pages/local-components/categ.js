@@ -146,121 +146,6 @@ const Categories = (props, { $h, $f7, $, $on, $update, $onMounted }) => {
 }
 
 
-const RedeemIntent = (props, { $h, $f7, $onMounted, $update }) => {
-  function getCateg(subtype) {
-    if (subtype == "out") {
-      return [
-        {val:[
-          ["Promise reimbursement", "Reimburse"], 
-          ["Stake rewards", "Rewards"], 
-          ["Promise tuition", "Tuition"],
-          ["Promise grant", "Grant"], 
-          ["Postponed Payroll", "Payroll"], 
-        ], code: "p"}, 
-        {val:[
-          ["Promise gifts", "Gifts"], 
-          ["Pledge philanthropy", "Philanthropy"],
-          ["Pledge donation", "Donations"],
-        ], code: "cg"},
-      ];
-    } else if (subtype == 'in') {
-      return [
-        {val:[
-          ["Overdue wages (part time)", "Part time"], 
-          ["Overdue wages (full time)", "Full time"], 
-        ], code:"w"}, 
-        {val:[
-          ["Awaiting dues payment", "Membership"], 
-        ], code:"tr"}, 
-        {val:[
-          ["Awaiting allowance", "Allowance"],
-          ["Awaiting tuition", "Tuition"], 
-          ["Pending prize", "Prize"], 
-          ["Awaiting grant", "Grant"], 
-          ["Pending bonus", "Bonuses"], 
-          ["Pending donations", "Donations"], 
-        ], code:"aw"}, 
-        {val:[
-          ["Awaiting sales payment", "Sales"],
-        ], code:"d"}, 
-        {val:[
-          ["Awaiting reimbursement", "Reimbursed"],
-        ], code:"f"}
-      ];
-    }
-  }
-  function createPicker(subtype) {
-    let categ = getCateg(subtype);
-    let colVal = [], dispVal = [];
-    categ.forEach(obj => {
-      colVal = [...colVal, ...obj.val.map(y => obj.code+","+y[1])]
-      dispVal = [...dispVal, ...obj.val.map(y => y[0])];
-    });
-    return $f7.picker.create({
-      inputEl: '#assign'+subtype,
-      // cssClass: "gu-assign", //todo it dont work as in u cant select picker with this class
-      toolbarCloseText: "Select",
-      formatValue: function (values, displayValues) {
-        return displayValues[0];
-      },
-      cols: [
-        {
-          values: colVal,
-          displayValues: dispVal,
-          cssClass: "Additional-CSS-class-name-to-be-set-on-column-HTML-container",
-          textAlign: "center",
-        },
-      ],
-    })
-  }
-  $onMounted(() => {
-    $f7.on('checkredeem', () => {
-      if (props.pledge) p = ''; else p = 'hide';
-      if (props.pledge === 'in') pin = '', pout = 'hide';
-      else if (props.pledge === 'out') pin = 'hide', pout = '';
-      else pin = pout = 'hide';
-      $update()
-    });
-    let pickerin = createPicker('in');
-    let pickerout = createPicker('out');
-    pickerin.on('change', (picker, value, displayValue) => {
-      console.log(value);
-      $('input[name="intent"]').val(value);
-    })
-    pickerout.on('change', (picker, value, displayValue) => {
-      console.log(value);
-      $('input[name="intent"]').val(value);
-    })
-  });
-  let p = 'hide', pin = 'hide', pout = 'hide';
-  return () => $h`
-  <form id="redeem" class="list list-strong list-outline-ios list-dividers-ios">
-  <ul>
-    <li class="list-group-title ${p}">Redeem Intent</li>
-    <li class="item-content item-input in ${pin}">
-      <div class="item-inner">
-        <div class="item-input-wrap">
-          <input type="text" id="assignin" placeholder="Pick a category for this pledge" readonly="readonly" required />
-        </div>
-      </div>
-    </li>
-    <li class="item-content item-input out ${pout}">
-      <div class="item-inner">
-        <div class="item-input-wrap">
-          <input type="text" id="assignout" placeholder="Pick a category for this pledge" readonly="readonly" required />
-        </div>
-      </div>
-    </li>
-    <li class="item-content item-input hide">
-      <div class="item-inner">
-        <div class="item-input-wrap">
-          <input name="intent" type="text" readonly="readonly" />
-        </div>
-      </div>
-    </li>
-  </ul>
-  </form>`;
-}
 const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $store, $update }) => {
   
   const TOPG = {}, locationSet = new Set();
@@ -411,5 +296,5 @@ const Details = (props, { $h, $f7, $onBeforeMount, $onMounted, $onUnmounted, $st
 }
 
 
-export {Categories, RedeemIntent, Details};
+export {Categories, Details};
 export default Categories;

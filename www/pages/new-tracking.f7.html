@@ -40,24 +40,6 @@
             </div>
           </label>
         </li>
-        <!-- <li>
-          <label class="item-radio item-content">
-            <input type="radio" name="track" value="Pledge out" />
-            <i class="icon icon-radio"></i>
-            <div class="item-inner">
-              <div class="item-title">Pledge Made</div>
-            </div>
-          </label>
-        </li>
-        <li>
-          <label class="item-radio item-content">
-            <input type="radio" name="track" value="Pledge in" />
-            <i class="icon icon-radio"></i>
-            <div class="item-inner">
-              <div class="item-title">Pledge Expecting</div>
-            </div>
-          </label>
-        </li> -->
         <li>
           <label class="item-radio item-content">
             <input type="radio" name="track" value="Deposit out" />
@@ -78,7 +60,6 @@
         </li>
       </ul>
       </form>
-      <!-- <${RedeemIntent} pledge=${pledge} /> -->
       <${Details} categ=${categ} type="tracking" />
       
     </div>
@@ -120,19 +101,15 @@
   import Categories from '../pages/local-components/categ.js';
   import {RedeemIntent, Details} from '../pages/local-components/categ.js';
   export default (props, { $f7ready, $f7, $f7route, $on, $onMounted, $onBeforeUnmount, $, $update }) => {
-    let categ = "Loan out", pledge = null;
+    let categ = "Loan out";
     const date = Number($f7route.query.date), acc = $f7route.query.acc;
 
     const TOPG = {};
 
     $onMounted(() => {
       $('input[name="track"]').on("change", function () {
-        categ = this.value; let arr = categ.trim().split(' ');
-        if (arr[0] === 'Pledge') {
-          pledge = arr[1];
-        } else {
-          pledge = null;
-        }; $update(() => $f7.emit('checkredeem'));
+        categ = this.value;
+        $update();
       })
     })
     $on('pageInit', () => {
